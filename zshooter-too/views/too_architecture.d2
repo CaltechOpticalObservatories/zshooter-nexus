@@ -1,0 +1,217 @@
+# TOO Architecture
+# Render with: d2 --layout elk views/too_architecture.d2 out/too_architecture.svg
+
+direction: right
+
+Human_Actors: {
+  label: "Human Actors"
+  style.fill: "#eef8ee"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  Astronomer_PI: {
+    label: "Astronomer PI"
+  }
+  On_Call_Program_Contact: {
+    label: "On Call Program Contact"
+  }
+}
+
+Alert_Sources: {
+  label: "Alert Sources"
+  style.fill: "#eef8ee"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  Alert_Brokers: {
+    label: "Alert Brokers\ne.g. AEON+"
+  }
+  Direct_Contact: {
+    label: "Direct Contact\ne.g. Email"
+  }
+  Instrument_Programs: {
+    label: "Instrument Programs\ne.g. RoboAO"
+  }
+}
+
+TOO_System: {
+  label: "TOO System"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  TOO_Submission_Portal: {
+    label: "TOO Submission Portal\nproposal and request intake"
+  }
+
+  Instrument_Obs_Templates: {
+    label: "Instrument Obs Templates\ninstrument SOPs, defaults, calibrations"
+  }
+
+  Program_Database: {
+    label: "Program Database"
+    direction: down
+
+    Time_Allocation: {
+      label: "Time Allocation"
+    }
+    PI_Ownership: {
+      label: "PI Ownership"
+    }
+    Event_Definitions: {
+      label: "Event Definitions"
+      direction: down
+
+      Match_Criteria: {
+        label: "Match Criteria"
+      }
+      Required_Observations: {
+        label: "Required Observations"
+      }
+      Result_Sharing_Rules: {
+        label: "Result Sharing Rules"
+      }
+    }
+  }
+
+  Alert_Monitor: {
+    label: "Alert Monitor"
+    direction: down
+
+    Connectors: {
+      label: "Connectors"
+    }
+    Matching_Engine: {
+      label: "Matching Engine"
+    }
+    Matched_Events: {
+      label: "Matched Events\nevent plus matching program stream"
+    }
+  }
+
+  TOO_Execution_Planning: {
+    label: "TOO Execution Planning"
+    direction: down
+
+    Observation_Package_Builder: {
+      label: "Observation Package Builder\nexpands matches into needed observations"
+    }
+    Scheduling_Engine: {
+      label: "Scheduling Engine\nconditional and evolving schedule"
+    }
+    TOO_Handoff_Gate: {
+      label: "TOO Handoff Gate\nrequest, assent, and target list handoff"
+    }
+  }
+
+  Results_and_Accounting: {
+    label: "Results and Accounting"
+    direction: down
+
+    Observation_Ledger: {
+      label: "Observation Ledger\nwhat has been observed"
+    }
+    Alert_Broadcaster: {
+      label: "Alert Broadcaster"
+    }
+    Time_Charging: {
+      label: "Time Charging"
+    }
+  }
+}
+
+Observatory_Constraints: {
+  label: "Observatory Constraints"
+  style.fill: "#fff1f1"
+  style.stroke: "#b71c1c"
+  style.stroke-width: 2
+
+  Observatory_Policy: {
+    label: "Observatory Policy"
+  }
+  Observability: {
+    label: "Observability"
+  }
+  Program_Priority_and_Time_Budget: {
+    label: "Program Priority and Time Budget"
+  }
+}
+
+Keck_Archive: {
+  label: "Keck Archive"
+  style.fill: "#f7f7f7"
+  style.stroke: "#777777"
+  style.stroke-width: 2
+}
+
+Execution: {
+  label: "Execution"
+  direction: down
+  style.fill: "#f7f7f7"
+  style.stroke: "#777777"
+  style.stroke-width: 2
+
+  Classical_Scheduled_Night: {
+    label: "Classical Scheduled Night"
+  }
+  Telescope_Operator_and_SA: {
+    label: "Telescope Operator and SA"
+  }
+  Instrument: {
+    label: "Instrument"
+    direction: down
+
+    Instrument_Target_List_API: {
+      label: "Instrument Target List API"
+    }
+    ICS: {
+      label: "ICS"
+    }
+    Instrument_DRP: {
+      label: "Instrument DRP"
+    }
+  }
+}
+
+Human_Actors.Astronomer_PI -> TOO_System.TOO_Submission_Portal: "submit program and criteria"
+TOO_System.TOO_Submission_Portal -> TOO_System.Instrument_Obs_Templates: "fetch defaults and calibration bundles"
+TOO_System.TOO_Submission_Portal -> TOO_System.Program_Database: "store program definition"
+
+Alert_Sources.Direct_Contact -> Execution.Telescope_Operator_and_SA: "manual or out-of-band trigger"
+Alert_Sources.Alert_Brokers -> TOO_System.Alert_Monitor.Connectors: "alerts and external events"
+Alert_Sources.Instrument_Programs -> TOO_System.Alert_Monitor.Connectors: "alerts and external events"
+TOO_System.Alert_Monitor.Connectors -> TOO_System.Alert_Monitor.Matching_Engine: "subscribe, poll, ingest"
+TOO_System.Program_Database -> TOO_System.Alert_Monitor.Matching_Engine: "active programs and match criteria"
+TOO_System.Alert_Monitor.Matching_Engine -> TOO_System.Alert_Monitor.Matched_Events: "matching events plus program IDs"
+
+TOO_System.Alert_Monitor.Matched_Events -> TOO_System.TOO_Execution_Planning.Observation_Package_Builder: "matched event plus program"
+TOO_System.Program_Database -> TOO_System.TOO_Execution_Planning.Observation_Package_Builder: "required observations and limits"
+TOO_System.Instrument_Obs_Templates -> TOO_System.TOO_Execution_Planning.Observation_Package_Builder: "SOPs and implicit calibrations"
+Keck_Archive -> TOO_System.Results_and_Accounting.Observation_Ledger: "completed observation data"
+TOO_System.Results_and_Accounting.Observation_Ledger -> TOO_System.TOO_Execution_Planning.Observation_Package_Builder: "completed observation info"
+
+TOO_System.TOO_Execution_Planning.Observation_Package_Builder -> TOO_System.TOO_Execution_Planning.Scheduling_Engine: "schedulable observations"
+Observatory_Constraints.Observatory_Policy -> TOO_System.TOO_Execution_Planning.Scheduling_Engine: "interrupt rules"
+Observatory_Constraints.Observability -> TOO_System.TOO_Execution_Planning.Scheduling_Engine: "visibility constraints"
+Observatory_Constraints.Program_Priority_and_Time_Budget -> TOO_System.TOO_Execution_Planning.Scheduling_Engine: "priority and remaining allocation"
+TOO_System.TOO_Execution_Planning.Scheduling_Engine -> TOO_System.TOO_Execution_Planning.TOO_Handoff_Gate: "evolving TOO schedule"
+
+TOO_System.TOO_Execution_Planning.TOO_Handoff_Gate -> Execution.Telescope_Operator_and_SA: "request and assent handoff"
+Execution.Telescope_Operator_and_SA -> Execution.Classical_Scheduled_Night: "interrupt or restore"
+Execution.Telescope_Operator_and_SA -> Execution.Instrument.Instrument_Target_List_API: "approve and execute"
+TOO_System.TOO_Execution_Planning.TOO_Handoff_Gate -> Execution.Instrument.Instrument_Target_List_API: "deliver approved target list"
+Execution.Instrument.Instrument_Target_List_API -> Execution.Instrument.ICS: "classic-style target list"
+Execution.Classical_Scheduled_Night -> Execution.Instrument: "active execution context"
+
+Execution.Instrument.ICS -> Execution.Instrument.Instrument_DRP: "raw data"
+Execution.Instrument.Instrument_DRP -> Keck_Archive: "archive products"
+
+TOO_System.Program_Database -> TOO_System.Results_and_Accounting.Alert_Broadcaster: "result sharing rules"
+Keck_Archive -> TOO_System.Results_and_Accounting.Alert_Broadcaster: "results"
+TOO_System.Results_and_Accounting.Observation_Ledger -> TOO_System.Results_and_Accounting.Alert_Broadcaster: "results and completion triggers"
+
+TOO_System.Results_and_Accounting.Observation_Ledger -> TOO_System.Results_and_Accounting.Time_Charging: "debit inputs"
+TOO_System.TOO_Execution_Planning.Scheduling_Engine -> TOO_System.Results_and_Accounting.Time_Charging: "schedule context"
+TOO_System.Results_and_Accounting.Time_Charging -> TOO_System.Program_Database: "debit updates"
+TOO_System.Results_and_Accounting.Observation_Ledger -> TOO_System.Program_Database: "program state updates"

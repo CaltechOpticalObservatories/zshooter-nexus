@@ -1,0 +1,49 @@
+# TOO Completion Loop view
+# Render with: d2 --layout elk views/too_completion_loop.d2 out/too_completion_loop.svg
+
+direction: right
+
+Results_and_Accounting: {
+  label: "Results and Accounting"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  Observation_Ledger: {
+    label: "Observation Ledger"
+  }
+  Time_Charging: {
+    label: "Time Charging"
+  }
+  Alert_Broadcaster: {
+    label: "Alert Broadcaster"
+  }
+}
+
+Supporting_Services: {
+  label: "Supporting Services"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  Program_Database: {
+    label: "Program Database"
+  }
+  Keck_Archive: {
+    label: "Keck Archive"
+    style.fill: "#f7f7f7"
+    style.stroke: "#777777"
+  }
+}
+
+Results_and_Accounting.Observation_Ledger -> Supporting_Services.Keck_Archive: "monitor for results"
+Supporting_Services.Keck_Archive -> Results_and_Accounting.Observation_Ledger: "results"
+Results_and_Accounting.Observation_Ledger -> Results_and_Accounting.Time_Charging: "compute program time\ndebits"
+Results_and_Accounting.Time_Charging -> Results_and_Accounting.Observation_Ledger: "debit outcome"
+Results_and_Accounting.Observation_Ledger -> Supporting_Services.Program_Database: "update program state\nand fetch broadcast rules"
+Supporting_Services.Program_Database -> Results_and_Accounting.Observation_Ledger: "sharing rules and\nprogram context"
+Results_and_Accounting.Observation_Ledger -> Results_and_Accounting.Alert_Broadcaster: "generate follow-on alert\nand result notification"
+Supporting_Services.Keck_Archive -> Results_and_Accounting.Alert_Broadcaster: "science products"
+Results_and_Accounting.Time_Charging -> Supporting_Services.Program_Database: "final debit updates"

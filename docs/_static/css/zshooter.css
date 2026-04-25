@@ -1,0 +1,163 @@
+/* ZShooter prototype styling */
+
+.zs-kicker {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sy-c-light, #2563eb);
+  margin-bottom: 0.4rem;
+}
+
+.zs-home-logo,
+.zs-square-logo {
+  max-width: 240px;
+  border-radius: 18px;
+  background: white;
+  padding: 0.75rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.zs-tagline-banner {
+  display: block;
+  width: min(100%, 1100px);
+  margin: 0.5rem 0 1.25rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111827;
+}
+
+.zs-lead {
+  font-size: 1.08rem;
+  line-height: 1.65;
+  max-width: 70ch;
+}
+
+.zs-quote {
+  margin: 1rem 0 1.5rem 0;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #2563eb;
+  background: rgba(37, 99, 235, 0.06);
+  border-radius: 0 12px 12px 0;
+}
+
+.zs-note {
+  margin: 1rem 0 1.25rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  background: rgba(37, 99, 235, 0.04);
+  border-radius: 12px;
+}
+
+.zs-note-to-team {
+  margin: 1rem 0 1.25rem 0;
+  padding: 0.9rem 1rem;
+  border: 4px solid rgba(255, 99, 100, 0.28);
+  background: rgba(237, 99, 235, 0.04);
+  border-radius: 12px;
+}
+
+.zs-placeholder,
+div.zs-placeholder {
+  /*display: none;*/
+  margin: 1rem 0 1.25rem 0;
+  padding: 0.95rem 1rem;
+  border: 1px dashed rgba(255, 116, 139, 0.6);
+  background: rgba(148, 163, 184, 0.08);
+  border-radius: 12px;
+}
+
+.red {
+    color:red;
+}
+
+.zs-small {
+  font-size: 0.95rem;
+  color: var(--sy-c-text-weak, #475569);
+}
+
+.zs-architecture-figure {
+  margin: 1rem 0 1.25rem 0;
+}
+
+.zs-architecture-figure a {
+  display: block;
+  border: 1px solid rgba(100, 116, 139, 0.35);
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+}
+
+.zs-architecture-figure img {
+  width: 100%;
+  display: block;
+}
+
+.zs-architecture-figure figcaption {
+  font-size: 0.92rem;
+  margin-top: 0.5rem;
+  color: var(--sy-c-text-weak, #475569);
+}
+
+.zs-split-view {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem 0;
+}
+
+.zs-viewer-panel {
+  border: 1px solid rgba(100, 116, 139, 0.28);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--sy-c-background, #fff);
+  min-height: 700px;
+}
+
+.zs-viewer-panel h2 {
+  font-size: 1rem;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+.zs-viewer-panel iframe {
+  border: 0;
+  width: 100%;
+  height: 640px;
+  display: block;
+  background: white;
+}
+
+.zs-contact-intro {
+  max-width: 65ch;
+}
+
+.sd-card.zs-contact-card p:first-child,
+.sd-card.zs-contact-card p:last-child {
+  margin-top: 0.35rem;
+}
+
+.zs-tight-table table td,
+.zs-tight-table table th {
+  vertical-align: top;
+}
+
+@media (max-width: 900px) {
+  .zs-split-view {
+    grid-template-columns: 1fr;
+  }
+
+  .zs-viewer-panel {
+    min-height: 600px;
+  }
+
+  .zs-viewer-panel iframe {
+    height: 560px;
+  }
+}
+
+.zs-check {
+  color: #b00020; font-weight: 600;
+}
+

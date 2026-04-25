@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Drawing Viewer</title>
+  <style>
+    :root {
+      --panel-bg: #ffffff;
+      --panel-border: rgba(100, 116, 139, 0.35);
+      --muted: #475569;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #fff;
+      color: #0f172a;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    .toolbar {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.7rem 0.85rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: var(--panel-bg);
+      flex-wrap: wrap;
+    }
+    .toolbar label {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .toolbar select {
+      min-width: 18rem;
+      max-width: 100%;
+      padding: 0.4rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid rgba(100, 116, 139, 0.5);
+      background: #fff;
+    }
+    .spacer {
+      flex: 1 1 auto;
+    }
+    .meta {
+      font-size: 0.83rem;
+      color: var(--muted);
+      width: 100%;
+    }
+    .toolbar a {
+      font-size: 0.84rem;
+      text-decoration: none;
+    }
+    #viewer-frame {
+      border: 0;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 320px;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <label for="selector">Drawing</label>
+    <select id="selector"></select>
+    <div class="spacer"></div>
+    <a id="open-link" href="#" target="_blank" rel="noopener">Open raw file</a>
+    <div class="meta" id="meta"></div>
+  </div>
+  <iframe id="viewer-frame" title="Drawing viewer"></iframe>
+
+  <script>
+    const selector = document.getElementById("selector");
+    const meta = document.getElementById("meta");
+    const openLink = document.getElementById("open-link");
+    const viewerFrame = document.getElementById("viewer-frame");
+    const params = new URLSearchParams(window.location.search);
+
+    function resolveUrl(value) {
+      return new URL(value, window.location.href).toString();
+    }
+
+    function chooseInitial(entries) {
+      const requested = params.get("selected") || params.get("pdf");
+      if (!requested) return entries[0];
+      return entries.find(entry =>
+        entry.file === requested ||
+        entry.file.endsWith(requested) ||
+        entry.title === requested ||
+        entry.docno === requested
+      ) || entries[0];
+    }
+
+    function humanMeta(entry) {
+      const parts = [];
+      if (entry.docno) parts.push(entry.docno);
+      if (entry.notes) parts.push(entry.notes);
+      return parts.join(' | ');
+    }
+
+    function update(entries, selectedFile) {
+      const entry = entries.find(item => item.file === selectedFile) || entries[0];
+      if (!entry) return;
+
+      const pdfUrl = resolveUrl(entry.file);
+      const viewerUrl = 'pdfjs/web/viewer.html?file=' + encodeURIComponent(pdfUrl);
+
+      openLink.href = pdfUrl;
+      meta.textContent = humanMeta(entry);
+      viewerFrame.src = viewerUrl;
+    }
+
+    async function main() {
+      const manifestParam = params.get("manifest");
+      const directPdf = params.get("pdf");
+
+      let entries = [];
+      if (manifestParam) {
+        const manifestUrl = resolveUrl(manifestParam);
+        const response = await fetch(manifestUrl);
+        if (!response.ok) {
+          throw new Error("Could not load drawing manifest: " + manifestUrl);
+        }
+        entries = await response.json();
+      } else if (directPdf) {
+        entries = [{ title: "Selected drawing", file: directPdf }];
+      }
+
+      if (!Array.isArray(entries) || entries.length === 0) {
+        document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">No drawing selected. Pass ?manifest=... or ?pdf=...</p>';
+        return;
+      }
+
+      selector.innerHTML = "";
+      for (const entry of entries) {
+        const option = document.createElement("option");
+        option.value = entry.file;
+        option.textContent = entry.title || entry.docno || entry.file.split("/").pop();
+        selector.appendChild(option);
+      }
+
+      const initial = chooseInitial(entries);
+      selector.value = initial.file;
+      selector.addEventListener("change", () => update(entries, selector.value));
+      update(entries, initial.file);
+    }
+
+    main().catch(error => {
+      console.error(error);
+      document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">' + (error.message || 'Could not initialize drawing viewer.') + '</p>';
+    });
+  </script>
+</body>
+</html>

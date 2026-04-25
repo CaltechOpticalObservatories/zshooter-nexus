@@ -1,0 +1,128 @@
+# Alert Response Loop view
+# Render with: d2 --layout elk views/alert_response_loop.d2 out/alert_response_loop.svg
+
+direction: right
+
+Alert_Monitor: {
+  label: "Alert Monitor"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  Connectors: {
+    label: "Connectors"
+  }
+  Matching_Engine: {
+    label: "Matching Engine"
+  }
+  Matched_Events: {
+    label: "Matched Events"
+  }
+}
+
+TOO_Execution_Planning: {
+  label: "TOO Execution Planning"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  Observation_Package_Builder: {
+    label: "Observation Package Builder"
+  }
+  Scheduling_Engine: {
+    label: "Scheduling Engine"
+  }
+  TOO_Handoff_Gate: {
+    label: "TOO Handoff Gate"
+  }
+}
+
+Supporting_Services: {
+  label: "Supporting Services"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  Instrument_Obs_Templates: {
+    label: "Instrument Obs Templates"
+  }
+  Program_Database: {
+    label: "Program Database"
+  }
+  Observation_Ledger: {
+    label: "Observation Ledger"
+  }
+  Keck_Archive: {
+    label: "Keck Archive"
+    style.fill: "#f7f7f7"
+    style.stroke: "#777777"
+  }
+}
+
+Observatory_Constraints: {
+  label: "Observatory Constraints"
+  direction: down
+  style.fill: "#fff1f1"
+  style.stroke: "#b71c1c"
+  style.stroke-width: 2
+
+  Observability: {
+    label: "Observability"
+  }
+  Program_Priority_and_Time_Budget: {
+    label: "Program Priority and Time Budget"
+  }
+  Observatory_Policy: {
+    label: "Observatory Policy"
+  }
+}
+
+Execution: {
+  label: "Execution"
+  direction: down
+  style.fill: "#f7f7f7"
+  style.stroke: "#777777"
+  style.stroke-width: 2
+
+  Telescope_Operator_and_SA: {
+    label: "Telescope Operator and SA"
+  }
+  Instrument_Target_List_API: {
+    label: "Instrument Target List API"
+  }
+  ICS: {
+    label: "ICS"
+  }
+  Instrument_DRP: {
+    label: "Instrument DRP"
+  }
+}
+
+Alert_Monitor.Connectors -> Supporting_Services.Program_Database: "load active programs\nand filters"
+Supporting_Services.Program_Database -> Alert_Monitor.Connectors: "active programs\nand filters"
+Alert_Monitor.Connectors -> Alert_Monitor.Matching_Engine: "match alerts to programs"
+Alert_Monitor.Matching_Engine -> Alert_Monitor.Matched_Events: "emit event plus\nmatching program"
+Alert_Monitor.Matched_Events -> TOO_Execution_Planning.Observation_Package_Builder: "expand into needed\nobservations"
+TOO_Execution_Planning.Observation_Package_Builder -> Supporting_Services.Instrument_Obs_Templates: "fetch SOP-driven calibrations\nand defaults"
+Supporting_Services.Instrument_Obs_Templates -> TOO_Execution_Planning.Observation_Package_Builder: "defaults and calibrations"
+TOO_Execution_Planning.Observation_Package_Builder -> Supporting_Services.Observation_Ledger: "check what has already\nbeen observed"
+Supporting_Services.Observation_Ledger -> TOO_Execution_Planning.Observation_Package_Builder: "completed observation info"
+TOO_Execution_Planning.Observation_Package_Builder -> Supporting_Services.Keck_Archive: "check reduced products and\nstop-or-continue logic"
+Supporting_Services.Keck_Archive -> TOO_Execution_Planning.Observation_Package_Builder: "reduced products"
+TOO_Execution_Planning.Observation_Package_Builder -> TOO_Execution_Planning.Scheduling_Engine: "update conditional\nschedule"
+TOO_Execution_Planning.Scheduling_Engine -> Observatory_Constraints.Observability: "apply visibility constraints"
+Observatory_Constraints.Observability -> TOO_Execution_Planning.Scheduling_Engine: "visibility constraints"
+TOO_Execution_Planning.Scheduling_Engine -> Observatory_Constraints.Program_Priority_and_Time_Budget: "apply urgency and\ndebit limits"
+Observatory_Constraints.Program_Priority_and_Time_Budget -> TOO_Execution_Planning.Scheduling_Engine: "priority and allocation"
+TOO_Execution_Planning.Scheduling_Engine -> Observatory_Constraints.Observatory_Policy: "apply interrupt policy"
+Observatory_Constraints.Observatory_Policy -> TOO_Execution_Planning.Scheduling_Engine: "interrupt policy"
+TOO_Execution_Planning.Scheduling_Engine -> TOO_Execution_Planning.TOO_Handoff_Gate: "request or authorize\ntakeover"
+TOO_Execution_Planning.TOO_Handoff_Gate -> Execution.Telescope_Operator_and_SA: "present TOO block and\nhandoff window"
+Execution.Telescope_Operator_and_SA -> Execution.Instrument_Target_List_API: "hand off target list\nand config"
+Execution.Instrument_Target_List_API -> Execution.ICS: "execute observation"
+Execution.ICS -> Supporting_Services.Observation_Ledger: "record completed\nobservation"
+Execution.ICS -> Execution.Instrument_DRP: "reduce data"
+Execution.Instrument_DRP -> Supporting_Services.Keck_Archive: "publish products"

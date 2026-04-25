@@ -1,0 +1,12 @@
+[submodule "zshooter-arch"]
+	path = zshooter-arch
+	url = git@github.com:baileyji/zshooter_d2.git
+[submodule "zshooter-sim"]
+	path = zshooter-sim
+	url = https://github.com/CaltechOpticalObservatories/zs-scopesim
+[submodule "zshooter-ics"]
+	path = zshooter-ics
+	url = git@github.com:CaltechOpticalObservatories/zshooter.git
+[submodule "zshooter-drp"]
+	path = zshooter-drp
+	url = https://github.com/CaltechOpticalObservatories/zshooter-drp

@@ -1,0 +1,48 @@
+# Program Submission view
+# Render with: d2 --layout elk views/program_submission.d2 out/program_submission.svg
+
+direction: right
+
+Human_Actors: {
+  label: "Human Actors"
+  direction: down
+  style.fill: "#eef8ee"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  Astronomer_PI: {
+    label: "Astronomer PI"
+  }
+}
+
+TOO_System: {
+  label: "TOO System"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  TOO_Submission_Portal: {
+    label: "TOO Submission Portal\nproposal and request intake"
+  }
+}
+
+Supporting_Data: {
+  label: "Supporting Data"
+  direction: down
+  style.fill: "#eef3ff"
+  style.stroke: "#4169e1"
+  style.stroke-width: 2
+
+  Instrument_Obs_Templates: {
+    label: "Instrument Obs Templates\ninstrument SOPs, defaults, calibrations"
+  }
+  Program_Database: {
+    label: "Program Database"
+  }
+}
+
+Human_Actors.Astronomer_PI -> TOO_System.TOO_Submission_Portal: "submit alert criteria\nand observation request"
+TOO_System.TOO_Submission_Portal -> Supporting_Data.Instrument_Obs_Templates: "fetch instrument defaults\nand calibration bundles"
+TOO_System.TOO_Submission_Portal -> Supporting_Data.Program_Database: "store criteria, observations,\nlimits, cadence, templates"
+Supporting_Data.Program_Database -> Human_Actors.Astronomer_PI: "return program confirmation"
