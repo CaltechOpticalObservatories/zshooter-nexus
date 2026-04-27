@@ -42,6 +42,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install Pandoc
+        uses: pandoc/actions/setup@v1
+        with:
+          version: 2.19
+
       - name: Install D2
         if: steps.detect_d2.outputs.render == 'true'
         run: |
