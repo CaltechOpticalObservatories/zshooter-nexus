@@ -182,7 +182,7 @@
     }
 
     async function main() {
-      const manifestParam = params.get("manifest");
+      const manifestParam = params.get("manifest") || "generated/models.generated.json";
       const directModel = params.get("model");
 
       let entries = [];

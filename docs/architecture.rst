@@ -25,6 +25,6 @@ System Architecture
      <h2>Architecture Diagrams</h2>
      <iframe
        title="Architecture diagram viewer"
-       src="_static/archwrap.html?folder=d2_diagrams/&selected=hardware_systems_full.svg">
+       src="_static/archwrap.html?manifest=generated/diagrams.generated.json&selected=hardware_systems_full.svg">
      </iframe>
    </div>

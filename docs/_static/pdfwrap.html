@@ -147,7 +147,7 @@
     }
 
     async function main() {
-      const manifestParam = params.get("manifest");
+      const manifestParam = params.get("manifest") || "generated/drawings.generated.json";
       const directPdf = params.get("pdf");
 
       let entries = [];

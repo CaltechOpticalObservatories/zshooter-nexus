@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Architecture Viewer</title>
+  <title>eDrawings Viewer</title>
   <style>
     :root {
       --panel-bg: #ffffff;
@@ -67,13 +67,13 @@
 </head>
 <body>
   <div class="toolbar">
-    <label for="selector">Diagram</label>
+    <label for="selector">eDrawing</label>
     <select id="selector"></select>
     <div class="spacer"></div>
     <a id="open-link" href="#" target="_blank" rel="noopener">Open raw file</a>
     <div class="meta" id="meta"></div>
   </div>
-  <iframe id="viewer-frame" title="Architecture viewer"></iframe>
+  <iframe id="viewer-frame" title="eDrawings viewer"></iframe>
 
   <script>
     const selector = document.getElementById("selector");
@@ -86,24 +86,19 @@
       return new URL(value, window.location.href).toString();
     }
 
-    function ensureTrailingSlash(value) {
-      return value.endsWith("/") ? value : value + "/";
-    }
-
-    function titleFromPath(path) {
-      const file = path.split("/").pop() || path;
-      return file
-        .replace(/\.svg$/i, "")
-        .replace(/[_-]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+    function humanMeta(entry) {
+      const parts = [];
+      if (entry.notes) parts.push(entry.notes);
+      if (entry.docno) parts.push("Doc: " + entry.docno);
+      return parts.join(" | ");
     }
 
     function chooseInitial(entries) {
-      const requested = params.get("selected") || params.get("svg");
+      const requested = params.get("selected") || params.get("edrawing") || params.get("model");
       if (!requested) return entries[0];
       return entries.find(entry =>
         entry.file === requested ||
+        entry.path === requested ||
         entry.file.endsWith(requested) ||
         entry.title === requested
       ) || entries[0];
@@ -113,76 +108,30 @@
       const entry = entries.find(item => item.file === selectedFile) || entries[0];
       if (!entry) return;
 
-      const svgUrl = resolveUrl(entry.file);
-      openLink.href = svgUrl;
-      meta.textContent = entry.file;
-      viewerFrame.src = svgUrl;
-    }
-
-    async function discoverSvgEntries(folderParam) {
-      const folderUrl = resolveUrl(ensureTrailingSlash(folderParam));
-      const response = await fetch(folderUrl);
-      if (!response.ok) {
-        throw new Error("Could not load directory listing: " + folderUrl);
-      }
-
-      const text = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, "text/html");
-      const links = Array.from(doc.querySelectorAll('a[href]'));
-      const seen = new Set();
-      const entries = [];
-
-      for (const link of links) {
-        const href = link.getAttribute('href');
-        if (!href) continue;
-        if (!/\.svg(?:\?.*)?$/i.test(href)) continue;
-
-        const fullUrl = new URL(href, folderUrl);
-        const sameFolder = fullUrl.pathname.startsWith(new URL(folderUrl).pathname);
-        if (!sameFolder) continue;
-
-        const relative = decodeURIComponent(fullUrl.pathname.split('/').pop() || '');
-        if (!relative || seen.has(relative)) continue;
-        seen.add(relative);
-
-        entries.push({
-          title: titleFromPath(relative),
-          file: ensureTrailingSlash(folderParam) + relative,
-        });
-      }
-
-      entries.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }));
-      return entries;
-    }
-
-    async function loadManifestEntries(manifestParam) {
-      const manifestUrl = resolveUrl(manifestParam);
-      const response = await fetch(manifestUrl);
-      if (!response.ok) {
-        throw new Error("Could not load diagram manifest: " + manifestUrl);
-      }
-      return response.json();
+      const pageUrl = resolveUrl(entry.file);
+      openLink.href = pageUrl;
+      meta.textContent = humanMeta(entry);
+      viewerFrame.src = pageUrl;
     }
 
     async function main() {
-      const manifestParam = params.get("manifest") || "generated/diagrams.generated.json";
-      const folderParam = params.get("folder");
-      const directSvg = params.get("svg");
+      const manifestParam = params.get("manifest") || "generated/edrawings.generated.json";
+      const directFile = params.get("edrawing") || params.get("model");
 
       let entries = [];
-      if (directSvg) {
-        entries = [{ title: titleFromPath(directSvg), file: directSvg }];
+      if (directFile) {
+        entries = [{ title: "Selected eDrawing", file: directFile }];
       } else if (manifestParam) {
-        entries = await loadManifestEntries(manifestParam);
-      } else if (folderParam) {
-        entries = await discoverSvgEntries(folderParam);
-      } else {
-        throw new Error("No diagram source configured.");
+        const manifestUrl = resolveUrl(manifestParam);
+        const response = await fetch(manifestUrl);
+        if (!response.ok) {
+          throw new Error("Could not load eDrawings manifest: " + manifestUrl);
+        }
+        entries = await response.json();
       }
 
       if (!Array.isArray(entries) || entries.length === 0) {
-        document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">No SVG diagrams found. Pass <code>?manifest=...</code> or <code>?svg=...</code>.</p>';
+        document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">No eDrawings selected. Pass ?manifest=... or ?edrawing=...</p>';
         return;
       }
 
@@ -202,7 +151,7 @@
 
     main().catch(error => {
       console.error(error);
-      document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">' + (error.message || 'Could not initialize architecture viewer.') + '</p>';
+      document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">' + (error.message || 'Could not initialize eDrawings viewer.') + '</p>';
     });
   </script>
 </body>

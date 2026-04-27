@@ -6,10 +6,10 @@ ZShooter's CAD Designs
 
    <div class="zs-split-view">
      <section class="zs-viewer-panel">
-       <h2>CAD model viewer</h2>
+       <h2>CAD viewer</h2>
        <iframe
-         title="CAD model viewer"
-         src="_static/modelwrap.html?manifest=generated/models.generated.json">
+         title="eDrawings viewer"
+         src="_static/edrawingswrap.html?manifest=generated/edrawings.generated.json">
        </iframe>
      </section>
      <section class="zs-viewer-panel">
@@ -20,5 +20,4 @@ ZShooter's CAD Designs
        </iframe>
      </section>
    </div>
-
 

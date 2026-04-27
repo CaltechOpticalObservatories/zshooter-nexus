@@ -24,6 +24,7 @@ from urllib.request import Request, urlopen
 
 MODEL_EXTS = {".step", ".stp", ".iges", ".igs", ".stl", ".obj", ".3mf", ".glb", ".gltf"}
 DRAWING_EXTS = {".pdf"}
+EDRAWING_EXTS = {".html", ".htm"}
 REMOTE_CAD_ROOT = "http://zscad.astro.clatech.edu/"
 REMOTE_LISTING_TIMEOUT_SECONDS = 10
 
@@ -277,7 +278,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cad-root", type=Path, required=True, help="Path to the source CAD tree, e.g. ../cad")
     parser.add_argument("--docs-root", type=Path, required=True, help="Path to the docs root, e.g. docs")
-    parser.add_argument("--web-root", default="/cad", help="Public same-origin base URL for CAD assets")
+    parser.add_argument("--web-root", default="../cad", help="Public same-origin base URL for CAD assets")
     args = parser.parse_args()
 
     cad_root = args.cad_root.resolve()
@@ -288,19 +289,25 @@ def main() -> None:
 
     model_meta = build_metadata_index(read_optional_json(cad_root / "models.json"))
     drawing_meta = build_metadata_index(read_optional_json(cad_root / "drawings.json"))
+    edrawing_meta = build_metadata_index(read_optional_json(cad_root / "edrawings.json"))
 
     model_paths = find_files(cad_root / "solids", MODEL_EXTS)
     drawing_paths = find_files(cad_root / "drawings", DRAWING_EXTS)
+    edrawing_paths = find_files(cad_root / "solids", EDRAWING_EXTS)
     remote_model_paths = find_remote_files(REMOTE_CAD_ROOT, "solids", MODEL_EXTS)
     remote_drawing_paths = find_remote_files(REMOTE_CAD_ROOT, "drawings", DRAWING_EXTS)
+    remote_edrawing_paths = find_remote_files(REMOTE_CAD_ROOT, "solids", EDRAWING_EXTS)
 
     local_model_entries = build_entries(model_paths, cad_root, args.web_root, model_meta, "local")
     local_drawing_entries = build_entries(drawing_paths, cad_root, args.web_root, drawing_meta, "local")
+    local_edrawing_entries = build_entries(edrawing_paths, cad_root, args.web_root, edrawing_meta, "local")
     remote_model_entries = build_remote_entries(remote_model_paths, REMOTE_CAD_ROOT, model_meta)
     remote_drawing_entries = build_remote_entries(remote_drawing_paths, REMOTE_CAD_ROOT, drawing_meta)
+    remote_edrawing_entries = build_remote_entries(remote_edrawing_paths, REMOTE_CAD_ROOT, edrawing_meta)
 
     model_entries = merge_entries(local_model_entries, remote_model_entries)
     drawing_entries = merge_entries(local_drawing_entries, remote_drawing_entries)
+    edrawing_entries = merge_entries(local_edrawing_entries, remote_edrawing_entries)
 
     # If the real files are not present yet, seed from metadata so the page still has a useful scaffold.
     if not model_entries:
@@ -317,8 +324,16 @@ def main() -> None:
             "drawing",
         )
 
+    if not edrawing_entries:
+        edrawing_entries = seed_entries_from_metadata(
+            read_optional_json(cad_root / "edrawings.json"),
+            REMOTE_CAD_ROOT or args.web_root,
+            "model",
+        )
+
     (generated_dir / "models.generated.json").write_text(json.dumps(model_entries, indent=2) + "\n", encoding="utf-8")
     (generated_dir / "drawings.generated.json").write_text(json.dumps(drawing_entries, indent=2) + "\n", encoding="utf-8")
+    (generated_dir / "edrawings.generated.json").write_text(json.dumps(edrawing_entries, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -14,11 +14,11 @@
   - `stage_site.py` for staging ics/drp documentation into the site for deployment
 
 ## Current assumptions
-- Repo-local CAD assets are assumed to be served at `/cad` (or equivalent same-origin sibling path)
+- Repo-local CAD assets are assumed to be served relative to the wrappers at `../cad`
 - Remote CAD assets are crawled from online server specified in `tools/generate_cad_manifest.py`
 - Repo-local `cad/` is copied into the HTML build as `docs/_build/html/cad` by a Sphinx `build-finished` hook in `docs/conf.py`
 - Manifest generator run from repo directory
-   - `python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root /cad`
+   - `python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root ../cad`
 - The generated manifests merge repo-local `cad/` files with the remote `drawings/` and `solids/` listings.
 
 
@@ -37,8 +37,9 @@ curl -fsSL https://d2lang.com/install.sh | sh -s --
 pip install -r requirements.txt
 
 python tools/stage_site.py
-python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root /cad
+python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root ../cad
 bash tools/sync_d2_svgs.sh
+python tools/generate_diagram_manifest.py
 
 # Only needed when D2 sources changed and you want to regenerate the committed SVG artifacts.
 bash tools/render_d2.sh
