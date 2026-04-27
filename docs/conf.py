@@ -1,7 +1,9 @@
 # ZShooter prototype site configuration
 import os
+import shutil
 import sys
 from datetime import datetime
+from pathlib import Path
 
 project = "ZShooter"
 author = "Caltech Optical Observatories (COO)"
@@ -60,3 +62,25 @@ rst_prolog = """
 .. role:: zs-check
    :class: zs-check
 """
+
+
+ROOT = Path(__file__).resolve().parent.parent
+CAD_SRC = ROOT / "cad"
+
+
+def copy_local_cad_assets(app, exception) -> None:
+    if exception is not None or app.builder.format != "html":
+        return
+
+    if not CAD_SRC.exists():
+        return
+
+    cad_dst = Path(app.outdir) / "cad"
+    if cad_dst.exists():
+        shutil.rmtree(cad_dst)
+    shutil.copytree(CAD_SRC, cad_dst, ignore_dangling_symlinks=True)
+
+
+def setup(app) -> dict[str, bool]:
+    app.connect("build-finished", copy_local_cad_assets)
+    return {"parallel_read_safe": True}

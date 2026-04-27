@@ -86,9 +86,27 @@
     const openLink = document.getElementById("open-link");
     const viewerRoot = document.getElementById("viewer");
     const params = new URLSearchParams(window.location.search);
+    let activeObjectUrl = null;
 
     function resolveUrl(value) {
       return new URL(value, window.location.href).toString();
+    }
+
+    function isCrossOrigin(url) {
+      return new URL(url, window.location.href).origin !== window.location.origin;
+    }
+
+    function getExtension(url) {
+      const pathname = new URL(url, window.location.href).pathname;
+      const dotIndex = pathname.lastIndexOf(".");
+      return dotIndex >= 0 ? pathname.slice(dotIndex).toLowerCase() : "";
+    }
+
+    function releaseObjectUrl() {
+      if (activeObjectUrl) {
+        URL.revokeObjectURL(activeObjectUrl);
+        activeObjectUrl = null;
+      }
     }
 
     function setMessage(message, isError = false) {
@@ -118,24 +136,47 @@
       viewer.LoadModelFromUrlList([modelUrl]);
     }
 
+    async function resolveViewerModelUrl(modelUrl) {
+      if (!isCrossOrigin(modelUrl)) {
+        return modelUrl;
+      }
+
+      const extension = getExtension(modelUrl);
+      if (extension === ".gltf") {
+        return modelUrl;
+      }
+
+      const response = await fetch(modelUrl);
+      if (!response.ok) {
+        throw new Error("Could not load remote model: " + modelUrl);
+      }
+
+      releaseObjectUrl();
+      activeObjectUrl = URL.createObjectURL(await response.blob());
+      return activeObjectUrl;
+    }
+
     function chooseInitial(entries) {
       const requested = params.get("selected") || params.get("model");
       if (!requested) return entries[0];
       return entries.find(entry =>
         entry.file === requested ||
+        entry.path === requested ||
         entry.file.endsWith(requested) ||
         entry.title === requested
       ) || entries[0];
     }
 
-    function update(entries, selectedFile) {
+    async function update(entries, selectedFile) {
       const entry = entries.find(item => item.file === selectedFile) || entries[0];
       if (!entry) {
         setMessage("No model entries were found.", true);
         return;
       }
-      const modelUrl = resolveUrl(entry.file);
-      openLink.href = modelUrl;
+      const rawModelUrl = resolveUrl(entry.file);
+      releaseObjectUrl();
+      const modelUrl = await resolveViewerModelUrl(rawModelUrl);
+      openLink.href = rawModelUrl;
       meta.textContent = humanMeta(entry);
       buildViewer(modelUrl);
     }
@@ -172,8 +213,15 @@
 
       const initial = chooseInitial(entries);
       selector.value = initial.file;
-      selector.addEventListener("change", () => update(entries, selector.value));
-      update(entries, initial.file);
+      selector.addEventListener("change", async () => {
+        try {
+          await update(entries, selector.value);
+        } catch (error) {
+          console.error(error);
+          setMessage(error.message || "Could not load the selected model.", true);
+        }
+      });
+      await update(entries, initial.file);
     }
 
     main().catch(error => {

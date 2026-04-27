@@ -15,11 +15,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, Iterable, List
+from urllib.parse import urljoin, urlparse
+from urllib.request import Request, urlopen
 
 MODEL_EXTS = {".step", ".stp", ".iges", ".igs", ".stl", ".obj", ".3mf", ".glb", ".gltf"}
 DRAWING_EXTS = {".pdf"}
+REMOTE_CAD_ROOT = "http://zscad.astro.clatech.edu/"
+REMOTE_LISTING_TIMEOUT_SECONDS = 10
 
 
 def natural_key(value: str) -> List[object]:
@@ -73,7 +79,78 @@ def find_files(root: Path, extensions: set[str]) -> List[Path]:
     return [path for path in root.rglob("*") if path.is_file() and path.suffix.lower() in extensions]
 
 
-def build_entries(paths: List[Path], base_dir: Path, web_root: str, metadata_index: Dict[str, dict]) -> List[dict]:
+class DirectoryListingParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hrefs: List[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "a":
+            return
+        for key, value in attrs:
+            if key.lower() == "href" and value:
+                self.hrefs.append(value)
+
+
+def read_remote_listing(url: str) -> List[str]:
+    request = Request(url, headers={"User-Agent": "zshooter-cad-manifest/1.0"})
+    with urlopen(request, timeout=REMOTE_LISTING_TIMEOUT_SECONDS) as response:
+        charset = response.headers.get_content_charset() or "utf-8"
+        parser = DirectoryListingParser()
+        parser.feed(response.read().decode(charset, errors="replace"))
+    return parser.hrefs
+
+
+def find_remote_files(remote_root: str, subdir: str, extensions: set[str]) -> List[str]:
+    root_url = remote_root.rstrip("/") + "/"
+    start_url = urljoin(root_url, subdir.strip("/") + "/")
+    pending = [start_url]
+    visited: set[str] = set()
+    found: set[str] = set()
+
+    while pending:
+        current = pending.pop()
+        if current in visited:
+            continue
+        visited.add(current)
+
+        try:
+            hrefs = read_remote_listing(current)
+        except Exception as exc:
+            print(f"warning: could not read remote CAD listing {current}: {exc}", file=sys.stderr)
+            continue
+
+        for href in hrefs:
+            clean_href = href.split("?", 1)[0].split("#", 1)[0]
+            if not clean_href or clean_href in {"../", "./"}:
+                continue
+
+            candidate = urljoin(current, clean_href)
+            if not candidate.startswith(root_url):
+                continue
+
+            parsed = urlparse(candidate)
+            rel = parsed.path.removeprefix(urlparse(root_url).path).lstrip("/")
+            if not rel:
+                continue
+
+            if clean_href.endswith("/"):
+                pending.append(candidate)
+                continue
+
+            if Path(rel).suffix.lower() in extensions:
+                found.add(rel)
+
+    return sorted(found, key=natural_key)
+
+
+def build_entries(
+    paths: List[Path],
+    base_dir: Path,
+    web_root: str,
+    metadata_index: Dict[str, dict],
+    source: str,
+) -> List[dict]:
     entries: List[dict] = []
     for path in paths:
         rel = path.relative_to(base_dir).as_posix()
@@ -88,6 +165,8 @@ def build_entries(paths: List[Path], base_dir: Path, web_root: str, metadata_ind
         entry = {
             "title": metadata.get("title") or title_from_stem(path.stem),
             "file": web_path,
+            "path": rel,
+            "source": source,
         }
 
         if metadata.get("notes"):
@@ -95,6 +174,99 @@ def build_entries(paths: List[Path], base_dir: Path, web_root: str, metadata_ind
         if metadata.get("docno"):
             entry["docno"] = metadata["docno"]
 
+        entries.append(entry)
+
+    entries.sort(key=lambda item: natural_key(item["title"]))
+    return entries
+
+
+def build_remote_entries(remote_paths: List[str], remote_root: str, metadata_index: Dict[str, dict]) -> List[dict]:
+    entries: List[dict] = []
+    base = remote_root.rstrip("/") + "/"
+    for rel in remote_paths:
+        path = Path(rel)
+        metadata = metadata_index.get(rel) or metadata_index.get(path.name) or metadata_index.get(path.stem) or {}
+        entry = {
+            "title": metadata.get("title") or title_from_stem(path.stem),
+            "file": urljoin(base, rel),
+            "path": rel,
+            "source": "remote",
+        }
+        if metadata.get("notes"):
+            entry["notes"] = metadata["notes"]
+        if metadata.get("docno"):
+            entry["docno"] = metadata["docno"]
+        entries.append(entry)
+
+    entries.sort(key=lambda item: natural_key(item["title"]))
+    return entries
+
+
+def merge_entries(*entry_groups: List[dict]) -> List[dict]:
+    merged: List[dict] = []
+    seen_paths: set[str] = set()
+    seen_files: set[str] = set()
+
+    for group in entry_groups:
+        for entry in group:
+            rel = entry.get("path")
+            file_value = entry.get("file")
+            if rel and rel in seen_paths:
+                continue
+            if file_value in seen_files:
+                continue
+            if rel:
+                seen_paths.add(rel)
+            seen_files.add(file_value)
+            merged.append(entry)
+
+    merged.sort(key=lambda item: natural_key(item["title"]))
+    return merged
+
+
+def normalize_metadata_file_value(file_value: str) -> str:
+    value = file_value.strip()
+    if not value:
+        return ""
+    if value.startswith(("http://", "https://")):
+        return value
+
+    guessed = value
+    while guessed.startswith("../"):
+        guessed = guessed[3:]
+    if guessed.startswith("cad/"):
+        guessed = guessed[4:]
+    return guessed.lstrip("/")
+
+
+def seed_entries_from_metadata(items: List[dict], default_root: str, kind: str) -> List[dict]:
+    entries: List[dict] = []
+    source = "remote" if default_root.startswith(("http://", "https://")) else "local"
+
+    for item in items:
+        file_value = normalize_metadata_file_value(str(item.get("file", "")))
+        if not file_value:
+            continue
+
+        if file_value.startswith(("http://", "https://")):
+            file_path = file_value
+            path_value = urlparse(file_value).path.lstrip("/")
+            entry_source = "remote"
+        else:
+            file_path = f"{default_root.rstrip('/')}/{file_value}"
+            path_value = file_value
+            entry_source = source
+
+        entry = {
+            "title": item.get("title") or title_from_stem(Path(file_value).stem),
+            "file": file_path,
+            "path": path_value,
+            "source": entry_source,
+        }
+        if item.get("notes"):
+            entry["notes"] = item["notes"]
+        if kind == "drawing" and item.get("docno"):
+            entry["docno"] = item["docno"]
         entries.append(entry)
 
     entries.sort(key=lambda item: natural_key(item["title"]))
@@ -119,38 +291,31 @@ def main() -> None:
 
     model_paths = find_files(cad_root / "solids", MODEL_EXTS)
     drawing_paths = find_files(cad_root / "drawings", DRAWING_EXTS)
+    remote_model_paths = find_remote_files(REMOTE_CAD_ROOT, "solids", MODEL_EXTS)
+    remote_drawing_paths = find_remote_files(REMOTE_CAD_ROOT, "drawings", DRAWING_EXTS)
 
-    model_entries = build_entries(model_paths, cad_root, args.web_root, model_meta)
-    drawing_entries = build_entries(drawing_paths, cad_root, args.web_root, drawing_meta)
+    local_model_entries = build_entries(model_paths, cad_root, args.web_root, model_meta, "local")
+    local_drawing_entries = build_entries(drawing_paths, cad_root, args.web_root, drawing_meta, "local")
+    remote_model_entries = build_remote_entries(remote_model_paths, REMOTE_CAD_ROOT, model_meta)
+    remote_drawing_entries = build_remote_entries(remote_drawing_paths, REMOTE_CAD_ROOT, drawing_meta)
+
+    model_entries = merge_entries(local_model_entries, remote_model_entries)
+    drawing_entries = merge_entries(local_drawing_entries, remote_drawing_entries)
 
     # If the real files are not present yet, seed from metadata so the page still has a useful scaffold.
     if not model_entries:
-        for item in read_optional_json(cad_root / "models.json"):
-            file_value = str(item.get("file", "")).strip()
-            if not file_value:
-                continue
-            guessed = file_value.replace("../", "").replace("cad/", "")
-            file_path = f"{args.web_root.rstrip('/')}/{guessed.lstrip('/')}"
-            entry = {"title": item.get("title") or title_from_stem(Path(file_value).stem), "file": file_path}
-            if item.get("notes"):
-                entry["notes"] = item["notes"]
-            model_entries.append(entry)
-        model_entries.sort(key=lambda item: natural_key(item["title"]))
+        model_entries = seed_entries_from_metadata(
+            read_optional_json(cad_root / "models.json"),
+            REMOTE_CAD_ROOT or args.web_root,
+            "model",
+        )
 
     if not drawing_entries:
-        for item in read_optional_json(cad_root / "drawings.json"):
-            file_value = str(item.get("file", "")).strip()
-            if not file_value:
-                continue
-            guessed = file_value.replace("../", "").replace("cad/", "")
-            file_path = f"{args.web_root.rstrip('/')}/{guessed.lstrip('/')}"
-            entry = {"title": item.get("title") or title_from_stem(Path(file_value).stem), "file": file_path}
-            if item.get("docno"):
-                entry["docno"] = item["docno"]
-            if item.get("notes"):
-                entry["notes"] = item["notes"]
-            drawing_entries.append(entry)
-        drawing_entries.sort(key=lambda item: natural_key(item["title"]))
+        drawing_entries = seed_entries_from_metadata(
+            read_optional_json(cad_root / "drawings.json"),
+            REMOTE_CAD_ROOT or args.web_root,
+            "drawing",
+        )
 
     (generated_dir / "models.generated.json").write_text(json.dumps(model_entries, indent=2) + "\n", encoding="utf-8")
     (generated_dir / "drawings.generated.json").write_text(json.dumps(drawing_entries, indent=2) + "\n", encoding="utf-8")

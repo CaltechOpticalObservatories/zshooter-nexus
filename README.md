@@ -13,11 +13,12 @@
   - `stage_site.py` for staging ics/drp documentation into the site for deployment
 
 ## Current assumptions
-- CAD assets assumed to be served at `/cad` (or equivalent same-origin sibling path)
-- `html_extra_path = ["../cad"]` not used as it would cause copy of large files in to build
+- Repo-local CAD assets are assumed to be served at `/cad` (or equivalent same-origin sibling path)
+- Remote CAD assets are crawled from online server specified in `tools/generate_cad_manifest.py`
+- Repo-local `cad/` is copied into the HTML build as `docs/_build/html/cad` by a Sphinx `build-finished` hook in `docs/conf.py`
 - Manifest generator run from repo directory
    - `python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root /cad`
-- Symlink created to the CAD tree in web root.
+- The generated manifests merge repo-local `cad/` files with the remote `drawings/` and `solids/` listings.
 
 
 ## Development
@@ -39,9 +40,6 @@ python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-
 bash tools/render_d2.sh
 
 sphinx-build -b html docs docs/_build/html
-ln -s ../../../cad ./docs/_build/html/cad
 
 python -m http.server -d docs/_build/html 8000
 ```
-
-

@@ -81,9 +81,21 @@
     const openLink = document.getElementById("open-link");
     const viewerFrame = document.getElementById("viewer-frame");
     const params = new URLSearchParams(window.location.search);
+    let activeObjectUrl = null;
 
     function resolveUrl(value) {
       return new URL(value, window.location.href).toString();
+    }
+
+    function isCrossOrigin(url) {
+      return new URL(url, window.location.href).origin !== window.location.origin;
+    }
+
+    function releaseObjectUrl() {
+      if (activeObjectUrl) {
+        URL.revokeObjectURL(activeObjectUrl);
+        activeObjectUrl = null;
+      }
     }
 
     function chooseInitial(entries) {
@@ -91,6 +103,7 @@
       if (!requested) return entries[0];
       return entries.find(entry =>
         entry.file === requested ||
+        entry.path === requested ||
         entry.file.endsWith(requested) ||
         entry.title === requested ||
         entry.docno === requested
@@ -104,12 +117,29 @@
       return parts.join(' | ');
     }
 
-    function update(entries, selectedFile) {
+    async function resolveViewerPdfUrl(pdfUrl) {
+      if (!isCrossOrigin(pdfUrl)) {
+        return pdfUrl;
+      }
+
+      const response = await fetch(pdfUrl);
+      if (!response.ok) {
+        throw new Error("Could not load remote drawing: " + pdfUrl);
+      }
+
+      releaseObjectUrl();
+      activeObjectUrl = URL.createObjectURL(await response.blob());
+      return activeObjectUrl;
+    }
+
+    async function update(entries, selectedFile) {
       const entry = entries.find(item => item.file === selectedFile) || entries[0];
       if (!entry) return;
 
       const pdfUrl = resolveUrl(entry.file);
-      const viewerUrl = 'pdfjs/web/viewer.html?file=' + encodeURIComponent(pdfUrl);
+      releaseObjectUrl();
+      const viewerPdfUrl = await resolveViewerPdfUrl(pdfUrl);
+      const viewerUrl = 'pdfjs/web/viewer.html?file=' + encodeURIComponent(viewerPdfUrl);
 
       openLink.href = pdfUrl;
       meta.textContent = humanMeta(entry);
@@ -147,8 +177,15 @@
 
       const initial = chooseInitial(entries);
       selector.value = initial.file;
-      selector.addEventListener("change", () => update(entries, selector.value));
-      update(entries, initial.file);
+      selector.addEventListener("change", async () => {
+        try {
+          await update(entries, selector.value);
+        } catch (error) {
+          console.error(error);
+          document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">' + (error.message || 'Could not load the selected drawing.') + '</p>';
+        }
+      });
+      await update(entries, initial.file);
     }
 
     main().catch(error => {
