@@ -8,4 +8,4 @@ sphinxcontrib-mermaid
 shibuya
 linkify-it-py
 nbsphinx
-#sphinx-ext-mathjax
+pandoc
