@@ -8,4 +8,3 @@ sphinxcontrib-mermaid
 shibuya
 linkify-it-py
 nbsphinx
-pandoc

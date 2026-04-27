@@ -21,7 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Detect D2 changes
+        id: detect_d2
+        run: >
+          bash tools/detect_d2_changes.sh
+          "${{ github.event_name }}"
+          "${{ github.event.before }}"
+          "${{ github.sha }}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,6 +43,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Install D2
+        if: steps.detect_d2.outputs.render == 'true'
         run: |
           curl -fsSL https://d2lang.com/install.sh | sh -s --
           echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -45,7 +55,15 @@ jobs:
         run: python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root /cad
 
       - name: Render D2
+        if: steps.detect_d2.outputs.render == 'true'
         run: bash tools/render_d2.sh
+
+      - name: Log D2 SVG drift
+        if: steps.detect_d2.outputs.render == 'true'
+        run: bash tools/log_d2_drift.sh
+
+      - name: Sync D2 SVGs
+        run: bash tools/sync_d2_svgs.sh
 
       - name: Build Sphinx
         run:  sphinx-build -b html docs docs/_build/html

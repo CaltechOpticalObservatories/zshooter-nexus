@@ -9,7 +9,8 @@
   - `_static/o3dv/` and `_static/pdfjs/` for 3d viewing and pdf viewing
 - `tools/`:
   - `generate_cad_manifest.py` for build/stage-time manifest generation
-  - `render_d2.sh` for rendering D2 models
+  - `render_d2.sh` for rendering D2 models into submodule `svg/` artifact folders
+  - `sync_d2_svgs.sh` for copying prebuilt diagram SVGs into `docs/_static/d2_diagrams`
   - `stage_site.py` for staging ics/drp documentation into the site for deployment
 
 ## Current assumptions
@@ -37,6 +38,9 @@ pip install -r requirements.txt
 
 python tools/stage_site.py
 python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root /cad
+bash tools/sync_d2_svgs.sh
+
+# Only needed when D2 sources changed and you want to regenerate the committed SVG artifacts.
 bash tools/render_d2.sh
 
 sphinx-build -b html docs docs/_build/html
