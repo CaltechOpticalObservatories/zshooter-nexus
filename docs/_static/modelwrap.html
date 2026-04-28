@@ -113,6 +113,15 @@
       viewerRoot.innerHTML = '<div class="message' + (isError ? ' error' : '') + '">' + message + '</div>';
     }
 
+    function setUnavailable(message) {
+      selector.innerHTML = "";
+      selector.disabled = true;
+      openLink.removeAttribute("href");
+      meta.textContent = "";
+      releaseObjectUrl();
+      setMessage(message, false);
+    }
+
     function humanMeta(entry) {
       const parts = [];
       if (entry.notes) parts.push(entry.notes);
@@ -198,8 +207,7 @@
       }
 
       if (!Array.isArray(entries) || entries.length === 0) {
-        setMessage("No model selected. Pass ?manifest=... or ?model=...", true);
-        selector.disabled = true;
+        setUnavailable("No CAD models available.");
         return;
       }
 

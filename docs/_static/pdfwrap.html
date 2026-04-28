@@ -98,6 +98,25 @@
       }
     }
 
+    function setUnavailable(message) {
+      selector.innerHTML = "";
+      selector.disabled = true;
+      openLink.removeAttribute("href");
+      meta.textContent = "";
+      releaseObjectUrl();
+      viewerFrame.removeAttribute("src");
+      viewerFrame.replaceWith(Object.assign(document.createElement("div"), {
+        id: "viewer-frame",
+        textContent: message
+      }));
+      const replacement = document.getElementById("viewer-frame");
+      replacement.style.padding = "1rem";
+      replacement.style.color = "#475569";
+      replacement.style.flex = "1 1 auto";
+      replacement.style.minHeight = "320px";
+      replacement.style.background = "white";
+    }
+
     function chooseInitial(entries) {
       const requested = params.get("selected") || params.get("pdf");
       if (!requested) return entries[0];
@@ -163,7 +182,7 @@
       }
 
       if (!Array.isArray(entries) || entries.length === 0) {
-        document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">No drawing selected. Pass ?manifest=... or ?pdf=...</p>';
+        setUnavailable("No CAD drawings available.");
         return;
       }
 

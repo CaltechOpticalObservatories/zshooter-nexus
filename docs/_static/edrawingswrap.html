@@ -86,6 +86,24 @@
       return new URL(value, window.location.href).toString();
     }
 
+    function setUnavailable(message) {
+      selector.innerHTML = "";
+      selector.disabled = true;
+      openLink.removeAttribute("href");
+      meta.textContent = "";
+      viewerFrame.removeAttribute("src");
+      viewerFrame.replaceWith(Object.assign(document.createElement("div"), {
+        id: "viewer-frame",
+        textContent: message
+      }));
+      const replacement = document.getElementById("viewer-frame");
+      replacement.style.padding = "1rem";
+      replacement.style.color = "#475569";
+      replacement.style.flex = "1 1 auto";
+      replacement.style.minHeight = "320px";
+      replacement.style.background = "white";
+    }
+
     function humanMeta(entry) {
       const parts = [];
       if (entry.notes) parts.push(entry.notes);
@@ -131,7 +149,7 @@
       }
 
       if (!Array.isArray(entries) || entries.length === 0) {
-        document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">No eDrawings selected. Pass ?manifest=... or ?edrawing=...</p>';
+        setUnavailable("No CAD drawings available.");
         return;
       }
 
