@@ -5,7 +5,7 @@ Nebular Supernovae
 
    Late-time supernova spectroscopy is one of the cleanest uses of Keck aperture: faint, single-object, line-driven science where broad wavelength coverage and decent calibration save real observing time.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: a nebular supernova spectrum with labeled diagnostic lines and a model comparison.
 
@@ -22,7 +22,7 @@ Current design pressure
 
 This case keeps pressure on sensitivity, calibration, and keeping a straightforward observer workflow for long integrations.
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

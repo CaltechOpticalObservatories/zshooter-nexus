@@ -9,7 +9,7 @@ Controlling ZShooter
     - a simple, useful quicklook,
     - engineering tooling that is use from AIT through maintenance.
 
-.. container:: zs-note-to-team
+.. container:: zs-note-to-team zs-internal-only
 
    - This page wraps the ICS's own documentation from its repository.
    - ICS documentation exists and is maintained there so anyone that installs the control software alone has it

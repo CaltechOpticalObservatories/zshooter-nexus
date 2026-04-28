@@ -5,7 +5,7 @@ Solar System Science
 
    Small bodies, comets, and interstellar visitors are a strong argument for simultaneous broad coverage plus practical observing mechanics. The instrument has to behave well with moving targets, not just static point sources.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one comet or small-body optical-NIR spectrum with labeled bands.
 
@@ -22,7 +22,7 @@ Current design pressure
 This case keeps pressure on non-sidereal friendliness, broad coverage, and a sane acquisition story for moving targets.
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

@@ -1,0 +1,22 @@
+{% extends "!layout/default.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <script>
+    (function () {
+      var defaultMode = "external";
+      var mode = defaultMode;
+      try {
+        var storedMode = localStorage.getItem("zs-site-mode");
+        if (storedMode === "internal" || storedMode === "external") {
+          mode = storedMode;
+        }
+      } catch (error) {}
+
+      document.documentElement.dataset.zsMode = mode;
+      document.documentElement.dataset.zsPageMode = {{ zs_page_mode_json | safe }};
+      window.__ZS_PAGE_MODE__ = {{ zs_page_mode_json | safe }};
+      window.__ZS_SITE_MODE_MANIFEST__ = {{ zs_mode_manifest_json | safe }};
+    })();
+  </script>
+{% endblock %}

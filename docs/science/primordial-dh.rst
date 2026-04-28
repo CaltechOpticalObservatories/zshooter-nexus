@@ -8,7 +8,7 @@ Primordial D/H
    This is the blunt blue-end test. If the instrument cannot do serious work in the 310-400 nm regime at spectral
    resolution in excess of :red:`48,000`, an important piece of the high-resolution case evaporates.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: a deuterium / hydrogen absorption-line example from a metal-poor QSO sightline.
 
@@ -25,7 +25,7 @@ Current design pressure
 This case keeps pressure on the blue channel, resolving power, and calibration rather than on response time. It is a
 strong argument against drifting too far down in resolving power.
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

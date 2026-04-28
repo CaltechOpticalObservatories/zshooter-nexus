@@ -11,7 +11,7 @@ Classical Programs
    procedures as the site grows into working nexus.
 
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    **To Develop**
     - Run planning and configuration rubrics

@@ -70,7 +70,7 @@ Open trades and enhancements
    - Slit viewing cameras
 
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    **TODO**
 
@@ -78,5 +78,4 @@ Open trades and enhancements
    - Echelleograms (TODO
    - One clean spectral-format figure after the next optical update
    - A short comparison panel showing old three-arm concept vs. current two-spectrometer direction
-
 

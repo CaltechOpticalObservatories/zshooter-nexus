@@ -6,7 +6,7 @@ Kilonovae
    Kilonovae are the cleanest argument for an always-online optical-IR spectrograph. The source evolves fast, the SED moves hard to the red, and the instrument either gets there early with broad coverage or it misses the point.
 
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: Kasen et al. 2017 synthetic kilonova spectra, plus one observed sequence panel from GW170817-era follow-up.
 
@@ -25,7 +25,7 @@ This case keeps pressure on response time, relative spectrophotometry across cha
 red / NIR where the event quickly and broadly moves.
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out TODO
 ---------------

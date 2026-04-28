@@ -5,7 +5,7 @@ Relativistic Explosions
 
    GRBs and LFBOTs are a timing problem first and a spectroscopy problem second. The instrument has to be there, configured, and efficient before the target fades through the floor.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: early-time GRB afterglow or AT2018cow-like spectral evolution.
 
@@ -22,7 +22,7 @@ Current design pressure
 This page keeps pressure on the fastest response mode and on ruthless overhead control.
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

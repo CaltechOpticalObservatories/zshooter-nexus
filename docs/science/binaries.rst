@@ -5,7 +5,7 @@ Binaries
 
    This is the page for the high-resolution stellar case that keeps ZShooter from collapsing into a transient-only instrument. Long-period Gaia binaries, compact-object companions, and ultra-compact systems all pull on the design in useful ways.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one Gaia dark-companion orbit / RV illustration and one ultracompact-binary timing figure.
 
@@ -23,7 +23,7 @@ Current design pressure
 This case keeps pressure on nominal resolution, calibration stability, blue throughput, and fast-imaging with ZImager.
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out TODO
 ---------------

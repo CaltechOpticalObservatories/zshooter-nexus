@@ -2,7 +2,7 @@ Data Reduction
 ==============
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 **TODO Upload**
     - Pipeline Glue overview

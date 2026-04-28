@@ -3,7 +3,7 @@ WBS
 
 This is intended to be a quick current reference to to WBS nomenclature.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    TODO Update this scaffold with the authoritative WBS export.
 
@@ -39,4 +39,3 @@ This is intended to be a quick current reference to to WBS nomenclature.
    * - 8
      - Observatory integration and operations
      - WMKO interfaces, procedures, support model, post-delivery operations
-

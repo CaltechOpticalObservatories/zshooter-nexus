@@ -5,7 +5,7 @@ Protostellar Accretion
 
    This page is the reminder that simultaneous optical-NIR spectroscopy is not only a transient game. Young stars and disks benefit directly from broad wavelength leverage and moderate resolution.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one accretion diagnostic spectrum or line-ratio summary for YSOs.
 
@@ -21,7 +21,7 @@ Current design pressure
 
 This case keeps pressure on optical-to-NIR continuity and useful moderate resolution.
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

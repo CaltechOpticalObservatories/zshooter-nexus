@@ -6,7 +6,7 @@ Lensing and the High-z Universe
    This page covers the part of the instrument story that is not just transient triage: lensed systems, high-z absorption and emission work, and the regimes where AO readiness and real spectral resolution are worth preserving.
 
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one lensed system or QSO absorber figure that makes the high-resolution use concrete.
 
@@ -23,7 +23,7 @@ Current design pressure
 
 This page keeps pressure on resolution, AO readiness, and calibration quality more than on raw response time.
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

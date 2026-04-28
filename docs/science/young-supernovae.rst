@@ -5,7 +5,7 @@ Young Supernovae
 
    Young supernovae are where blue sensitivity, fast reaction, and useful resolution meet. The science lives in the early spectra, not in the memory of having wanted them.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one flash-spectroscopy sequence with identified early-time lines.
 
@@ -22,7 +22,7 @@ Current design pressure
 Response time, blue coverage, moderate-to-high resolution, and stable spectrophotometry all matter here.
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

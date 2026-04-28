@@ -5,7 +5,7 @@ High-redshift Supernovae
 
    High-z SNe are a throughput and wavelength-leverage case. The science here is less about operational speed than about staying useful once the targets are faint and the features move out of the optical comfort zone.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one high-z SN classification / lensing panel with observed-frame optical+NIR context.
 
@@ -21,7 +21,7 @@ Current design pressure
 
 This case keeps pressure on faint-limit sensitivity and on maintaining useful coverage as rest-frame features shift redward.
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------

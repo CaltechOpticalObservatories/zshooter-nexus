@@ -1,7 +1,9 @@
+:zs-mode: internal
+
 Program Management
 ==================
 
-.. container:: zs-note-to-team
+.. container:: zs-note-to-team zs-internal-only
 
     This space to gather the stuff that usually is gets trapped in slide decks, meeting memory, and
     the sharepoint file tree. The goal here is to share specificity.

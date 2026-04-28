@@ -11,7 +11,7 @@ Science
   See :ref:`_papers-publications` for public links]
 
 
-.. container:: zs-note-to-team
+.. container:: zs-note-to-team zs-internal-only
 
    - I'm featuring **kilonovae** as the  low-resolution / rapid-response driver,
    - **binaries**, **primordial D/H**, and **white dwarf systems** as High-resolution in natural-seeing drivers

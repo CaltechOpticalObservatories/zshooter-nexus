@@ -1,3 +1,5 @@
+:zs-mode: internal
+
 Documents, Repos, & Tools
 =========================
 

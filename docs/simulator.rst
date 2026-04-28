@@ -2,7 +2,7 @@ Instrument Simulator
 ====================
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Words about the instrument simulator.
 
@@ -14,7 +14,7 @@ Simulator Example Notebooks
 - :doc:`PSF ADC <_staged/sim/notebooks/psf_adc>`
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Current plan for this page
 --------------------------

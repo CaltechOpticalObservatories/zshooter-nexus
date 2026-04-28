@@ -6,7 +6,7 @@ White Dwarf Systems
    Polluted white dwarfs and their debris environments are a strong use of the instrument's wavelength leverage.
    The science wants the blue, it wants multiple line windows at once, and it benefits from keeping higher-resolution modes alive.
 
-.. container:: zs-placeholder
+.. container:: zs-placeholder zs-internal-only
 
    Suggested seed figure: one polluted-WD abundance or debris-disk spectroscopy figure with broad wavelength coverage.
 
@@ -23,7 +23,7 @@ Current design pressure
 This case keeps pressure on blue sensitivity, spectral stability, and retaining a meaningful higher-resolution mode.
 
 
-.. rst-class:: zs-placeholder
+.. rst-class:: zs-placeholder zs-internal-only
 
 Build-out notes
 ---------------
