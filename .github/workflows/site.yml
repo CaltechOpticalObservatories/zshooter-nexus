@@ -70,7 +70,9 @@ jobs:
         run: bash tools/log_d2_drift.sh
 
       - name: Sync D2 SVGs
-        run: bash tools/sync_d2_svgs.sh
+        run: |
+          bash tools/sync_d2_svgs.sh
+          python tools/generate_diagram_manifest.py
 
       - name: Build Sphinx
         run:  sphinx-build -b html docs docs/_build/html
