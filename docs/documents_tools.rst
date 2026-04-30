@@ -1,5 +1,3 @@
-:zs-mode: internal
-
 Documents, Repos, & Tools
 =========================
 
@@ -39,6 +37,8 @@ Project repos
 - ``zshooter-drp`` - https://github.com/CaltechOpticalObservatories/zshooter-drp/
 - ``zshooter-sim`` - https://github.com/CaltechOpticalObservatories/zs-scopesim
 
+
+.. rst-class:: zs-placeholder zs-internal-only
 
 Tooling
 -------
