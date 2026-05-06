@@ -4,13 +4,13 @@ ToO Programs
 .. container:: zs-lead
 
    ZShooter's ToO science will require a new kind of Keck ToO operations: rapid, template-driven, alert-fed
-   observations where contacting a program astronomer is not in the execution flow and the instrument is not a
+   observations where contacting an astronomer is not in the execution flow and the instrument is not a
    bottleneck.
 
-.. container:: zs-note
+.. container:: zs-note zs
 
    This page should stay split between **instrument capability** and **observatory policy**. The first is ours to
-   design. The second needs WMKO evolution and should not be written as settled before it is settled.
+   design. The second needs WMKO infrastructure evolution.
 
 Design intent
 -------------
@@ -20,11 +20,11 @@ the ToO system needs a template-driven observing system: programs define alert c
 requested observations, cadence rules, and instrument configuration(s) needed; the software expands a match
 into an executable observation package; and hands the instrument a classic-style target
 list with minimal internal overhead. This keeps observatory and program policy governing
-governs interruption authority, competing-trigger priority, alert-ingest rules, and time
-charging governed by observatory-owned software.
+interruption authority, competing-trigger priority, alert-ingest rules, and time
+charging manged by observatory-owned software.
 
-The point of this split is simple: once the beam is on the instrument, ZShooter should not be the
-reason a rapid follow-up fails. The instrument is being designed for always-online operation at
+The point of this split is simple: once the beam is on the instrument, ZShooter is capable of rapid
+follow-up without further intervention. The instrument is being designed for always-online operation at
 K1 RNAS, prompt internal reconfiguration, acquisition support via ZImager, fast calibration
 sequences, and live reduction/quick-look feedback so that staff and observers can decide
 whether to continue, repeat, or stop.
@@ -44,6 +44,7 @@ On the observatory side, the desired workflow is:
 
 On the instrument side:
 
+* ZShooter observers the target list promptly
 * ZShooter reduces data quickly enough to support follow-on decisions embedded in programs, bookkeeping, and
   sharing results
 
@@ -59,6 +60,7 @@ The observatory-facing side is where the major non-instrument dependencies remai
 particular, the following are not just software implementation details; they are policy and
 operations questions that need explicit WMKO agreement:
 
+* how WMKO enables a larger number of time critical observations (ex. pre-defined regular ToO blocks)
 * whether rapid ToO programs can be represented as standing program-level trigger definitions,
   rather than only as pre-registered target lists
 * which trigger sources may be monitored automatically, and under what approval model
@@ -67,6 +69,7 @@ operations questions that need explicit WMKO agreement:
 * how multiple matching triggers in a single night are prioritized, queued, or batched
 * how time is charged when a program expands into repeated visits, partial execution, or shared
   follow-up logic
+
 
 This page therefore describes the operating model ZShooter is trying to enable, not a claim
 that Keck has already ratified that operating model.
@@ -83,12 +86,9 @@ Rapid
    ready.
 
 Fast
-   Intended for cases where same-hour action still matters, but where a fully interrupt-driven
-   response is not always required.
-
-Same-night / same-day
-   Intended for follow-up that should happen during the current observing window, but does not
-   require a true immediate interruption.
+   Intended for cases where same-night action on hour timescales still matters, but where a
+   fully interrupt-driven response is not always required. Intended for follow-up that should
+   happen during the current observing window, but does not require a minute timescale interruption.
 
 Planned
    Intended for cadence follow-up, predicted windows, or pre-scheduled revisit logic.
@@ -111,8 +111,8 @@ list of named targets. A submission should be able to carry:
 
 This model supports both fully specified automated programs and lighter-weight requests that
 fall back to standardized templates or human-on-call support. That distinction matters:
-WKMO and ZShooter should be able to support both a mature, machine-actionable program and a more
-human-mediated one in the Rubin era.
+WMKO and ZShooter should be able to support both a mature, machine-actionable program and a more
+human-mediated one in the era of next-generation surveys.
 
 Trigger and cadence concepts
 ----------------------------
@@ -164,7 +164,7 @@ Calibration and data feedback
 
 Rapid ToO work only functions if calibration behavior is predictable. The current operational
 concept assumes that daytime calibration products carry most of the burden, and that any
-required contemporaneous setup calibration for a newly selected configuration can be made
+required contemporaneous setup calibration can be made
 short enough to fit inside the slew-plus-acquire window. This is exactly the kind of latency
 budget that matters for ZShooter: the science case is often tolerant of modest absolute
 precision drift, but it is not tolerant of slow, operator-heavy setup.
