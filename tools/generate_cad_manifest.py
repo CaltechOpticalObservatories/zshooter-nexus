@@ -25,7 +25,7 @@ from urllib.request import Request, urlopen
 MODEL_EXTS = {".step", ".stp", ".iges", ".igs", ".stl", ".obj", ".3mf", ".glb", ".gltf"}
 DRAWING_EXTS = {".pdf"}
 EDRAWING_EXTS = {".html", ".htm"}
-REMOTE_CAD_ROOT = "http://zscad.astro.clatech.edu/"
+REMOTE_CAD_ROOT = "http://meridian.caltech.edu:81/"
 REMOTE_LISTING_TIMEOUT_SECONDS = 10
 
 

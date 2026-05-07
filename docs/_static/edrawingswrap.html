@@ -81,6 +81,8 @@
     const openLink = document.getElementById("open-link");
     const viewerFrame = document.getElementById("viewer-frame");
     const params = new URLSearchParams(window.location.search);
+    const defaultCadRoot = "http://meridian.caltech.edu:81/";
+    const edrawingExtensions = new Set([".html", ".htm"]);
 
     function resolveUrl(value) {
       return new URL(value, window.location.href).toString();
@@ -111,6 +113,100 @@
       return parts.join(" | ");
     }
 
+    function naturalCompare(left, right) {
+      return left.localeCompare(right, undefined, { numeric: true, sensitivity: "base" });
+    }
+
+    function titleFromPath(path) {
+      const filename = decodeURIComponent(path.split("/").pop() || path);
+      const stem = filename.replace(/\.[^.]*$/, "");
+      return stem.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim() || filename;
+    }
+
+    function getExtension(url) {
+      const pathname = new URL(url, window.location.href).pathname;
+      const dotIndex = pathname.lastIndexOf(".");
+      return dotIndex >= 0 ? pathname.slice(dotIndex).toLowerCase() : "";
+    }
+
+    function normalizeDirectoryUrl(url) {
+      const parsed = new URL(url, window.location.href);
+      if (!parsed.pathname.endsWith("/")) {
+        parsed.pathname += "/";
+      }
+      return parsed.toString();
+    }
+
+    function relativeCadPath(fileUrl, rootUrl) {
+      const file = new URL(fileUrl);
+      const root = new URL(rootUrl);
+      const rootPath = root.pathname.endsWith("/") ? root.pathname : root.pathname + "/";
+      let rel = file.pathname.startsWith(rootPath) ? file.pathname.slice(rootPath.length) : file.pathname.replace(/^\/+/, "");
+      return decodeURIComponent(rel);
+    }
+
+    async function readDirectoryLinks(directoryUrl) {
+      let response;
+      try {
+        response = await fetch(directoryUrl, { cache: "no-store" });
+      } catch (error) {
+        throw new Error(
+          "Could not read CAD server listing: " + directoryUrl +
+          ". Browser access may be blocked by CORS; the CAD server must allow this site with Access-Control-Allow-Origin."
+        );
+      }
+      if (!response.ok) {
+        throw new Error("Could not read CAD server listing: " + directoryUrl);
+      }
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      return Array.from(doc.querySelectorAll("a[href]")).map(link => link.getAttribute("href"));
+    }
+
+    async function discoverCadEntries(cadRoot, subdir, extensions) {
+      const rootUrl = normalizeDirectoryUrl(cadRoot || defaultCadRoot);
+      const cleanSubdir = subdir.replace(/^\/+|\/+$/g, "");
+      const startUrl = cleanSubdir ? new URL(cleanSubdir + "/", rootUrl).toString() : rootUrl;
+      const pending = [startUrl];
+      const visited = new Set();
+      const found = new Map();
+
+      while (pending.length > 0) {
+        const current = pending.pop();
+        if (visited.has(current)) continue;
+        visited.add(current);
+
+        const hrefs = await readDirectoryLinks(current);
+        for (const href of hrefs) {
+          if (!href) continue;
+          const cleanHref = href.split("?", 1)[0].split("#", 1)[0];
+          if (!cleanHref || cleanHref === "../" || cleanHref === "./") continue;
+
+          const candidate = new URL(cleanHref, current);
+          if (!candidate.href.startsWith(rootUrl)) continue;
+
+          const path = relativeCadPath(candidate.href, rootUrl);
+          if (!path) continue;
+
+          if (cleanHref.endsWith("/") || candidate.pathname.endsWith("/")) {
+            pending.push(candidate.toString());
+            continue;
+          }
+
+          if (extensions.has(getExtension(candidate.href))) {
+            found.set(path, {
+              title: titleFromPath(path),
+              file: candidate.toString(),
+              path,
+              source: "remote"
+            });
+          }
+        }
+      }
+
+      return Array.from(found.values()).sort((left, right) => naturalCompare(left.title, right.title));
+    }
+
     function chooseInitial(entries) {
       const requested = params.get("selected") || params.get("edrawing") || params.get("model");
       if (!requested) return entries[0];
@@ -133,7 +229,8 @@
     }
 
     async function main() {
-      const manifestParam = params.get("manifest") || "generated/edrawings.generated.json";
+      const manifestParam = params.get("manifest");
+      const cadRoot = params.get("cadRoot") || defaultCadRoot;
       const directFile = params.get("edrawing") || params.get("model");
 
       let entries = [];
@@ -146,6 +243,8 @@
           throw new Error("Could not load eDrawings manifest: " + manifestUrl);
         }
         entries = await response.json();
+      } else {
+        entries = await discoverCadEntries(cadRoot, "", edrawingExtensions);
       }
 
       if (!Array.isArray(entries) || entries.length === 0) {

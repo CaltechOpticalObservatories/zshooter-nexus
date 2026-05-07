@@ -1,7 +1,6 @@
 ZShooter's CAD Designs
 ======================
 
-
 .. raw:: html
 
    <div class="zs-split-view">
@@ -9,15 +8,14 @@ ZShooter's CAD Designs
        <h2>CAD viewer</h2>
        <iframe
          title="eDrawings viewer"
-         src="_static/edrawingswrap.html?manifest=generated/edrawings.generated.json">
+         src="_static/edrawingswrap.html?cadRoot=http%3A%2F%2Fmeridian.caltech.edu%3A81%2F">
        </iframe>
      </section>
      <section class="zs-viewer-panel">
        <h2>Drawing viewer</h2>
        <iframe
          title="Drawing viewer"
-         src="_static/pdfwrap.html?manifest=generated/drawings.generated.json">
+         src="_static/pdfwrap.html?cadRoot=http%3A%2F%2Fmeridian.caltech.edu%3A81%2F">
        </iframe>
      </section>
    </div>
-

@@ -14,18 +14,23 @@
   - `stage_site.py` for staging ics/drp documentation into the site for deployment
 
 ## Current assumptions
-- Repo-local CAD assets are assumed to be served relative to the wrappers at `../cad`
-- Remote CAD assets are crawled from online server specified in `tools/generate_cad_manifest.py`
-- Repo-local `cad/` is copied into the HTML build as `docs/_build/html/cad` by a Sphinx `build-finished` hook in `docs/conf.py`
-- Manifest generator run from repo directory
-   - `python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root ../cad`
-- The generated manifests merge repo-local `cad/` files with the remote `drawings/` and `solids/` listings.
+- CAD
+  - Repo-local CAD:
+    - assets are assumed to be served relative to the wrappers at `../cad`
+    - `cad/` is copied into the HTML build as `docs/_build/html/cad` by a Sphinx `build-finished` hook in `docs/conf.py`
+  - Live CAD pages discover remote drawings and models directly from `http://meridian.caltech.edu:81/`
+    - Remote CAD assets can still be crawled into generated manifests with `tools/generate_cad_manifest.py` for initial 
+      builds or offline staging
+      - run from repo dir: `python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root ../cad`
+    - The CAD server must expose an HTML directory index at its root and allow browser reads from the docs origin 
+      with `Access-Control-Allow-Origin`
+
 
 
 ## Development
 
 ```bash
-git clone git@github.com:baileyji/zshooter.git
+git clone git@github.com:CaltechOpticalObservatories/zshooter-nexus.git
 cd zshooter
 git submodule update --init --recursive
 
