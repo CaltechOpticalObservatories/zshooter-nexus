@@ -7,11 +7,11 @@ Instrument Simulator
 Words about the instrument simulator.
 
 
-Simulator Example Notebooks
+Simulator Examples
 ---------------------------
 
-- :doc:`ZShooter Playground <_staged/sim/notebooks/playground_zshooter>`
-- :doc:`PSF ADC <_staged/sim/notebooks/psf_adc>`
+- :doc:`Simulator Overview <staged/sim/notebooks/i_ScopeSim_Overview>`
+- :doc:`Kilonova Example <_staged/sim/notebooks/01_Kilonovae>`
 
 
 .. rst-class:: zs-placeholder zs-internal-only
@@ -20,7 +20,6 @@ Current plan for this page
 --------------------------
 
 - Add a link to a Binder/Google Colab of a Simulator environment
-- Add simulator getting started docs
 
 Useful external links
 ---------------------
@@ -39,5 +38,6 @@ Useful external links
    :maxdepth: 1
    :titlesonly:
 
-   PSF ADC <_staged/sim/notebooks/psf_adc>
-   ZShooter Playground <_staged/sim/notebooks/playground_zshooter>
+   i ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>
+   ii ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>
+   Kilonova Example <_staged/sim/notebooks/01_Kilonovae>

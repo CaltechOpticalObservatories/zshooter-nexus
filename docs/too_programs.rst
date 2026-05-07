@@ -7,7 +7,7 @@ ToO Programs
    observations where contacting an astronomer is not in the execution flow and the instrument is not a
    bottleneck.
 
-.. container:: zs-note zs
+.. container:: zs-note zs-internal-only
 
    This page should stay split between **instrument capability** and **observatory policy**. The first is ours to
    design. The second needs WMKO infrastructure evolution.
