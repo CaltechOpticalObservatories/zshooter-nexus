@@ -66,7 +66,23 @@ Instrument Requirements
 Science & Facility (L1) Requirements
 ------------------------------------
 
-To Upload
+The optical design is driven by five coupled requirements. ZShooter must
+cover the atmospheric near-UV cutoff through K band, preserve enough resolving power for stellar and circumstellar
+kinematics, remain sensitive enough for deep spectra after binning to low resolution,
+support sky subtraction, and avoid operational configurations that would slow ToO response.
+
+The choice of a high native resolving power only pays off if the detectors keep low enough read
+noise that the spectra can be rebinned later without losing the S/N advantage.  Likewise, the
+choice to keep ZShooter always-online on K1 RNAS only pays off if ZFront, ZImager, ZSpec, and the guide/WFS interface
+do not create a hidden acquisition or calibration bottleneck.
+
+
+The design is optimized for dynamic range in spectral
+information: enough native resolution that stellar, CSM, absorber, and abundance programs are not compromised, and low
+enough detector/read-noise penalty that R≈1000 products remain efficient for faint transients. Moreover the use of
+ low/zero-noise :doc:`detector technologies <detector_technologies>` is expected to further mitigate the noise penalty
+from high binning factors.
+
 
 Subsystem (L2) Requirements
 ---------------------------
