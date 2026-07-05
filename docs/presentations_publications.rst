@@ -32,5 +32,6 @@ Instrument papers
 .. _ZShooter Instrument Overview (SPIE): https://spie.org/astronomical-telescopes-instrumentation/presentation/ZShooter-for-Keck-I--an-AOready-310-2450-nm/14149-77
 .. _ZShooter's Optical Design (SPIE): https://spie.org/astronomical-telescopes-instrumentation/presentation/Optical-design-of-Z-Shooter--a-broadband-20000A-intermediate/14149-168
 .. _Overleaf: https://www.overleaf.com/project/6a39c442ddc16eab379a7f0f)
-.. _`Simulator Poster`: 
+.. _Simulator Poster: https://spie.org/astronomical-telescopes-instrumentation/presentation/ZShooter-ScopeSim-and-early-DRP-prototyping-to-enhance-design/14155-97
 .. _SPIE Presentation: https://caltech.sharepoint.com/:p:/r/sites/coo/zshooter/Shared%20Documents/ZS%20-%20Papers%20and%20Presentations/2026%20SPIE/ZShooter%20SPIE%202026.pptx?d=w3902e9ab4eb9444897b81e8fb750312c&csf=1&web=1&e=HeOVxV
+.. _ZShooter Instrument Simulator (SPIE): https://spie.org/astronomical-telescopes-instrumentation/presentation/ZShooter-ScopeSim-and-early-DRP-prototyping-to-enhance-design/14155-97
