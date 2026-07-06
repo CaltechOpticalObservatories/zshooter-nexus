@@ -1,6 +1,8 @@
 ZShooter's CAD Designs
 ======================
 
+Note that you may need to directly load https://meridian.caltech.edu:81/ and accept the self-signed cert
+
 .. raw:: html
 
    <div class="zs-split-view">
@@ -15,7 +17,7 @@ ZShooter's CAD Designs
        <h2>Drawing viewer</h2>
        <iframe
          title="Drawing viewer"
-         src="_static/pdfwrap.html?cadRoot=https%3A%2F%2Fsites.astro.caltech.edu%2Fzshooter%2F">
+         src="_static/pdfwrap.html?cadRoot=https%3A%2F%2Fmeridian.caltech.edu%3A81%2F">
        </iframe>
      </section>
    </div>

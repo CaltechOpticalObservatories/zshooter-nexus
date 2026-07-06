@@ -145,18 +145,52 @@
       return decodeURIComponent(rel);
     }
 
+    function fetchErrorDetail(error) {
+      return error ? [error.name, error.message].filter(Boolean).join(": ") : "";
+    }
+
+    function describeDirectoryFetchFailure(directoryUrl, error) {
+      const parsed = new URL(directoryUrl, window.location.href);
+      const detail = fetchErrorDetail(error);
+      const suffix = detail ? " Browser detail: " + detail + "." : "";
+
+      if (window.location.protocol === "https:" && parsed.protocol === "http:") {
+        return (
+          "Could not read CAD server listing: " + directoryUrl +
+          ". This page is loaded over HTTPS, so the browser blocks insecure HTTP CAD requests as mixed content." +
+          " Use an HTTPS CAD URL instead." + suffix
+        );
+      }
+
+      if (parsed.protocol === "https:" && parsed.hostname === "meridian.caltech.edu") {
+        return (
+          "Could not read CAD server listing: " + directoryUrl +
+          ". Meridian currently uses a self-signed HTTPS certificate, so some browsers block the request before JavaScript can read the response." +
+          " Open the CAD server URL directly in this browser, accept or trust the certificate, then reload this page." +
+          " If that is not acceptable, the CAD server needs a browser-trusted certificate." + suffix
+        );
+      }
+
+      return (
+        "Could not read CAD server listing: " + directoryUrl +
+        ". The browser blocked the request before JavaScript could read the response." +
+        " Check the browser Console or Network panel for the exact reason." +
+        " If it reports Access-Control-Allow-Origin, the CAD server must allow this site origin." + suffix
+      );
+    }
+
     async function readDirectoryLinks(directoryUrl) {
       let response;
       try {
         response = await fetch(directoryUrl, { cache: "no-store" });
       } catch (error) {
-        throw new Error(
-          "Could not read CAD server listing: " + directoryUrl +
-          ". Browser access may be blocked by CORS; the CAD server must allow this site with Access-Control-Allow-Origin."
-        );
+        throw new Error(describeDirectoryFetchFailure(directoryUrl, error));
       }
       if (!response.ok) {
-        throw new Error("Could not read CAD server listing: " + directoryUrl);
+        throw new Error(
+          "Could not read CAD server listing: " + directoryUrl +
+          ". HTTP status: " + response.status + " " + response.statusText + "."
+        );
       }
       const html = await response.text();
       const doc = new DOMParser().parseFromString(html, "text/html");
