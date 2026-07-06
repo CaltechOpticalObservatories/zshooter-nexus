@@ -76,6 +76,59 @@ div.zs-placeholder {
   color: var(--sy-c-text-weak, #475569);
 }
 
+figcaption,
+figcaption .caption,
+figcaption .caption-text {
+  color: var(--sy-c-text-weak, #475569);
+  text-align: left;
+}
+
+figure.align-default,
+figure.align-center {
+  display: table;
+  width: auto;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+figure.align-default figcaption,
+figure.align-center figcaption {
+  display: table-caption;
+  caption-side: bottom;
+}
+
+figure img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.zs-science-figure {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 560px;
+  margin: 1.4rem auto 0 auto;
+  border: 1px solid rgba(100, 116, 139, 0.22);
+  border-radius: 8px;
+  background: #fff;
+}
+
+img.zs-science-figure-narrow {
+  max-height: 680px;
+}
+
+img.zs-science-figure ~ figcaption,
+img.zs-science-figure ~ figcaption .caption-text {
+  max-width: 78ch;
+  margin: 0.55rem auto 0 auto;
+  color: var(--sy-c-text-weak, #475569);
+  text-align: left;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .zs-architecture-figure {
   margin: 1rem 0 1.25rem 0;
 }
@@ -97,6 +150,12 @@ div.zs-placeholder {
   font-size: 0.92rem;
   margin-top: 0.5rem;
   color: var(--sy-c-text-weak, #475569);
+}
+
+html.dark figcaption,
+html.dark figcaption .caption,
+html.dark figcaption .caption-text {
+  color: #cbd5e1;
 }
 
 img.zs-white-figure {
