@@ -1,8 +1,6 @@
 ZShooter's CAD Designs
 ======================
 
-Note that you may need to directly load https://meridian.caltech.edu:81/ and accept the self-signed cert
-
 .. raw:: html
 
    <div class="zs-split-view">
