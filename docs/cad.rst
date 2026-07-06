@@ -1,5 +1,5 @@
-ZShooter's CAD Designs
-======================
+CAD Designs
+===========
 
 .. raw:: html
 
