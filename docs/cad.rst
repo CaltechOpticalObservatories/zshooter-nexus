@@ -8,14 +8,14 @@ CAD Designs
        <h2>CAD viewer</h2>
        <iframe
          title="eDrawings viewer"
-         src="_static/edrawingswrap.html?cadRoot=https%3A%2F%2Fmeridian.caltech.edu%3A81%2F">
+         src="_static/edrawingswrap.html?cadRoot=https%3A%2F%2Fmeridian.caltech.edu">
        </iframe>
      </section>
      <section class="zs-viewer-panel">
        <h2>Drawing viewer</h2>
        <iframe
          title="Drawing viewer"
-         src="_static/pdfwrap.html?cadRoot=https%3A%2F%2Fmeridian.caltech.edu%3A81%2F">
+         src="_static/pdfwrap.html?cadRoot=https%3A%2F%2Fmeridian.caltech.edu">
        </iframe>
      </section>
    </div>
