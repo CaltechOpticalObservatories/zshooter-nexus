@@ -172,3 +172,5 @@ cython_debug/
 /docs/_staged/
 /docs/_static/d2_diagrams/
 /docs/_static/generated/
+/.idea/
+/.obsidian/
