@@ -70,7 +70,7 @@ is_submodule_path() {
 has_repo_d2_changes() {
   local path="$1"
 
-  git diff --name-only "$before_sha" "$after_sha" -- "$path/views" | grep -E '\.d2$' >/dev/null
+  git diff --name-only "$before_sha" "$after_sha" -- "$path" | grep -E '\.d2$' >/dev/null
 }
 
 has_submodule_d2_changes() {
@@ -92,7 +92,7 @@ has_submodule_d2_changes() {
   ensure_submodule_commit "$path" "$old_sha"
   ensure_submodule_commit "$path" "$new_sha"
 
-  git -C "$path" diff --name-only "$old_sha" "$new_sha" -- views | grep -E '\.d2$' >/dev/null
+  git -C "$path" diff --name-only "$old_sha" "$new_sha" | grep -E '\.d2$' >/dev/null
 }
 
 has_d2_changes() {
@@ -106,10 +106,10 @@ has_d2_changes() {
   has_repo_d2_changes "$path"
 }
 
-if [[ "$event_name" == "push" ]]; then
+if [[ "$event_name" == "push" || "$event_name" == "pull_request" || "$event_name" == "workflow_dispatch" ]]; then
   if [[ -z "$before_sha" || "$before_sha" == "0000000000000000000000000000000000000000" ]]; then
     render=true
-    reasons+=("push has no usable before SHA")
+    reasons+=("$event_name has no usable before SHA")
   else
     if git diff --name-only "$before_sha" "$after_sha" -- tools/render_d2.sh tools/detect_d2_changes.sh | grep -q .; then
       render=true
@@ -118,12 +118,12 @@ if [[ "$event_name" == "push" ]]; then
 
     if has_d2_changes "zshooter-arch"; then
       render=true
-      reasons+=("zshooter-arch views/*.d2 changed")
+      reasons+=("zshooter-arch D2 sources changed")
     fi
 
     if has_d2_changes "zshooter-too"; then
       render=true
-      reasons+=("zshooter-too views/*.d2 changed")
+      reasons+=("zshooter-too D2 sources changed")
     fi
   fi
 fi

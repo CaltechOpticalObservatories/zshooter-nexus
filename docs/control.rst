@@ -1,3 +1,5 @@
+:zs-mode: both
+
 Controlling ZShooter
 ====================
 
@@ -7,21 +9,25 @@ Controlling ZShooter
     - observer-first control,
     - modular daemons,
     - a simple, useful quicklook,
-    - engineering tooling that is use from AIT through maintenance.
+    - engineering tooling used from AIT through maintenance.
 
-.. container:: zs-note-to-team zs-internal-only
+.. grid:: 1
+   :gutter: 2
 
-   - This page wraps the ICS's own documentation from its repository.
-   - ICS documentation exists and is maintained there so anyone that installs the control software alone has it
-   - Eventually either here or there:
-      - ICS overview and system architecture
-      - Operational UI screenshots
-      - Keyword / daemon map
-      - AIT and maintenance notebook index
-      - Links into staged API docs and operator-facing material
+   .. grid-item-card:: Instrument Control Software documentation
+      :link: _staged/ics/index.html
+      :link-type: url
+
+      Architecture, daemon and driver inventories, interfaces, operations,
+      testing, AIT, and design decisions maintained with the ICS source.
+
+.. container:: zs-note
+
+   The ICS documentation is authored in the ICS repository and staged here
+   from the pinned submodule revision.
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 3
 
    _staged/ics/index

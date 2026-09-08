@@ -50,7 +50,7 @@ architectural change a move from three to two spectrometers, each split into thr
       Quick access to CAD models and drawings
 
    .. grid-item-card:: Controls
-      :link: software.html
+      :link: control.html
       :link-type: url
 
       How ZShooter is controlled
