@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ZShooter.iml" filepath="$PROJECT_DIR$/.idea/ZShooter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ZShooter-DRP.iml" filepath="$PROJECT_DIR$/.idea/ZShooter-DRP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/palace.iml" filepath="$PROJECT_DIR$/.idea/palace.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/zs-scopesim.iml" filepath="$PROJECT_DIR$/.idea/zs-scopesim.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/zshooter.iml" filepath="$PROJECT_DIR$/.idea/zshooter.iml" />
     </modules>
   </component>
