@@ -1,0 +1,30 @@
+[
+  {
+    "file": "ZS-SBX-A0022-VIS.html",
+    "label": "ZSpec VIS"
+  },
+  {
+    "file": "ZS-SBX-A0012-IR.html",
+    "label": "ZSpec NIR"
+  },
+  {
+    "file": "ZS-SBX-A0005-Top.html",
+    "label": "ZShooter on RNAS"
+  },
+  {
+    "file": "ZS-SBX-A0013-Rotator.html",
+    "label": "ZSpec Rotator"
+  },
+  {
+    "file": "ZS-SBX-A0015-Detector.html",
+    "label": "ZSpec NIR Detector"
+  },
+  {
+    "file": "ZS-SBX-A0016-Coll.html",
+    "label": "ZSpec Collimator"
+  },
+  {
+    "file": "ZS-SBX-A0021-Selector.html",
+    "label": "ZShooter Frontend"
+  }
+]

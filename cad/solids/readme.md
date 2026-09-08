@@ -1,1 +1,0 @@
-CAD solids (step/gltf) for reference 

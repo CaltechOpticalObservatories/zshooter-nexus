@@ -1,11 +1,9 @@
 # ZShooter prototype site configuration
 import json
 import os
-import shutil
 import sys
 from collections import deque
 from datetime import datetime
-from pathlib import Path
 
 from sphinx.util import logging
 
@@ -49,6 +47,7 @@ exclude_patterns = [
 
 html_theme = "shibuya"
 html_static_path = ["_static"]
+html_extra_path = ["cad_manifest.json"]
 html_css_files = ["css/zshooter.css"]
 html_js_files = ["js/site-mode.js"]
 
@@ -72,10 +71,6 @@ rst_prolog = """
 .. role:: zs-check
    :class: zs-check
 """
-
-
-ROOT = Path(__file__).resolve().parent.parent
-CAD_SRC = ROOT / "cad"
 
 
 def normalize_zs_mode(raw_value: str | None, *, docname: str | None = None) -> str | None:
@@ -178,21 +173,7 @@ def add_zs_page_context(app, pagename: str, templatename: str, context: dict, do
     context["zs_page_mode_json"] = json.dumps(page_mode)
 
 
-def copy_local_cad_assets(app, exception) -> None:
-    if exception is not None or app.builder.format != "html":
-        return
-
-    if not CAD_SRC.exists():
-        return
-
-    cad_dst = Path(app.outdir) / "cad"
-    if cad_dst.exists():
-        shutil.rmtree(cad_dst)
-    shutil.copytree(CAD_SRC, cad_dst, ignore_dangling_symlinks=True)
-
-
 def setup(app) -> dict[str, bool]:
     app.connect("env-updated", collect_zs_page_modes)
     app.connect("html-page-context", add_zs_page_context)
-    app.connect("build-finished", copy_local_cad_assets)
     return {"parallel_read_safe": True}

@@ -47,11 +47,6 @@
     .spacer {
       flex: 1 1 auto;
     }
-    .meta {
-      font-size: 0.83rem;
-      color: var(--muted);
-      width: 100%;
-    }
     .toolbar a {
       font-size: 0.84rem;
       text-decoration: none;
@@ -71,18 +66,17 @@
     <select id="selector"></select>
     <div class="spacer"></div>
     <a id="open-link" href="#" target="_blank" rel="noopener">Open raw file</a>
-    <div class="meta" id="meta"></div>
   </div>
   <iframe id="viewer-frame" title="Drawing viewer"></iframe>
 
   <script>
     const selector = document.getElementById("selector");
-    const meta = document.getElementById("meta");
     const openLink = document.getElementById("open-link");
     const viewerFrame = document.getElementById("viewer-frame");
     const params = new URLSearchParams(window.location.search);
-    const defaultCadRoot = "http://meridian.caltech.edu:81/";
+    const defaultCadRoot = "https://meridian.caltech.edu/";
     const drawingExtensions = new Set([".pdf"]);
+    const largeFileThreshold = 50_000_000;
     let activeObjectUrl = null;
 
     function resolveUrl(value) {
@@ -104,7 +98,6 @@
       selector.innerHTML = "";
       selector.disabled = true;
       openLink.removeAttribute("href");
-      meta.textContent = "";
       releaseObjectUrl();
       viewerFrame.removeAttribute("src");
       viewerFrame.replaceWith(Object.assign(document.createElement("div"), {
@@ -126,8 +119,7 @@
         entry.file === requested ||
         entry.path === requested ||
         entry.file.endsWith(requested) ||
-        entry.title === requested ||
-        entry.docno === requested
+        entry.title === requested
       ) || entries[0];
     }
 
@@ -135,10 +127,22 @@
       return left.localeCompare(right, undefined, { numeric: true, sensitivity: "base" });
     }
 
-    function titleFromPath(path) {
-      const filename = decodeURIComponent(path.split("/").pop() || path);
-      const stem = filename.replace(/\.[^.]*$/, "");
-      return stem.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim() || filename;
+    function filenameFromPath(path) {
+      return decodeURIComponent(path.split("/").pop() || path);
+    }
+
+    function directoryListingSize(link) {
+      const listingText = link.nextSibling?.textContent?.trim() || "";
+      const match = listingText.match(/(\d+)\s*$/);
+      return match ? Number(match[1]) : null;
+    }
+
+    function optionText(entry) {
+      const label = entry.title || filenameFromPath(entry.path || entry.file);
+      if (Number.isFinite(entry.sizeBytes) && entry.sizeBytes >= largeFileThreshold) {
+        return `${label} (${Math.round(entry.sizeBytes / 1_000_000)} MB)`;
+      }
+      return label;
     }
 
     function getExtension(url) {
@@ -180,15 +184,6 @@
         );
       }
 
-      if (parsed.protocol === "https:" && parsed.hostname === "meridian.caltech.edu") {
-        return (
-          "Could not read CAD server listing: " + directoryUrl +
-          ". Meridian currently uses a self-signed HTTPS certificate, so some browsers block the request before JavaScript can read the response." +
-          " Open the CAD server URL directly in this browser, accept or trust the certificate, then reload this page." +
-          " If that is not acceptable, the CAD server needs a browser-trusted certificate." + suffix
-        );
-      }
-
       return (
         "Could not read CAD server listing: " + directoryUrl +
         ". The browser blocked the request before JavaScript could read the response." +
@@ -212,14 +207,47 @@
       }
       const html = await response.text();
       const doc = new DOMParser().parseFromString(html, "text/html");
-      return Array.from(doc.querySelectorAll("a[href]")).map(link => link.getAttribute("href"));
+      return Array.from(doc.querySelectorAll("a[href]")).map(link => ({
+        href: link.getAttribute("href"),
+        sizeBytes: directoryListingSize(link)
+      }));
     }
 
-    async function discoverCadEntries(cadRoot, subdir, extensions) {
+    async function readCadManifest() {
+      try {
+        const response = await fetch(resolveUrl("../cad_manifest.json"), { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const manifest = await response.json();
+        if (!Array.isArray(manifest)) throw new Error("manifest is not an array");
+        return manifest.filter(entry => entry && typeof entry.file === "string");
+      } catch (error) {
+        console.warn("Could not read CAD manifest; using directory order.", error);
+        return [];
+      }
+    }
+
+    function applyCadManifest(entries, manifest) {
+      const remaining = new Map(entries.map(entry => [entry.path, entry]));
+      const prioritized = [];
+
+      for (const item of manifest) {
+        const entry = remaining.get(item.file);
+        if (!entry) continue;
+        prioritized.push({
+          ...entry,
+          title: typeof item.label === "string" && item.label.trim()
+            ? item.label.trim()
+            : filenameFromPath(entry.path)
+        });
+        remaining.delete(item.file);
+      }
+
+      return prioritized.concat(entries.filter(entry => remaining.has(entry.path)));
+    }
+
+    async function discoverCadEntries(cadRoot, extensions) {
       const rootUrl = normalizeDirectoryUrl(cadRoot || defaultCadRoot);
-      const cleanSubdir = subdir.replace(/^\/+|\/+$/g, "");
-      const startUrl = cleanSubdir ? new URL(cleanSubdir + "/", rootUrl).toString() : rootUrl;
-      const pending = [startUrl];
+      const pending = [rootUrl];
       const visited = new Set();
       const found = new Map();
 
@@ -228,8 +256,9 @@
         if (visited.has(current)) continue;
         visited.add(current);
 
-        const hrefs = await readDirectoryLinks(current);
-        for (const href of hrefs) {
+        const links = await readDirectoryLinks(current);
+        for (const link of links) {
+          const href = link.href;
           if (!href) continue;
           const cleanHref = href.split("?", 1)[0].split("#", 1)[0];
           if (!cleanHref || cleanHref === "../" || cleanHref === "./") continue;
@@ -247,23 +276,16 @@
 
           if (extensions.has(getExtension(candidate.href))) {
             found.set(path, {
-              title: titleFromPath(path),
+              title: filenameFromPath(path),
               file: candidate.toString(),
               path,
-              source: "remote"
+              sizeBytes: link.sizeBytes
             });
           }
         }
       }
 
       return Array.from(found.values()).sort((left, right) => naturalCompare(left.title, right.title));
-    }
-
-    function humanMeta(entry) {
-      const parts = [];
-      if (entry.docno) parts.push(entry.docno);
-      if (entry.notes) parts.push(entry.notes);
-      return parts.join(' | ');
     }
 
     async function resolveViewerPdfUrl(pdfUrl) {
@@ -291,27 +313,22 @@
       const viewerUrl = 'pdfjs/web/viewer.html?file=' + encodeURIComponent(viewerPdfUrl);
 
       openLink.href = pdfUrl;
-      meta.textContent = humanMeta(entry);
       viewerFrame.src = viewerUrl;
     }
 
     async function main() {
-      const manifestParam = params.get("manifest");
       const cadRoot = params.get("cadRoot") || defaultCadRoot;
       const directPdf = params.get("pdf");
 
-      let entries = [];
-      if (manifestParam) {
-        const manifestUrl = resolveUrl(manifestParam);
-        const response = await fetch(manifestUrl);
-        if (!response.ok) {
-          throw new Error("Could not load drawing manifest: " + manifestUrl);
-        }
-        entries = await response.json();
-      } else if (directPdf) {
+      let entries;
+      if (directPdf) {
         entries = [{ title: "Selected drawing", file: directPdf }];
       } else {
-        entries = await discoverCadEntries(cadRoot, "", drawingExtensions);
+        const [discovered, manifest] = await Promise.all([
+          discoverCadEntries(cadRoot, drawingExtensions),
+          readCadManifest()
+        ]);
+        entries = applyCadManifest(discovered, manifest);
       }
 
       if (!Array.isArray(entries) || entries.length === 0) {
@@ -323,7 +340,7 @@
       for (const entry of entries) {
         const option = document.createElement("option");
         option.value = entry.file;
-        option.textContent = entry.title || entry.docno || entry.file.split("/").pop();
+        option.textContent = optionText(entry);
         selector.appendChild(option);
       }
 
