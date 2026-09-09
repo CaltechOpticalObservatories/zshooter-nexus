@@ -59,8 +59,8 @@ background and higher spectral resolution without concomitant slit losses when A
 
 .. container:: zs-placeholder zs-internal-only
 
-   **Figure placeholder:** K1 RNAS nominal focus geometry from ``cad/drawings/k1rnas.pdf`` or the equivalent
-   released CAD/ICD view.  This should show the K1 elevation bearing, nominal telescope focus, the ZImager fold path,
+   **Figure placeholder:** K1 RNAS nominal focus geometry from the CAD/ICD drawings.  This should
+   show the K1 elevation bearing, nominal telescope focus, the ZImager fold path,
    and the straight-through ZSpec path.
 
 .. container:: zs-note-to-team zs-internal-only

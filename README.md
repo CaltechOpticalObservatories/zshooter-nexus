@@ -1,29 +1,47 @@
-# ZShooter site prototype 
+# ZShooter documentation nexus
 
-## Whats where
+This repository builds the ZShooter instrument website and collects the
+project's public and team-facing documentation in one navigable site. The
+internal/external mode switch is a presentation aid, not access control.
+
+## What's where
 
 - `docs/`:
-  - rst source tree
-  - CAD/PDF wrappers in `_static/`
+  - Sphinx source tree (reStructuredText and MyST Markdown)
+  - `cad_manifest.json` for optional CAD dropdown labels and ordering
+  - eDrawings/PDF directory viewers in `_static/`
   - site stylesheet in `_static/css`
-  - `_static/o3dv/` and `_static/pdfjs/` for 3d viewing and pdf viewing
+  - `_static/pdfjs/` for PDF viewing
 - `tools/`:
-  - `generate_cad_manifest.py` for build/stage-time manifest generation
   - `render_d2.sh` for rendering D2 models into submodule `svg/` artifact folders
   - `sync_d2_svgs.sh` for copying prebuilt diagram SVGs into `docs/_static/d2_diagrams`
-  - `stage_site.py` for staging ics/drp documentation into the site for deployment
+  - `stage_site.py` for composing subproject documentation and notebooks into the site
+
+## Documentation ownership
+
+| Owner | Canonical source | Generated nexus destination | Nexus landing page |
+| --- | --- | --- | --- |
+| ICS | `zshooter-ics/docs/source/` | `docs/_staged/ics/` | Technical Design → Controlling ZShooter |
+| DRP | `zshooter-drp/docs/source/` and `zshooter-drp/notebooks/` | `docs/_staged/drp/` | Observing → Data Reduction |
+| Simulator | `zshooter-sim/notebooks/` | `docs/_staged/sim/notebooks/` | Observing → Instrument Simulator |
+
+The generated `_staged` tree is ignored by Git. Edit documentation only in its
+canonical repository. Submodule revisions are deliberately pinned: update and
+review a submodule gitlink in this repository when its documentation should be
+published by the nexus.
 
 ## Current assumptions
+
 - CAD
-  - Repo-local CAD:
-    - assets are assumed to be served relative to the wrappers at `../cad`
-    - `cad/` is copied into the HTML build as `docs/_build/html/cad` by a Sphinx `build-finished` hook in `docs/conf.py`
-  - Live CAD pages discover remote drawings and models directly from `http://meridian.caltech.edu:81/`
-    - Remote CAD assets can still be crawled into generated manifests with `tools/generate_cad_manifest.py` for initial 
-      builds or offline staging
-      - run from repo dir: `python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root ../cad`
-    - The CAD server must expose an HTML directory index at its root and allow browser reads from the docs origin 
-      with `Access-Control-Allow-Origin`
+  - `docs/cad.rst` embeds separate eDrawings and PDF viewers.
+  - Both viewers discover files recursively from `https://meridian.caltech.edu/`; CAD assets are not mirrored in this
+    repository.
+  - `docs/cad_manifest.json` can place discovered files first and give them friendlier dropdown labels. Each entry has
+    only `file` and `label`; blank labels and unlisted files display their filenames. The manifest is copied by Sphinx
+    and has no generation step.
+  - The CAD server must expose an HTML directory index and allow browser reads from the docs origin with
+    `Access-Control-Allow-Origin`.
+  - The wrappers support `cadRoot` overrides plus `selected`, `edrawing`, and `pdf` deep links.
 
 
 
@@ -31,23 +49,27 @@
 
 ```bash
 git clone git@github.com:CaltechOpticalObservatories/zshooter-nexus.git
-cd zshooter
+cd zshooter-nexus
 git submodule update --init --recursive
 
 python -m venv .venv
 source .venv/bin/activate
-pip install --upgrade pip
+python -m pip install --upgrade pip
 
 curl -fsSL https://d2lang.com/install.sh | sh -s --
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+
+python -m unittest discover -s tests
 
 python tools/stage_site.py
-python tools/generate_cad_manifest.py --cad-root ./cad --docs-root ./docs --web-root ../cad
+
+# Run these two commands only after changing D2 sources.
+bash tools/render_d2.sh
+bash tools/log_d2_drift.sh
+
+# Always refresh the site copies and architecture viewer index.
 bash tools/sync_d2_svgs.sh
 python tools/generate_diagram_manifest.py
-
-# Only needed when D2 sources changed and you want to regenerate the committed SVG artifacts.
-bash tools/render_d2.sh
 
 sphinx-build -b html docs docs/_build/html
 

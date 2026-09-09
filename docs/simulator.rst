@@ -1,25 +1,28 @@
 Instrument Simulator
 ====================
 
+.. container:: zs-lead
 
-.. rst-class:: zs-placeholder zs-internal-only
-
-Words about the instrument simulator.
+   The simulator notebooks are maintained as executable examples in the
+   simulator repository and rendered here without re-running their cells.
 
 
 Simulator Examples
----------------------------
+------------------
 
-- :doc:`Simulator Overview <staged/sim/notebooks/i_ScopeSim_Overview>`
-- :doc:`Kilonova Example <_staged/sim/notebooks/01_Kilonovae>`
+- :doc:`ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>`
+- :doc:`ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>`
+- :doc:`Kilonovae Observation <_staged/sim/notebooks/01_Kilonovae>`
+- :doc:`SPIE 2026 <_staged/sim/notebooks/zshooter_spie2026>`
+- :doc:`ZImager Image Quality <_staged/sim/notebooks/zshooter_zimager_diq>`
 
 
 .. rst-class:: zs-placeholder zs-internal-only
 
-Current plan for this page
+Coming Soon
 --------------------------
 
-- Add a link to a Binder/Google Colab of a Simulator environment
+- Binder/Google Colab Simulator environment
 
 Useful external links
 ---------------------
@@ -38,6 +41,8 @@ Useful external links
    :maxdepth: 1
    :titlesonly:
 
-   i ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>
-   ii ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>
-   Kilonova Example <_staged/sim/notebooks/01_Kilonovae>
+   ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>`
+   ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>`
+   Kilonovae Observation <_staged/sim/notebooks/01_Kilonovae>`
+   SPIE 2026 <_staged/sim/notebooks/zshooter_spie2026>`
+   ZImager Image Quality <_staged/sim/notebooks/zshooter_zimager_diq>`

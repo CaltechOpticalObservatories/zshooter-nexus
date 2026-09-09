@@ -1,123 +1,124 @@
 #!/usr/bin/env python3
+"""Compose documentation owned by ZShooter subprojects into one Sphinx tree."""
+
 from __future__ import annotations
 
 import shutil
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-
 DOCS = ROOT / "docs"
 STAGED = DOCS / "_staged"
 
-ICS_SRC = ROOT / "zshooter-ics" / "docs" / "source"
-DRP_SRC = ROOT / "zshooter-drp" / "docs" / "source"
-SIM_SRC = ROOT / "zshooter-sim" / "notebooks"
+IGNORED_NAMES = {
+    ".DS_Store",
+    ".ipynb_checkpoints",
+    "__pycache__",
+    "*.pyc",
+}
 
 
-ICS_DST = STAGED / "ics"
-DRP_DST = STAGED / "drp"
-SIM_DST = STAGED / "sim" / "notebooks"
+@dataclass(frozen=True)
+class StageSpec:
+    """One generated subtree inside ``docs/_staged``."""
 
-def reset_dir(path: Path) -> None:
-    if path.exists():
-        shutil.rmtree(path)
-    path.mkdir(parents=True, exist_ok=True)
-
-
-import glob
-
-
-def copy_if_exists(src: Path | str, dst: Path, recurse: bool = False) -> None:
-    src_str = str(src)
-
-    # Check if src contains glob patterns
-    if any(char in src_str for char in ['*', '?', '[', ']']):
-        # Handle glob pattern
-        matches = glob.glob(src_str, recursive=recurse)
-        if not matches:
-            return
-            # raise FileNotFoundError(f"No files found matching pattern: {src}")
-
-        # Determine base path for relative structure preservation
-        # Find the first part of the path before any glob pattern
-        parts = Path(src_str).parts
-        base_parts = []
-        for part in parts:
-            if any(char in part for char in ['*', '?', '[', ']']):
-                break
-            base_parts.append(part)
-        base_path = Path(*base_parts) if base_parts else Path('.')
-
-        for match in matches:
-            match_path = Path(match)
-            if match_path.is_file():
-                # Calculate relative path from base to preserve directory structure
-                try:
-                    relative = match_path.relative_to(base_path)
-                except ValueError:
-                    # If relative_to fails, just use the filename
-                    relative = match_path.name
-
-                dst_file = dst / relative
-                dst_file.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(match_path, dst_file)
-    else:
-        # Handle single file (original behavior)
-        src_path = Path(src) if isinstance(src, str) else src
-        if not src_path.exists():
-            raise FileNotFoundError(f"Missing required source file: {src_path}")
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src_path, dst)
+    name: str
+    destination: Path
+    docs_source: Path | None = None
+    notebooks_source: Path | None = None
+    excluded_source_names: frozenset[str] = field(default_factory=frozenset)
+    require_index: bool = True
 
 
-def stage_sim() -> None:
-    reset_dir(SIM_DST)
+STAGE_SPECS = (
+    StageSpec(
+        name="ICS",
+        docs_source=ROOT / "zshooter-ics" / "docs" / "source",
+        destination=STAGED / "ics",
+        excluded_source_names=frozenset({"conf.py", "_templates", "requirements"}),
+    ),
+    StageSpec(
+        name="DRP",
+        docs_source=ROOT / "zshooter-drp" / "docs" / "source",
+        notebooks_source=ROOT / "zshooter-drp" / "notebooks",
+        destination=STAGED / "drp",
+        # The DRP's standalone build may already contain its ignored notebook
+        # staging directory. Always use the canonical top-level notebooks.
+        excluded_source_names=frozenset({"conf.py", "_templates", "notebooks"}),
+    ),
+    StageSpec(
+        name="simulator",
+        notebooks_source=ROOT / "zshooter-sim" / "notebooks",
+        destination=STAGED / "sim",
+        require_index=False,
+    ),
+)
 
-    copy_if_exists(SIM_SRC / "*.rst", SIM_DST)
-    copy_if_exists(SIM_SRC / "*.md", SIM_DST)
-    copy_if_exists(SIM_SRC / "*.ipynb", SIM_DST)
 
-    # If the ICS docs later gain local _static or image assets, this will bring them along.
-    # Safe to keep even if absent.
-    for name in ("_static", "_images", "images", "figures"):
-        src_dir = ICS_SRC / name
-        if src_dir.exists() and src_dir.is_dir():
-            shutil.copytree(src_dir, ICS_DST / name, dirs_exist_ok=True)
+def _ignore_names(extra_names: frozenset[str] = frozenset()):
+    patterns = sorted(IGNORED_NAMES | set(extra_names))
+    return shutil.ignore_patterns(*patterns)
 
 
-def stage_ics() -> None:
-    reset_dir(ICS_DST)
+def _validate_directory(path: Path, label: str) -> None:
+    if not path.is_dir():
+        raise FileNotFoundError(f"Missing {label} directory: {path}")
 
-    copy_if_exists(ICS_SRC / "*.rst", ICS_DST)
-    copy_if_exists(ICS_SRC / "*.md", ICS_DST)
 
-    # If the ICS docs later gain local _static or image assets, this will bring them along.
-    # Safe to keep even if absent.
-    for name in ("_static", "_images", "images", "figures"):
-        src_dir = ICS_SRC / name
-        if src_dir.exists() and src_dir.is_dir():
-            shutil.copytree(src_dir, ICS_DST / name, dirs_exist_ok=True)
+def _has_index(path: Path) -> bool:
+    return any((path / filename).is_file() for filename in ("index.rst", "index.md"))
 
-def stage_drp() -> None:
-    reset_dir(DRP_DST)
 
-    copy_if_exists(DRP_SRC / "*.rst", DRP_DST)
-    copy_if_exists(DRP_SRC / "*.md", DRP_DST)
+def stage_project(spec: StageSpec) -> int:
+    """Build one staged subtree atomically and return its file count."""
+    temporary = spec.destination.with_name(f".{spec.destination.name}.staging")
+    if temporary.exists():
+        shutil.rmtree(temporary)
 
-    # If DRP later gains local assets, copy them too.
-    for name in ("_static", "_images", "images", "figures"):
-        src_dir = DRP_SRC / name
-        if src_dir.exists() and src_dir.is_dir():
-            shutil.copytree(src_dir, DRP_DST / name, dirs_exist_ok=True)
+    temporary.parent.mkdir(parents=True, exist_ok=True)
+    temporary.mkdir()
+
+    try:
+        if spec.docs_source is not None:
+            _validate_directory(spec.docs_source, f"{spec.name} documentation source")
+            shutil.copytree(
+                spec.docs_source,
+                temporary,
+                dirs_exist_ok=True,
+                ignore=_ignore_names(spec.excluded_source_names),
+            )
+
+        if spec.notebooks_source is not None:
+            _validate_directory(spec.notebooks_source, f"{spec.name} notebook source")
+            shutil.copytree(
+                spec.notebooks_source,
+                temporary / "notebooks",
+                dirs_exist_ok=True,
+                ignore=_ignore_names(),
+            )
+
+        if spec.require_index and not _has_index(temporary):
+            raise FileNotFoundError(
+                f"{spec.name} documentation has no index.rst or index.md in {spec.docs_source}"
+            )
+
+        if spec.destination.exists():
+            shutil.rmtree(spec.destination)
+        temporary.replace(spec.destination)
+    except Exception:
+        if temporary.exists():
+            shutil.rmtree(temporary)
+        raise
+
+    return sum(1 for path in spec.destination.rglob("*") if path.is_file())
 
 
 def main() -> None:
     STAGED.mkdir(parents=True, exist_ok=True)
-    stage_ics()
-    stage_drp()
-    stage_sim()
-    print("Staged ICS and DRP documentation into docs/_staged/")
+    summaries = [f"{spec.name}: {stage_project(spec)} files" for spec in STAGE_SPECS]
+    print("Staged subproject documentation (" + ", ".join(summaries) + ")")
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ Observing
       ZShooter's DRP.
 
    .. grid-item-card:: Classical observing
-      :link: observers.html
+      :link: classical_programs.html
       :link-type: url
 
       Planning, run flow, calibration expectations, and observer-facing procedures.
