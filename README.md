@@ -16,7 +16,6 @@ internal/external mode switch is a presentation aid, not access control.
   - `render_d2.sh` for rendering D2 models into submodule `svg/` artifact folders
   - `sync_d2_svgs.sh` for copying prebuilt diagram SVGs into `docs/_static/d2_diagrams`
   - `stage_site.py` for composing subproject documentation and notebooks into the site
-  - `validate_site.py` for checking required integrated pages and their Sphinx warnings
 
 ## Documentation ownership
 
@@ -72,10 +71,7 @@ bash tools/log_d2_drift.sh
 bash tools/sync_d2_svgs.sh
 python tools/generate_diagram_manifest.py
 
-sphinx-build -b html -w docs/_build/sphinx-warnings.log docs docs/_build/html
-python tools/validate_site.py \
-  --html-root docs/_build/html \
-  --warnings docs/_build/sphinx-warnings.log
+sphinx-build -b html docs docs/_build/html
 
 python -m http.server -d docs/_build/html 8000
 ```

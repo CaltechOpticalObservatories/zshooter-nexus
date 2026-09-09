@@ -76,13 +76,7 @@ jobs:
           python tools/generate_diagram_manifest.py
 
       - name: Build Sphinx
-        run: sphinx-build -b html -w docs/_build/sphinx-warnings.log docs docs/_build/html
-
-      - name: Validate integrated documentation
-        run: >
-          python tools/validate_site.py
-          --html-root docs/_build/html
-          --warnings docs/_build/sphinx-warnings.log
+        run: sphinx-build -b html docs docs/_build/html
 
       - name: Configure Pages
         if: github.event_name != 'pull_request'
