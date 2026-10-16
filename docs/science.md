@@ -2,7 +2,10 @@
 
 ```{container} zs-lead
 
-Astro2020 identified time-domain and multi-messenger astrophysics as a priority for the coming decade. Rubin, Roman, Euclid, gravitational-wave facilities, and high-energy missions will provide rapidly evolving and often faint targets. Gaia, Rubin, and LISA will provide compact binaries that require both precision spectroscopy and fast photometry.
+Astro2020 identified time-domain and multi-messenger astrophysics as a priority for the coming
+decade. Rubin, Roman, Euclid, gravitational-wave facilities, and high-energy missions will provide
+rapidly evolving and often faint targets. Gaia, Rubin, and LISA will provide compact binaries that
+require both precision spectroscopy and fast photometry.
 
 
 ZShooter will support time-domain and multi-messenger astrophysics with
@@ -28,14 +31,16 @@ Low-resolution optical and NIR spectral sequences of neutron-star merger counter
 :link: science/young-supernovae
 :link-type: doc
 
-Flash spectroscopy and velocity-resolved measurements of circumstellar material during the first hours and days.
+Flash spectroscopy and velocity-resolved measurements of circumstellar material during the first
+hours and days.
 :::
 
 :::{grid-item-card} Relativistic explosions
 :link: science/relativistic-explosions
 :link-type: doc
 
-Rapid low-resolution spectroscopy and three-band imaging of GRB afterglows and luminous fast blue optical transients.
+Rapid low-resolution spectroscopy and three-band imaging of GRB afterglows and luminous fast blue
+optical transients.
 :::
 
 :::{grid-item-card} Tidal disruption events
@@ -56,14 +61,16 @@ Optical and NIR classification and host redshifts for supernovae at high redshif
 :link: science/nebular-supernovae
 :link-type: doc
 
-Late-time line luminosities and profiles that constrain ejecta composition, progenitor mass, and power source.
+Late-time line luminosities and profiles that constrain ejecta composition, progenitor mass, and
+power source.
 :::
 
 :::{grid-item-card} Binaries
 :link: science/binaries
 :link-type: doc
 
-Radial velocities and chemical abundances of compact-object binaries, plus phase-resolved spectroscopy of ultracompact systems.
+Radial velocities and chemical abundances of compact-object binaries, plus phase-resolved
+spectroscopy of ultracompact systems.
 :::
 
 :::{grid-item-card} High-speed qCMOS imaging
@@ -111,7 +118,8 @@ Reflectance, gas-production, and isotope measurements for comets and small bodie
 ::::
 
 ```{container} zs-small
-Source: National Academies 2021, Pathways to Discovery in Astronomy and Astrophysics for the 2020s; ZShooter SRD Sections 2.2 and 2.3.
+Source: National Academies 2021, Pathways to Discovery in Astronomy and Astrophysics for the 2020s;
+ZShooter SRD Sections 2.2 and 2.3.
 ```
 
 ```{toctree}
