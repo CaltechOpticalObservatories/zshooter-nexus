@@ -28,7 +28,9 @@ Source: Nagarajan et al. 2024, PASP, 136, 014202, Figure 8; ZShooter SRD Section
 ## Instrument Requirements
 
 - For a slowly rotating FGK star, R ≈ 20,000 gives ≈ 1 km/s precision at G = 20 and S/N ≈ 5 in one
-  hour. Instrument calibration stability is required to be at most 200 m/s.
+  hour in the SRD estimate. The current [L1 stability requirement](../requirements/l1.md) limits
+  instrument-contributed RV error to the greater of 200 m/s or 1/60 of a native resolution element,
+  using calibration data acquired within four hours.
 - Eu, Ba, La, Zr, Ce, Be, C, and O have important transitions between 350 and 450 nm. Many are
   blended below R ≈ 20,000. The optical R ≈ 40,000 mode provides additional line separation.
 

@@ -1,8 +1,8 @@
 # High-speed qCMOS Imaging
 
 ```{container} zs-lead
-ZImager uses three qCMOS detectors for simultaneous multiband photometry. Windowed operation
-provides 1 to 5 ms frame times over a 3 arcmin by 20 arcsec field.
+ZImager uses three qCMOS detectors for simultaneous multiband photometry. Its fastest cadence uses
+detector subarrays.
 ```
 
 Millisecond to second time resolution is needed because orbital, spin, and accretion signals are
@@ -28,11 +28,11 @@ Chapter 3 and Table 3.1; High-Speed Optical Imaging Science Case.
 
 ## Instrument Requirements
 
-- Optical pulsars require windowed frame rates of at least 100 Hz and frame-level absolute timing
-  for comparison with radio and X-ray ephemerides.
-- Three simultaneous imaging bands are an L1 requirement. .
-- The proposed fast-mode requirements are at least 100 Hz in a window containing the target and a
-  comparison star, at least two simultaneous bands, and absolute timing accuracy of at most 1 ms.
+- The [L1 requirements](../requirements/l1.md) specify three simultaneous imaging bands.
+- Fast-mode imaging requires at least 100 Hz, with a goal of at least 1 kHz, in a subfield
+  containing the target and at least one comparison star in at least two bands simultaneously.
+- GPS-synchronized per-frame absolute timing must be accurate to at most 1 ms, with a goal of
+  50 µs, for comparison with radio and X-ray ephemerides.
 
 ## Observing Requirements
 
