@@ -13,8 +13,10 @@ Simulator Examples
 - :doc:`ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>`
 - :doc:`ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>`
 - :doc:`Kilonovae Observation <_staged/sim/notebooks/01_Kilonovae>`
+- :doc:`ZSpec Performance <_staged/sim/notebooks/zshooter_performance>`
+- :doc:`ZImager <_staged/sim/notebooks/06_ZImager>`
+- :doc:`Image Quality <_staged/sim/notebooks/zshooter_zimager_diq>`
 - :doc:`SPIE 2026 <_staged/sim/notebooks/zshooter_spie2026>`
-- :doc:`ZImager Image Quality <_staged/sim/notebooks/zshooter_zimager_diq>`
 
 
 .. rst-class:: zs-placeholder zs-internal-only
@@ -41,8 +43,10 @@ Useful external links
    :maxdepth: 1
    :titlesonly:
 
-   ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>`
-   ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>`
-   Kilonovae Observation <_staged/sim/notebooks/01_Kilonovae>`
-   SPIE 2026 <_staged/sim/notebooks/zshooter_spie2026>`
-   ZImager Image Quality <_staged/sim/notebooks/zshooter_zimager_diq>`
+   ScopeSim Overview <_staged/sim/notebooks/i_ScopeSim_Overview>
+   ScopeSim Sources <_staged/sim/notebooks/ii_ScopeSim_Sources>
+   Kilonovae Observation <_staged/sim/notebooks/01_Kilonovae>
+   ZSpec Performance <_staged/sim/notebooks/zshooter_performance>
+   ZImager <_staged/sim/notebooks/06_ZImager>
+   SPIE 2026 <_staged/sim/notebooks/zshooter_spie2026>
+   Image Quality <_staged/sim/notebooks/zshooter_zimager_diq>
