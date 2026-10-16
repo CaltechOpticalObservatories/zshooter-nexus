@@ -509,18 +509,19 @@ suitable star and complete the facility's normal telescope-focus procedure.
    reflective part of the slit plane.
 2. Run a telescope-focus series around the initial setting, using the NIR slit-camera stellar image
    as the merit measurement. Hold the viewer focus fixed.
-3. Select the telescope setting that gives the adopted NIR optimum.
+3. Record the NIR best focus. Under seeing enhancement, select the telescope defocus that matches
+   the NIR EE80 to the Nyquist slit width; retain both the best-focus reference and adopted offset.
 4. Retain that telescope reference and sweep the nominal ZImager focus to verify the nominal
    position in all three channels (one mechanism, three band optima, one broadband optimum).
-5. Adjust the VIS/NIR relative-focus setting to optimize the VIS slit-camera stellar image.
-   - Determine best focus, then identify settings on the curve that broaden the seeing-enhanced PSF
-     to match the slit width and PSF/sampling objectives.
+5. Hold the adopted telescope setting and sweep the VIS/NIR relative focus. Select the VIS setting
+   for slit coupling, balancing U-band losses against R-band gains; record the wavelength-dependent
+   focus curves.
 6. Obtain additional series at naturally occurring temperatures. Use them as needed and compare with
    available design predictions.
 
 **Determines/checks.**
 
-- Telescope focus that optimizes the stellar image in the NIR slit plane.
+- NIR best focus and the telescope defocus needed to match EE80 to the Nyquist slit width.
 - Nominal ZImager focus and VIS/NIR relative-focus setting at that telescope reference.
 - Agreement with the predicted temperature dependence as focus series accumulate.
 
