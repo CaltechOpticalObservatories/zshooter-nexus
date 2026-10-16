@@ -17,6 +17,11 @@ internal/external mode switch is a presentation aid, not access control.
   - `sync_d2_svgs.sh` for copying prebuilt diagram SVGs into `docs/_static/d2_diagrams`
   - `stage_site.py` for composing subproject documentation and notebooks into the site
 
+## Source formats
+
+Use Markdown for living design and team-edited content, and reStructuredText for stable site
+structure and navigation. 
+
 ## Documentation ownership
 
 | Owner | Canonical source | Generated nexus destination | Nexus landing page |
@@ -34,12 +39,16 @@ published by the nexus.
 
 - CAD
   - `docs/cad.rst` embeds separate eDrawings and PDF viewers.
-  - Both viewers discover files recursively from `https://meridian.caltech.edu/`; CAD assets are not mirrored in this
+  - Both viewers discover files recursively from `https://meridian.caltech.edu/`; CAD assets are not
+    mirrored in this
     repository.
-  - `docs/cad_manifest.json` can place discovered files first and give them friendlier dropdown labels. Each entry has
-    only `file` and `label`; blank labels and unlisted files display their filenames. The manifest is copied by Sphinx
+  - `docs/cad_manifest.json` can place discovered files first and give them friendlier dropdown
+    labels. Each entry has
+    only `file` and `label`; blank labels and unlisted files display their filenames. The manifest
+    is copied by Sphinx
     and has no generation step.
-  - The CAD server must expose an HTML directory index and allow browser reads from the docs origin with
+  - The CAD server must expose an HTML directory index and allow browser reads from the docs origin
+    with
     `Access-Control-Allow-Origin`.
   - The wrappers support `cadRoot` overrides plus `selected`, `edrawing`, and `pdf` deep links.
 

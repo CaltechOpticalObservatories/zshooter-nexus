@@ -37,7 +37,7 @@ ZShooter
          both the team and future users and maintainers the resources they need to understand how to work with ZShooter.
 
 
-.. grid:: 1 2 2 4
+.. grid:: 1 2 2 3
    :gutter: 2
 
    .. grid-item-card:: Science
@@ -50,19 +50,25 @@ ZShooter
       :link: requirements.html
       :link-type: url
 
-      A short table of the current design pressures.
+      Science and facility requirements, with a summary of the instrument requirements.
 
-   .. grid-item-card:: Technical design
+   .. grid-item-card:: Design
       :link: technical.html
       :link-type: url
 
       The post-CoDR architecture: where the instrument is, where it's headed, and what is still open.
 
+   .. grid-item-card:: Performance
+      :link: performance.html
+      :link-type: url
+
+      Seeing enhancement, sensitivity models, and the instrument simulator.
+
    .. grid-item-card:: Observing
       :link: observing.html
       :link-type: url
 
-      Simulator, classical and ToO operations, data reduction.
+      Calibration, classical and ToO observing, operations, and data reduction.
 
 .. grid:: 1 2 2 4
    :gutter: 2
@@ -71,7 +77,7 @@ ZShooter
       :link: program_management.html
       :link-type: url
 
-      The useful part of the sausage-making: budgets, interfaces, WBS, and the things we keep forgetting.
+      Work-package abbreviations, scope, and related instrument documentation.
 
    .. grid-item-card:: Documents & tools
       :link: documents_tools.html
@@ -79,11 +85,11 @@ ZShooter
 
       Formal docs, repos, boards, notebooks, shared tools, and the links everyone winds up needing.
 
-   .. grid-item-card:: Presentations & publications
+   .. grid-item-card:: Publications
       :link: presentations_publications.html
       :link-type: url
 
-      Public-facing material, internal briefings, and references this site can aggregate cleanly for us.
+      Instrument papers, presentations, and internal briefings.
 
    .. grid-item-card:: Contacts
       :link: contacts.html
@@ -93,12 +99,12 @@ ZShooter
 
 .. container:: zs-note
 
-   **Current design in a nutshell**
+   **Design in a nutshell**
 
    - Always-online at **Keck I Right Nasmyth for rapid response**
    - **Two spectrometers (optical & nIR) / six channels (blue, green, red, yj, h, k)**
-   - **2k x 2k active detector area** per channel, qCCDs and LmAPDs.
-   - **ZSpec + ZImager** are a deliberately paired instrument, not two unrelated appendages
+   - **2k × 4k qCCDs in B/G/R; 2k × 2k LmAPDs in YJ/H/K**, one detector per channel
+   - **ZSpec + ZImager** Deep, fast imaging or simultaneous imaging of surroundings
    - AO-enhanced-seeing ready, optimized for natural seeing
 
 .. container:: zs-quote
@@ -120,7 +126,8 @@ ZShooter
    science
    requirements
    technical
-   observing
+   performance
+   Observing <observing>
    documents_tools
    program_management
    presentations_publications

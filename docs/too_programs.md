@@ -1,36 +1,41 @@
-ToO Programs
-============
+# ToO Programs
 
-.. container:: zs-lead
+:::{container} zs-lead
 
-   ZShooter's ToO science will require a new kind of Keck ToO operations: rapid, template-driven, alert-fed
-   observations where contacting an astronomer is not in the execution flow and the instrument is not a
-   bottleneck.
+ZShooter's ToO science will require a new kind of Keck ToO operations: rapid, template-driven,
+alert-fed
+observations where contacting an astronomer is not in the execution flow and the instrument is not a
+bottleneck.
 
-.. container:: zs-note zs-internal-only
+:::
 
-   This page should stay split between **instrument capability** and **observatory policy**. The first is ours to
-   design. The second needs WMKO infrastructure evolution.
+:::{container} zs-note zs-internal-only
 
-Design intent
--------------
+This page should stay split between **instrument capability** and **observatory policy**. The first
+is ours to
+design. The second needs WMKO infrastructure evolution.
+
+:::
+
+## Design intent
 
 ZShooter's ToO concept is intentionally split into two layers. Outside the instrument boundary,
 the ToO system needs a template-driven observing system: programs define alert criteria,
-requested observations, cadence rules, and instrument configuration(s) needed; the software expands a match
+requested observations, cadence rules, and instrument configuration(s) needed; the software expands
+a match
 into an executable observation package; and hands the instrument a classic-style target
 list with minimal internal overhead. This keeps observatory and program policy governing
 interruption authority, competing-trigger priority, alert-ingest rules, and time
 charging manged by observatory-owned software.
 
 The point of this split is simple: once the beam is on the instrument, ZShooter is capable of rapid
-follow-up without further intervention. The instrument is being designed for always-online operation at
+follow-up without further intervention. The instrument is being designed for always-online operation
+at
 K1 RNAS, prompt internal reconfiguration, acquisition support via ZImager, fast calibration
 sequences, and live reduction/quick-look feedback so that staff and observers can decide
 whether to continue, repeat, or stop.
 
-What ZShooter can do directly
------------------------------
+## What ZShooter can do directly
 
 On the observatory side, the desired workflow is:
 
@@ -40,12 +45,14 @@ On the observatory side, the desired workflow is:
   and implicit calibrations
 * check what has already been observed and what reduced products already exist before asking
   for another visit
-* hand observatory staff/ZShooter a classic-style target list and configuration payload for execution
+* hand observatory staff/ZShooter a classic-style target list and configuration payload for
+  execution
 
 On the instrument side:
 
 * ZShooter observers the target list promptly
-* ZShooter reduces data quickly enough to support follow-on decisions embedded in programs, bookkeeping, and
+* ZShooter reduces data quickly enough to support follow-on decisions embedded in programs,
+  bookkeeping, and
   sharing results
 
 
@@ -53,14 +60,14 @@ That stack is well matched to ZShooter's broader architecture: GUI-driven
 operation, a reusable daemon-based ICS, archive-facing data products, and quick-look/DRP
 support intended to surface useful feedback during the observation itself.
 
-What still depends on Keck policy and tooling
----------------------------------------------
+## What still depends on Keck policy and tooling
 
 The observatory-facing side is where the major non-instrument dependencies remain. In
 particular, the following are not just software implementation details; they are policy and
 operations questions that need explicit WMKO agreement:
 
-* how WMKO enables a larger number of time critical observations (ex. pre-defined regular ToO blocks)
+* how WMKO enables a larger number of time critical observations (ex. pre-defined regular ToO
+  blocks)
 * whether rapid ToO programs can be represented as standing program-level trigger definitions,
   rather than only as pre-registered target lists
 * which trigger sources may be monitored automatically, and under what approval model
@@ -74,31 +81,32 @@ operations questions that need explicit WMKO agreement:
 This page therefore describes the operating model ZShooter is trying to enable, not a claim
 that Keck has already ratified that operating model.
 
-Response classes
-----------------
+## Response classes
 
 The current operational concept is easiest to understand as a small set of response classes:
 
 Rapid
-   Working target for events where the first spectrum is time-critical. The instrument design is
-   built around starting science exposure within five minutes of beam delivery, with the
-   most aggressive science cases seeking effectively immediate handoff once the telescope is
-   ready.
+: Working target for events where the first spectrum is time-critical. The instrument design is
+  built around starting science exposure within five minutes of beam delivery, with the
+  most aggressive science cases seeking effectively immediate handoff once the telescope is
+  ready.
+
 
 Fast
-   Intended for cases where same-night action on hour timescales still matters, but where a
-   fully interrupt-driven response is not always required. Intended for follow-up that should
-   happen during the current observing window, but does not require a minute timescale interruption.
+: Intended for cases where same-night action on hour timescales still matters, but where a
+  fully interrupt-driven response is not always required. Intended for follow-up that should
+  happen during the current observing window, but does not require a minute timescale interruption.
+
 
 Planned
-   Intended for cadence follow-up, predicted windows, or pre-scheduled revisit logic.
+: Intended for cadence follow-up, predicted windows, or pre-scheduled revisit logic.
+
 
 These response classes are useful because they let the instrument team talk clearly about
 configuration latency, calibration latency, handoff expectations, and sequence design, even
 before every Keck-side policy detail is finalized.
 
-Template-driven programs
-------------------------
+## Template-driven programs
 
 A ZShooter ToO program is best thought of as a standing observing recipe rather than a static
 list of named targets. A submission should be able to carry:
@@ -114,8 +122,7 @@ fall back to standardized templates or human-on-call support. That distinction m
 WMKO and ZShooter should be able to support both a mature, machine-actionable program and a more
 human-mediated one in the era of next-generation surveys.
 
-Trigger and cadence concepts
-----------------------------
+## Trigger and cadence concepts
 
 The operational concepts work already identifies several cadence patterns that are worth
 exposing explicitly in any future Keck-side ToO tooling:
@@ -125,17 +132,17 @@ exposing explicitly in any future Keck-side ToO tooling:
 * adaptive cadence whose spacing grows with time since first trigger
 * orbit-phase sampling for short-period systems
 * visibility-window sampling for cases constrained by geometry rather than urgency
-* visit multiplicity rules such as one visit, multiple visits, or :math:`N` visits per orbit
+* visit multiplicity rules such as one visit, multiple visits, or {math}`N` visits per orbit
 
-..
-    For ZShooter this is not abstract workflow language. Different science cases genuinely need
-    these different patterns: kilonovae and young SNe want rapid first contact plus short-baseline
-    revisits; long-period binary programs want repeatability and bookkeeping over long baselines;
-    compact binaries need orbit-phase logic; and solar-system follow-up can require a mix of rapid
-    response and geometry-limited revisits.
+<!--
+For ZShooter this is not abstract workflow language. Different science cases genuinely need
+these different patterns: kilonovae and young SNe want rapid first contact plus short-baseline
+revisits; long-period binary programs want repeatability and bookkeeping over long baselines;
+compact binaries need orbit-phase logic; and solar-system follow-up can require a mix of rapid
+response and geometry-limited revisits.
+-->
 
-Execution handoff
------------------
+## Execution handoff
 
 The desired execution chain remains human-mediated at the observatory boundary. In the
 current concept, the automation layer does the matching, expansion, schedule evaluation,
@@ -144,23 +151,22 @@ WMKO staff.
 
 A representative handoff looks like this:
 
-#. incoming alerts are ingested through connectors
-#. a matching engine compares them against active programs and filters
-#. the observation package builder expands the match into the required observations
-#. the scheduling layer applies observability, interrupt policy, and remaining allocation
-#. the ToO handoff gate presents an executable block and handoff window to the Telescope
+1. incoming alerts are ingested through connectors
+1. a matching engine compares them against active programs and filters
+1. the observation package builder expands the match into the required observations
+1. the scheduling layer applies observability, interrupt policy, and remaining allocation
+1. the ToO handoff gate presents an executable block and handoff window to the Telescope
    Operator and SA
-#. once approved, the observation is delivered to the instrument as a classic-style target list
+1. once approved, the observation is delivered to the instrument as a classic-style target list
    and configuration payload
-#. the ICS executes, the DRP reduces, and products are published to archive and downstream
+1. the ICS executes, the DRP reduces, and products are published to archive and downstream
    result-sharing logic
 
 That human-gated model is deliberate. It keeps the instrument architecture compatible with
 current Keck operating culture while still making room for a much more automated pre-execution
 pipeline.
 
-Calibration and data feedback
------------------------------
+## Calibration and data feedback
 
 Rapid ToO work only functions if calibration behavior is predictable. The current operational
 concept assumes that daytime calibration products carry most of the burden, and that any
@@ -176,61 +182,49 @@ already been adequately observed, whether a sequence should continue, and whethe
 should trigger follow-on notifications depends on that reduction path being operationally real,
 not aspirational.
 
-Results and accounting
-----------------------
+## Results and accounting
 
-Once an observation has completed, the system still has work to do. The program stack needs to maintain an
-observation ledger, connect completed products to the archive, compute time debits against the program database,
+Once an observation has completed, the system still has work to do. The program stack needs to
+maintain an
+observation ledger, connect completed products to the archive, compute time debits against the
+program database,
 and generate the follow-on result or alert notifications that drive later visits.
 
 
-Architecture views
-------------------
+## Architecture views
 
-Overall architecture
-~~~~~~~~~~~~~~~~~~~~
+### Overall architecture
 
-.. raw:: html
+<figure class="zs-architecture-figure">
+  <a href="_static/d2_diagrams/too_architecture.svg" target="_blank" rel="noopener">
+    <img src="_static/d2_diagrams/too_architecture.svg" alt="ZShooter ToO architecture diagram">
+  </a>
+  <figcaption>Overall ToO architecture. Click to open the full SVG in a new tab.</figcaption>
+</figure>
 
-   <figure class="zs-architecture-figure">
-     <a href="_static/d2_diagrams/too_architecture.svg" target="_blank" rel="noopener">
-       <img src="_static/d2_diagrams/too_architecture.svg" alt="ZShooter ToO architecture diagram">
-     </a>
-     <figcaption>Overall ToO architecture. Click to open the full SVG in a new tab.</figcaption>
-   </figure>
+### Program submission
 
-Program submission
-~~~~~~~~~~~~~~~~~~
+<figure class="zs-architecture-figure">
+  <a href="_static/d2_diagrams/program_submission.svg" target="_blank" rel="noopener">
+    <img src="_static/d2_diagrams/program_submission.svg" alt="ZShooter ToO program submission diagram">
+  </a>
+  <figcaption>Program submission flow. Click to open the full SVG in a new tab.</figcaption>
+</figure>
 
-.. raw:: html
+### Alert response loop
 
-   <figure class="zs-architecture-figure">
-     <a href="_static/d2_diagrams/program_submission.svg" target="_blank" rel="noopener">
-       <img src="_static/d2_diagrams/program_submission.svg" alt="ZShooter ToO program submission diagram">
-     </a>
-     <figcaption>Program submission flow. Click to open the full SVG in a new tab.</figcaption>
-   </figure>
+<figure class="zs-architecture-figure">
+  <a href="_static/d2_diagrams/alert_response_loop.svg" target="_blank" rel="noopener">
+    <img src="_static/d2_diagrams/alert_response_loop.svg" alt="ZShooter alert response loop diagram">
+  </a>
+  <figcaption>Alert response loop. Click to open the full SVG in a new tab.</figcaption>
+</figure>
 
-Alert response loop
-~~~~~~~~~~~~~~~~~~~
+### Completion and accounting loop
 
-.. raw:: html
-
-   <figure class="zs-architecture-figure">
-     <a href="_static/d2_diagrams/alert_response_loop.svg" target="_blank" rel="noopener">
-       <img src="_static/d2_diagrams/alert_response_loop.svg" alt="ZShooter alert response loop diagram">
-     </a>
-     <figcaption>Alert response loop. Click to open the full SVG in a new tab.</figcaption>
-   </figure>
-
-Completion and accounting loop
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. raw:: html
-
-   <figure class="zs-architecture-figure">
-     <a href="_static/d2_diagrams/too_completion_loop.svg" target="_blank" rel="noopener">
-       <img src="_static/d2_diagrams/too_completion_loop.svg" alt="ZShooter ToO completion loop diagram">
-     </a>
-     <figcaption>Completion and accounting loop. Click to open the full SVG in a new tab.</figcaption>
-   </figure>
+<figure class="zs-architecture-figure">
+  <a href="_static/d2_diagrams/too_completion_loop.svg" target="_blank" rel="noopener">
+    <img src="_static/d2_diagrams/too_completion_loop.svg" alt="ZShooter ToO completion loop diagram">
+  </a>
+  <figcaption>Completion and accounting loop. Click to open the full SVG in a new tab.</figcaption>
+</figure>

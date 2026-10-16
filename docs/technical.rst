@@ -1,16 +1,15 @@
-Technical Design
-================
+Design
+======
 
-Post-conceptual design the ZShooter got simpler on purpose:
-    - two spectrometers instead of three, three channels per spectrometer,
-    - 6 detectors instead of vs 4 focal planes with 9 detectors and 3 mosaics (2k x 4k VIS and 2k x 2k NIR)
-    - less han half then anamorphism, and
-    - no detector or grating mosaics.
+ZShooter has two fixed-format spectrometers, each with three spectral channels:
 
-This significantly reduced operational complexity, maintainability, and lowers cost all while increasing instrument
-performance.
+- **VIS:** B/G/R, each with one 2k × 4k qCCD.
+- **NIR:** YJ/H/K, each with one 2k × 2k LmAPD.
+- **ZImager:** three additional qCMOS detectors for simultaneous optical imaging.
 
-This section documents the current architecture/design.
+The spectrometers use six single-detector focal planes, with no detector or grating mosaics.
+ZFront, ZImager, ZSpec VIS, and ZSpec NIR are separately supported assemblies for independent
+alignment and removal.
 
 
 Optical Design
@@ -63,6 +62,5 @@ architectural change a move from three to two spectrometers, each split into thr
    optical_design
    architecture
    detector_technologies
-   seeing_enhancement
    control
    cad

@@ -1,18 +1,18 @@
-Observing
-=========
+Observing & Operations
+======================
 
 .. container:: zs-lead
 
-    One-stop shopping for how to obtain data (eventually) with ZShooter.
+    How to use and work with ZShooter.
 
 .. grid:: 1 2 2 4
    :gutter: 2
 
-   .. grid-item-card:: Instrument simulator
-      :link: simulator.html
+   .. grid-item-card:: Calibration procedures
+      :link: procedures/calibration.html
       :link-type: url
 
-      A usable science-team and observer-facing simulator, with notebook embeds and install instructions.
+      Internal calibration, focus, registration, target acquisition, and observing flows.
 
    .. grid-item-card:: Data reduction pipeline
       :link: reduction.html
@@ -37,7 +37,7 @@ Observing
    :hidden:
    :maxdepth: 1
 
-   simulator
+   Calibration procedures <procedures/calibration>
    reduction
    classical_programs
    too_programs
