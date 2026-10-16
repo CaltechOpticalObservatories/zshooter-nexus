@@ -104,7 +104,7 @@ ZShooter
    - Always-online at **Keck I Right Nasmyth for rapid response**
    - **Two spectrometers (optical & nIR) / six channels (blue, green, red, yj, h, k)**
    - **2k × 4k qCCDs in B/G/R; 2k × 2k LmAPDs in YJ/H/K**, one detector per channel
-   - **ZSpec + ZImager** Deep, fase imaging or simultaneous imaging of surroundings
+   - **ZSpec + ZImager** Deep, fast imaging or simultaneous imaging of surroundings
    - AO-enhanced-seeing ready, optimized for natural seeing
 
 .. container:: zs-quote

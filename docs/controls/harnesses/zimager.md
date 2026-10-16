@@ -45,7 +45,7 @@ Panel locations, connector/port designations, pin assignments, and assembly draw
 
 The local computer connects to the motion controllers through USB, Ethernet, or EtherCAT; interface
 selection and controller consolidation remain open. Local DC distribution supplies the electronics
-and mechanisms; load allocation remains open.
+and mechanisms.
 
 ## Detector readout
 
