@@ -57,7 +57,7 @@
     let targetUrl;
 
     try {
-      rootUrl = new URL(root.dataset.contentRoot || "./", window.location.href);
+      rootUrl = new URL(root.dataset.contentRoot || root.getAttribute("data-content_root") || "./", window.location.href);
       targetUrl = new URL(href, window.location.href);
     } catch (error) {
       return null;
@@ -139,6 +139,16 @@
         applyMode(nextMode);
       });
     });
+  }
+
+  if (currentPageMode === "internal") {
+    const article = document.querySelector("main article.yue");
+    if (article) {
+      const notice = document.createElement("p");
+      notice.className = "zs-internal-page-notice";
+      notice.textContent = "Internal working page. Switch to Internal mode to view it.";
+      article.before(notice);
+    }
   }
 
   applyMode(getStoredMode());

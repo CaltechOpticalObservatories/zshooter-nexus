@@ -307,3 +307,19 @@ html.dark .site-mode-switch[data-state="internal"] {
     font-size: 0.76rem;
   }
 }
+
+/* Internal document bodies follow the same mode as their navigation links. */
+.zs-internal-page-notice {
+  display: none;
+}
+
+html[data-zs-mode="external"][data-zs-page-mode="internal"] article.yue,
+html[data-zs-mode="external"][data-zs-page-mode="internal"] .sy-rside,
+html[data-zs-mode="external"][data-zs-page-mode="internal"] .navigation {
+  display: none !important;
+}
+
+html[data-zs-mode="external"][data-zs-page-mode="internal"] .zs-internal-page-notice {
+  display: block;
+  margin: 2rem 0;
+}

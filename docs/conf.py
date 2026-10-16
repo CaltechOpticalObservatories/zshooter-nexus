@@ -43,6 +43,11 @@ exclude_patterns = [
     "_build",
     "**/Thumbs.db",
     "**/.DS_Store",
+    # Authoring notes and private working references are not website pages.
+    "controls/*.md",
+    "reference/**",
+    # Markdown content included on Program Management, not a separate page.
+    "wbs.md",
 ]
 
 html_theme = "shibuya"
