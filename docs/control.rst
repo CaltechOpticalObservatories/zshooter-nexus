@@ -1,7 +1,7 @@
 :zs-mode: both
 
-Controlling ZShooter
-====================
+Controls
+========
 
 .. container:: zs-lead
 
@@ -11,10 +11,29 @@ Controlling ZShooter
     - a simple, useful quicklook,
     - engineering tooling used from AIT through maintenance.
 
+.. Draft navigation: to hide both branches from navigation, replace the next
+   ".. container:: zs-internal-only" line with "..". Its indented contents
+   become an RST comment. Restore that line to show them in Internal mode.
+   The draft pages still compile for local review; their content is unchanged.
+
+.. container:: zs-internal-only
+
+   **Operations and harnesses — working drafts**
+
+   - :doc:`Operations <controls/operations/index>`: device functions, commands, status, and recovery.
+   - :doc:`Harnesses <controls/harnesses/index>`: module boundaries, harnesses, and shared services.
+
+   .. toctree::
+      :hidden:
+      :maxdepth: 3
+
+      Operations <controls/operations/index>
+      Harnesses <controls/harnesses/index>
+
 .. grid:: 1
    :gutter: 2
 
-   .. grid-item-card:: Instrument Control Software documentation
+   .. grid-item-card:: Software
       :link: _staged/ics/index.html
       :link-type: url
 
@@ -30,4 +49,4 @@ Controlling ZShooter
    :hidden:
    :maxdepth: 3
 
-   _staged/ics/index
+   Software <_staged/ics/index>
