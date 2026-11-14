@@ -9,10 +9,8 @@ myst:
 Scope: four vessel branches, gauges, automatic gate valves, and the shared pump. Related operations:
 [environmental services](../operations/environmental-services.md#vacuum).
 
-Diagrams:
-[VIS detector assemblies](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/subsystems.d2)
-and
-[NIR assembly](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zspec.d2).
+Interactive diagram: <a href="../../_static/archwrap.html?selected=vacuum_protection.svg">Vacuum protection</a>.
+The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
@@ -25,9 +23,9 @@ and
 
 | Vessel | Gauge | Isolation | Pump connection |
 | --- | --- | --- | --- |
-| VIS B | B vacuum gauge | B automatic gate valve | Shared pump; branch layout open |
-| VIS G | G vacuum gauge | G automatic gate valve | Shared pump; branch layout open |
-| VIS R | R vacuum gauge | R automatic gate valve | Shared pump; branch layout open |
+| VIS B | B vacuum gauge | B automatic gate valve | Separate branch from the shared manifold |
+| VIS G | G vacuum gauge | G automatic gate valve | Separate branch from the shared manifold |
+| VIS R | R vacuum gauge | R automatic gate valve | Separate branch from the shared manifold |
 | NIR | NIR vacuum gauge | NIR automatic gate valve | Shared pump; removable-NIR connection capped |
 
 Gauge placement, valve/manifold arrangement, fittings, and service connections remain open. Pump
@@ -37,9 +35,9 @@ cooling is included in the [glycol harness](glycol.md).
 
 | Equipment | Connection | Detail |
 | --- | --- | --- |
-| Vessel gauges | Power and readout | Local host/controller connections open |
+| Vessel gauges | Power and readout | DC from the module EBox; serial readout through a USB gauge interface |
 | Automatic gate valves | Local sensing, actuation, and position indication | Closes on power-loss |
-| Shared pump | Power, local controls, status | Equipment selection and remote interface open |
+| Shared pump | Power, local controls, status | AC from ZFront; local pump controls |
 
 Automatic valve operation is independent of host software. The local protection connections and any
 host status interface will be shown in the assembly drawings.

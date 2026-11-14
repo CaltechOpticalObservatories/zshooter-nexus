@@ -70,7 +70,7 @@ is_submodule_path() {
 has_repo_d2_changes() {
   local path="$1"
 
-  git diff --name-only "$before_sha" "$after_sha" -- "$path" | grep -E '\.d2$' >/dev/null
+  git diff --name-only "$before_sha" "$after_sha" -- "$path" | grep -E '(\.d2$|(^|/)diagrams\.json$)' >/dev/null
 }
 
 has_submodule_d2_changes() {
@@ -92,7 +92,7 @@ has_submodule_d2_changes() {
   ensure_submodule_commit "$path" "$old_sha"
   ensure_submodule_commit "$path" "$new_sha"
 
-  git -C "$path" diff --name-only "$old_sha" "$new_sha" | grep -E '\.d2$' >/dev/null
+  git -C "$path" diff --name-only "$old_sha" "$new_sha" | grep -E '(\.d2$|(^|/)diagrams\.json$)' >/dev/null
 }
 
 has_d2_changes() {
@@ -111,7 +111,7 @@ if [[ "$event_name" == "push" || "$event_name" == "pull_request" || "$event_name
     render=true
     reasons+=("$event_name has no usable before SHA")
   else
-    if git diff --name-only "$before_sha" "$after_sha" -- tools/render_d2.sh tools/detect_d2_changes.sh | grep -q .; then
+    if git diff --name-only "$before_sha" "$after_sha" -- tools/render_d2.sh tools/render_d2.py tools/detect_d2_changes.sh .d2-version | grep -q .; then
       render=true
       reasons+=("D2 tooling changed")
     fi

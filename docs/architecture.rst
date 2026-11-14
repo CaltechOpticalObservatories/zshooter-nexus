@@ -1,30 +1,25 @@
 System Architecture
 ===================
 
-.. container:: zs-lead
+Explore the instrument through the linked concept views, or select a connection view to follow
+the panels and feedthroughs. Use **Focus** to examine an enclosure or panel in the complete map.
+**Full window** gives the viewer the browser window.
 
-   The hardware diagrams below are an intentionally large, some offer a complete overview of ZShooters current hardware concept.
-   Click/open the raw svg and zoom if you actually want to read it.
-
-   The first diagram is a **systems map**, useful mainly for three things: control nexuses, detector/readout
-   separation, and facility-service boundaries.
-
-.. raw:: html
-
-   <figure class="zs-architecture-figure">
-     <a href="_static/d2_diagrams/hardware_systems_full.svg" target="_blank" rel="noopener">
-       <img src="_static/d2_diagrams/hardware_systems_full.svg" alt="ZShooter hardware architecture diagram">
-     </a>
-     <figcaption>Hardware systems overview. Click to open the full SVG in a new tab.</figcaption>
-   </figure>
-
+:doc:`Drawing key and baseline choices <controls/harnesses/diagram-guide>`
 
 .. raw:: html
 
    <div class="zs-viewer-panel">
-     <h2>Architecture Diagrams</h2>
      <iframe
-       title="Architecture diagram viewer"
-       src="_static/archwrap.html?manifest=generated/diagrams.generated.json&selected=hardware_systems_full.svg">
+       title="ZShooter architecture diagrams"
+       src="_static/archwrap.html?manifest=generated/diagrams.generated.json&selected=hardware_overview.svg"
+       allow="fullscreen"
+       allowfullscreen
+       style="width:100%;height:80vh;min-height:640px;border:1px solid #cbd5df">
      </iframe>
    </div>
+
+.. toctree::
+   :hidden:
+
+   controls/harnesses/diagram-guide
