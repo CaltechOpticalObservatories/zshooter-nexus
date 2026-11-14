@@ -10,9 +10,8 @@ Scope: ZFront enclosure and local control/actuator connections, calibration equi
 interfaces to shared services. Related operations: [ZFront and ZCal](../operations/zfront-zcal.md)
 and [environmental services](../operations/environmental-services.md).
 
-Diagram:
-[ZFront entities](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zfront.d2).
-Item inventory: ZShooter Item Ledger.
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zfront_full.svg">ZFront panels</a>.
+The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
@@ -35,13 +34,13 @@ Item inventory: ZShooter Item Ledger.
 
 | Connection | Harness / service | Detail |
 | --- | --- | --- |
-| Calibration light sources | LEDs + quartz cable | Source and connector allocation open |
-| Calibration lamps | HVAC for each lamp; cable bundle | Lamp and connector allocation open |
-| Calibration insertion / point-source mechanisms | Actuator harness | Motor versus air selection open |
-| Neighbor selector | Actuator harness | Actuator selection open |
-| ZImage/ZSpec selector | Actuator harness | Motor versus air selection open |
-| Air manifold | Power/sense | Controller interface open |
-| Glycol manifold | Power/sense | Controller interface open |
+| Calibration light sources | LEDs + quartz cable | Source circuits terminate at the mechanism/service panel |
+| Calibration lamps | HVAC for each lamp; cable bundle | Separate lamp supplies through the mechanism/service panel |
+| Calibration insertion / point-source mechanisms | Pneumatic actuation and position feedback | Valve/service I/O in the EBox |
+| Neighbor selector | Motor and position harness | Ethernet-connected controller |
+| ZImage/ZSpec selector | Pneumatic actuation and position feedback | Valve/service I/O in the EBox |
+| Air manifold | Power/sense | DC supply and valve/service I/O |
+| Glycol manifold | Power/sense | DC supply and valve/service I/O |
 
 ### ZFront EBox to ZImager
 
@@ -50,26 +49,20 @@ Item inventory: ZShooter Item Ledger.
 | Network | Copper; 100 Mb/s sufficient | ZImager local network |
 | Power | AC | ZImager local supply |
 
-The ZImager CoaXPress route remains open between fiber transceivers and local compute. Cable
-coiling, storage, and routing are external to the ZFront EBox; the readout route does not pass
-through the EBox. The detector-to-readout connections are in the [ZImager harness](zimager.md).
+The diagram uses separate U/V/Z CoaXPress optical transports to the server room. Cable
+coiling, storage, and routing are external to the ZFront EBox. The detector-to-readout connections are in the [ZImager harness](zimager.md).
 
 ### ZFront EBox to ZSpec VIS EBox
 
 | Connection | Service / medium | Detail |
 | --- | --- | --- |
 | Power | 120 VAC | VIS EBox |
-| Network, option A | Fiber | One combined network link to the VIS EBox |
-| Network, option B | Fiber | Individual links to six Archons, plus a link to the VIS EBox |
+| Network | 10G fiber | Combined control and Archon traffic to the VIS switch |
 
 ### Panel details
 
-| Field | Assignment |
-| --- | --- |
-| Panel identity and location | Unassigned |
-| Connector/port designation and face | Unassigned |
-| External connection and internal termination | To be added to the connection tables above |
-| Assembly drawing | Pending; cable models and pin assignments will be linked here |
+The diagrams name functional panels and their circuits. The assembly drawings must assign
+physical locations, connector designations, cable models and contacts.
 
 ## Air connections
 
@@ -78,7 +71,7 @@ through the EBox. The detector-to-readout connections are in the [ZImager harnes
 | RNAS | Exposed air manifold | Facility supply |
 | Air manifold | ZImager | Enclosure air |
 | Air manifold | ZSpec VIS | Enclosure air |
-| Air manifold | ZFront point-source, calibration insertion, and ZImage/ZSpec selector actuators | If pneumatic actuators are selected |
+| Air manifold | ZFront point-source, calibration insertion, and ZImage/ZSpec selector actuators | Pneumatic baseline |
 
 ## Glycol connections
 
@@ -86,7 +79,8 @@ through the EBox. The detector-to-readout connections are in the [ZImager harnes
 | --- | --- | --- |
 | RNAS | Exposed glycol manifold | Supply and return |
 | Glycol manifold | ZImager manifold | Supply and return |
-| Glycol manifold | ZSpec manifold | Supply and return |
+| Glycol manifold | VIS and NIR manifolds | Independently isolated supply/return branches |
+| Glycol manifold | Vacuum pump station | Supply and return |
 | Glycol manifold | ZFront EBox | Heat exchanger supply and return |
 
 Shared services: [power](power.md), [networking](networking.md), [glycol](glycol.md), and
@@ -94,9 +88,8 @@ Shared services: [power](power.md), [networking](networking.md), [glycol](glycol
 
 :::{container} zs-note-to-team zs-internal-only
 
-**Team notes:** Calibration source inventory, controller count, actuator type (including motor
-versus air), enclosure layout, panel identities, and connector families remain open. The present
-CXP-6 copper run-length estimate is 40–60 m, motivating the fiber-transceiver or local-compute
-choice.
+**Team notes:** The three pneumatic mechanisms are the diagram baseline. Size the valves and
+position feedback with the mechanical design. The estimated 40–60 m readout route motivates
+optical transport; select and qualify the CXP converters before assigning connectors.
 
 :::

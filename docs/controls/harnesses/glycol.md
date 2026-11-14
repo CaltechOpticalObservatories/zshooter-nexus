@@ -9,10 +9,8 @@ myst:
 Scope: supply/return circuits, manifolds, cooling loads, and module disconnects. Related operations:
 [environmental services](../operations/environmental-services.md#glycol).
 
-Diagrams:
-[hardware composition](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zshooter_hardware.d2)
-and
-[glycol view](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/views/glycol_only.d2).
+Interactive diagram: <a href="../../_static/archwrap.html?selected=glycol_only.svg">Glycol distribution</a>.
+The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
@@ -30,13 +28,14 @@ and
 | ZFront manifold | ZFront EBox heat exchanger | Local cooling branch |
 | ZFront manifold | ZImager submanifold | Removable-module connection |
 | ZImager submanifold | U/V/Z detectors and EBox heat exchanger | Branch layout open |
-| ZFront manifold | ZSpec distribution | Removable-module connection |
+| ZFront manifold | VIS and NIR distributions | Independently isolated module connections |
+| ZFront manifold | Vacuum pump station | Supply/return through the pump service panel |
 | VIS distribution | EBox heat exchanger, B/G/R Archons and cryocoolers | Branch layout open; slit-viewer cooling conditional |
 | NIR distribution | EBox heat exchanger, YJ/H/K Archons, external CRED2 | Branch layout open |
 | Mechanical-room facility cooling | NIR compressor | Separate facility circuit |
 
-The vacuum pump also has a cooling connection; its supply/return route is unassigned. Any NIR
-coldhead glycol connection remains to be confirmed with the cryogenic design.
+The pump cooling branch is part of this diagram baseline. Confirm any additional NIR coldhead
+services with the selected cryogenic equipment.
 
 ## Manifold and hose details
 

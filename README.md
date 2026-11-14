@@ -65,15 +65,16 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 
-curl -fsSL https://d2lang.com/install.sh | sh -s --
+curl -fsSL https://d2lang.com/install.sh | sh -s -- --method standalone --version "$(cat .d2-version)" --prefix "$HOME/.local"
 python -m pip install -r requirements.txt
 
 python -m unittest discover -s tests
 
 python tools/stage_site.py
 
-# Run these two commands only after changing D2 sources.
-bash tools/render_d2.sh
+# Render only the architecture views during diagram work.
+# Add --view zfront_full to render one view. Omit --project to render both trees.
+bash tools/render_d2.sh --project arch
 bash tools/log_d2_drift.sh
 
 # Always refresh the site copies and architecture viewer index.
@@ -84,3 +85,7 @@ sphinx-build -b html docs docs/_build/html
 
 python -m http.server -d docs/_build/html 8000
 ```
+
+D2 is pinned by `.d2-version`; local rendering checks that version. The architecture viewer supports
+pan, zoom, enclosure focus and documentation links. Diagram source conventions are in
+`zshooter-arch/README.md`. A compiler-pin or renderer change triggers regeneration in CI.

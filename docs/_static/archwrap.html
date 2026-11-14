@@ -1,209 +1,133 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Architecture Viewer</title>
-  <style>
-    :root {
-      --panel-bg: #ffffff;
-      --panel-border: rgba(100, 116, 139, 0.35);
-      --muted: #475569;
-    }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: #fff;
-      color: #0f172a;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-    .toolbar {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      padding: 0.7rem 0.85rem;
-      border-bottom: 1px solid var(--panel-border);
-      background: var(--panel-bg);
-      flex-wrap: wrap;
-    }
-    .toolbar label {
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: var(--muted);
-    }
-    .toolbar select {
-      min-width: 18rem;
-      max-width: 100%;
-      padding: 0.4rem 0.55rem;
-      border-radius: 8px;
-      border: 1px solid rgba(100, 116, 139, 0.5);
-      background: #fff;
-    }
-    .spacer {
-      flex: 1 1 auto;
-    }
-    .meta {
-      font-size: 0.83rem;
-      color: var(--muted);
-      width: 100%;
-    }
-    .toolbar a {
-      font-size: 0.84rem;
-      text-decoration: none;
-    }
-    #viewer-frame {
-      border: 0;
-      width: 100%;
-      flex: 1 1 auto;
-      min-height: 320px;
-      background: white;
-    }
-  </style>
-</head>
-<body>
-  <div class="toolbar">
-    <label for="selector">Diagram</label>
-    <select id="selector"></select>
-    <div class="spacer"></div>
-    <a id="open-link" href="#" target="_blank" rel="noopener">Open raw file</a>
-    <div class="meta" id="meta"></div>
-  </div>
-  <iframe id="viewer-frame" title="Architecture viewer"></iframe>
-
-  <script>
-    const selector = document.getElementById("selector");
-    const meta = document.getElementById("meta");
-    const openLink = document.getElementById("open-link");
-    const viewerFrame = document.getElementById("viewer-frame");
-    const params = new URLSearchParams(window.location.search);
-
-    function resolveUrl(value) {
-      return new URL(value, window.location.href).toString();
-    }
-
-    function ensureTrailingSlash(value) {
-      return value.endsWith("/") ? value : value + "/";
-    }
-
-    function titleFromPath(path) {
-      const file = path.split("/").pop() || path;
-      return file
-        .replace(/\.svg$/i, "")
-        .replace(/[_-]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function chooseInitial(entries) {
-      const requested = params.get("selected") || params.get("svg");
-      if (!requested) return entries[0];
-      return entries.find(entry =>
-        entry.file === requested ||
-        entry.file.endsWith(requested) ||
-        entry.title === requested
-      ) || entries[0];
-    }
-
-    function update(entries, selectedFile) {
-      const entry = entries.find(item => item.file === selectedFile) || entries[0];
-      if (!entry) return;
-
-      const svgUrl = resolveUrl(entry.file);
-      openLink.href = svgUrl;
-      meta.textContent = entry.file;
-      viewerFrame.src = svgUrl;
-    }
-
-    async function discoverSvgEntries(folderParam) {
-      const folderUrl = resolveUrl(ensureTrailingSlash(folderParam));
-      const response = await fetch(folderUrl);
-      if (!response.ok) {
-        throw new Error("Could not load directory listing: " + folderUrl);
-      }
-
-      const text = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, "text/html");
-      const links = Array.from(doc.querySelectorAll('a[href]'));
-      const seen = new Set();
-      const entries = [];
-
-      for (const link of links) {
-        const href = link.getAttribute('href');
-        if (!href) continue;
-        if (!/\.svg(?:\?.*)?$/i.test(href)) continue;
-
-        const fullUrl = new URL(href, folderUrl);
-        const sameFolder = fullUrl.pathname.startsWith(new URL(folderUrl).pathname);
-        if (!sameFolder) continue;
-
-        const relative = decodeURIComponent(fullUrl.pathname.split('/').pop() || '');
-        if (!relative || seen.has(relative)) continue;
-        seen.add(relative);
-
-        entries.push({
-          title: titleFromPath(relative),
-          file: ensureTrailingSlash(folderParam) + relative,
-        });
-      }
-
-      entries.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }));
-      return entries;
-    }
-
-    async function loadManifestEntries(manifestParam) {
-      const manifestUrl = resolveUrl(manifestParam);
-      const response = await fetch(manifestUrl);
-      if (!response.ok) {
-        throw new Error("Could not load diagram manifest: " + manifestUrl);
-      }
-      return response.json();
-    }
-
-    async function main() {
-      const manifestParam = params.get("manifest") || "generated/diagrams.generated.json";
-      const folderParam = params.get("folder");
-      const directSvg = params.get("svg");
-
-      let entries = [];
-      if (directSvg) {
-        entries = [{ title: titleFromPath(directSvg), file: directSvg }];
-      } else if (manifestParam) {
-        entries = await loadManifestEntries(manifestParam);
-      } else if (folderParam) {
-        entries = await discoverSvgEntries(folderParam);
-      } else {
-        throw new Error("No diagram source configured.");
-      }
-
-      if (!Array.isArray(entries) || entries.length === 0) {
-        document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">No SVG diagrams found. Pass <code>?manifest=...</code> or <code>?svg=...</code>.</p>';
-        return;
-      }
-
-      selector.innerHTML = "";
-      for (const entry of entries) {
-        const option = document.createElement("option");
-        option.value = entry.file;
-        option.textContent = entry.title || entry.file.split("/").pop();
-        selector.appendChild(option);
-      }
-
-      const initial = chooseInitial(entries);
-      selector.value = initial.file;
-      selector.addEventListener("change", () => update(entries, selector.value));
-      update(entries, initial.file);
-    }
-
-    main().catch(error => {
-      console.error(error);
-      document.body.innerHTML = '<p style="padding:1rem;color:#b91c1c">' + (error.message || 'Could not initialize architecture viewer.') + '</p>';
-    });
-  </script>
-</body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architecture diagrams</title>
+<style>
+:root{color-scheme:light;font:15px/1.4 system-ui,-apple-system,sans-serif;color:#17324b;background:#fff}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{display:flex;flex-direction:column}
+.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #cbd5df;background:#f8fafc}
+label{font-size:13px;font-weight:600}select,button{font:inherit;padding:6px 9px;border:1px solid #b3c1cf;border-radius:5px;background:white;color:inherit}
+select{max-width:100%}#selector{max-width:34rem}#focus{max-width:28rem}button{cursor:pointer}button:hover{background:#e8f0f8}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #568bb2;outline-offset:2px}
+.grow{flex:1}a{color:#246393}#zoom{font-variant-numeric:tabular-nums;min-width:3.5em;text-align:center}
+#help{font-size:12px;color:#4f6576;padding:5px 14px;border-bottom:1px solid #dbe3eb}
+#viewport{position:relative;flex:1;min-height:320px;overflow:hidden;touch-action:none;cursor:grab;background:white}
+#viewport.dragging{cursor:grabbing}#viewport>svg:not(#minimap){display:block;width:100%;height:100%}#viewport a{cursor:pointer}
+#viewport a:hover .shape>rect{filter:drop-shadow(0 0 3px #5d87aa)}#viewport:focus-visible{outline:2px solid #568bb2;outline-offset:-2px}
+#error{padding:24px;color:#9b2525}#minimap{position:absolute;bottom:12px;right:12px;width:180px;height:115px;background:#fffffff2;border:1px solid #b8c8d7;border-radius:4px;pointer-events:none}
+@media(max-width:650px){.toolbar{padding:7px;gap:6px}#selector{width:100%}.grow{display:none}#minimap{width:115px;height:80px}}
+</style>
+<div class="toolbar">
+ <label for="selector">Diagram</label><select id="selector"></select>
+ <label for="focus">Focus</label><select id="focus"><option value="all">Whole diagram</option></select>
+ <span class="grow"></span><button id="out" aria-label="Zoom out">−</button><span id="zoom" aria-live="polite">100%</span><button id="in" aria-label="Zoom in">+</button>
+ <button id="fit">Fit</button><button id="width">Fit width</button><button id="actual">100%</button><a id="full-window" target="_blank" rel="noopener">Full window</a>
+ <a id="open-link" target="_blank" rel="noopener">Open SVG</a>
+</div>
+<div id="help">Drag blank space to pan. Ctrl/⌘ + wheel zooms. Linked objects open their documentation.</div>
+<div id="viewport" tabindex="0" aria-label="Diagram canvas: arrow keys pan, plus and minus zoom, zero fits">
+ <div id="error" role="alert" hidden></div>
+ <svg id="minimap" aria-hidden="true"><image id="mini-image"></image><rect id="mini-window" fill="#326fa329" stroke="#246393"></rect></svg>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
+const selector=$('selector'), focus=$('focus'), canvas=$('viewport'), mini=$('minimap');
+const params=new URLSearchParams(location.search);
+let svg, full, box, mode='all', entries=[], groups=[], sequence=0, drag, dragged=false;
+function rectangle(bounds){return {x:bounds.x,y:bounds.y,w:bounds.width,h:bounds.height};}
+function setBox(next){
+ mini.style.display=mode==='all'?'none':'';
+ box=next;svg.setAttribute('viewBox',[box.x,box.y,box.w,box.h].join(' '));
+ const scale=Math.min(canvas.clientWidth/box.w,canvas.clientHeight/box.h);
+ $('zoom').textContent=Math.round(scale*100)+'%';
+ for(const [attr,key] of [['x','x'],['y','y'],['width','w'],['height','h']])$('mini-window').setAttribute(attr,box[key]);
+ $('mini-window').setAttribute('stroke-width',Math.max(full.w/180,full.h/115)*1.5);
+}
+function fit(bounds=full,widthOnly=false){
+ if(!svg)return;const ratio=canvas.clientWidth/canvas.clientHeight;
+ let w=bounds.w*1.06,h=widthOnly?w/ratio:bounds.h*1.06;
+ if(!widthOnly){if(w/h<ratio)w=h*ratio;else h=w/ratio;}
+ setBox({x:bounds.x+(bounds.w-w)/2,y:widthOnly?bounds.y:bounds.y+(bounds.h-h)/2,w,h});
+}
+function zoomBy(factor,point){
+ if(!svg)return;mode='manual';point=point||{x:box.x+box.w/2,y:box.y+box.h/2};
+ const w=box.w*factor;if(w<80||w>full.w*10)return;
+ setBox({x:point.x-(point.x-box.x)*factor,y:point.y-(point.y-box.y)*factor,w,h:box.h*factor});
+}
+function clientPoint(event){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+function absoluteBox(group){
+ const bounds=group.getBBox(), transform=svg.getScreenCTM().inverse().multiply(group.getScreenCTM());
+ const p=svg.createSVGPoint();p.x=bounds.x;p.y=bounds.y;const a=p.matrixTransform(transform);
+ p.x=bounds.x+bounds.width;p.y=bounds.y+bounds.height;const b=p.matrixTransform(transform);
+ return {x:a.x,y:a.y,w:b.x-a.x,h:b.y-a.y};
+}
+async function load(file){
+ const current=++sequence;const entry=entries.find(item=>item.file===file);if(!entry)return;
+ const url=new URL(entry.file,location.href);$('open-link').href=url.href;$('error').hidden=true;
+ try{
+  const response=await fetch(url,{cache:"no-store"});if(!response.ok)throw new Error('Could not load this diagram.');
+  const doc=new DOMParser().parseFromString(await response.text(),'image/svg+xml');
+  if(doc.querySelector('parsererror')||doc.documentElement.localName!=='svg')throw new Error('The diagram is not valid SVG.');
+  if(current!==sequence)return;
+  svg?.remove();svg=document.importNode(doc.documentElement,true);svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  for(const anchor of svg.querySelectorAll('a')){
+   const href=anchor.getAttribute('href')||anchor.getAttributeNS('http://www.w3.org/1999/xlink','href');
+   if(href&&!href.startsWith('#')){const target=new URL(href,url).href;anchor.setAttribute('href',target);anchor.setAttributeNS('http://www.w3.org/1999/xlink','href',target);anchor.setAttribute('target','_blank');anchor.setAttribute('rel','noopener');}
+  }
+  canvas.insertBefore(svg,mini);full=rectangle(svg.viewBox.baseVal);
+  mini.setAttribute('viewBox',[full.x,full.y,full.w,full.h].join(' '));
+  const image=$('mini-image');image.setAttribute('href',url.href);image.setAttribute('x',full.x);image.setAttribute('y',full.y);image.setAttribute('width',full.w);image.setAttribute('height',full.h);
+  const labelOf=group=>[...group.querySelectorAll('text')].map(t=>t.textContent).join(' ').trim();
+  const keyOf=group=>{try{return atob(group.getAttribute('class').split(' ')[0]);}catch{return '';}};
+  const containers=[...svg.querySelectorAll('g.module,g.ebox,g.cryostat,g.room')];
+  const names=new Map(containers.map(group=>[keyOf(group),labelOf(group)]));
+  const panels=[...svg.querySelectorAll('g.panel')].sort((a,b)=>keyOf(a).localeCompare(keyOf(b)));
+  groups=[...containers,...panels];
+  focus.replaceChildren(new Option('Whole diagram','all'));
+  groups.forEach((group,index)=>{
+   let label=labelOf(group);
+   if(group.classList.contains('panel')){
+    // D2 0.9 emits the object path as the first (base64) SVG class.
+    const path=keyOf(group).split('.');const parents=[];
+    for(let n=1;n<path.length;n++){const name=names.get(path.slice(0,n).join('.'));if(name)parents.push(name);}
+    // A table's first text is its title; the remaining text labels its ports.
+    label=[...parents,group.querySelector('text')?.textContent].filter(Boolean).join(' › ');
+   }
+   if(label)focus.add(new Option(label,String(index)));
+  });
+  const legendTitle=[...svg.querySelectorAll('text')].find(text=>text.textContent==='Legend');
+  const legend=legendTitle?.previousElementSibling;
+  if(legend?.localName==='rect'){focus.add(new Option('Legend',String(groups.length)));groups.push(legend);}
+  mode='all';fit();
+  const next=new URL(location.href);next.searchParams.set('selected',entry.file.split('/').pop());history.replaceState(null,'',next);$('full-window').href=next.href;
+ }catch(error){$('error').hidden=false;$('error').textContent=error.message;}
+}
+selector.addEventListener('change',()=>load(selector.value));
+focus.addEventListener('change',()=>{mode='focus';if(focus.value==='all'){mode='all';fit();}else fit(absoluteBox(groups[Number(focus.value)]));});
+$('fit').onclick=()=>{mode='all';focus.value='all';fit();};
+$('width').onclick=()=>{mode='width';focus.value='all';fit(full,true);};
+$('actual').onclick=()=>{if(!svg)return;mode='manual';setBox({x:box.x+(box.w-canvas.clientWidth)/2,y:box.y+(box.h-canvas.clientHeight)/2,w:canvas.clientWidth,h:canvas.clientHeight});};
+$('in').onclick=()=>zoomBy(0.8);$('out').onclick=()=>zoomBy(1.25);
+canvas.addEventListener('wheel',event=>{if(!svg||!(event.ctrlKey||event.metaKey))return;event.preventDefault();zoomBy(Math.exp(Math.max(-300,Math.min(300,event.deltaY))*0.002),clientPoint(event));},{passive:false});
+canvas.addEventListener('pointerdown',event=>{if(!svg||event.button!==0||!event.isPrimary)return;dragged=false;drag={x:event.clientX,y:event.clientY,box:{...box},scale:Math.min(canvas.clientWidth/box.w,canvas.clientHeight/box.h)};});
+canvas.addEventListener('pointermove',event=>{if(!drag)return;if(!dragged&&Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<5)return;dragged=true;mode='manual';canvas.setPointerCapture(event.pointerId);canvas.classList.add('dragging');setBox({...drag.box,x:drag.box.x-(event.clientX-drag.x)/drag.scale,y:drag.box.y-(event.clientY-drag.y)/drag.scale});});
+canvas.addEventListener('click',event=>{if(dragged){event.preventDefault();event.stopPropagation();dragged=false;}},true);
+for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>{drag=null;canvas.classList.remove('dragging');});
+canvas.addEventListener('keydown',event=>{if(!svg)return;const shifts={ArrowLeft:[-0.15,0],ArrowRight:[0.15,0],ArrowUp:[0,-0.15],ArrowDown:[0,0.15]};
+ if(shifts[event.key]){event.preventDefault();mode='manual';const [x,y]=shifts[event.key];setBox({...box,x:box.x+x*box.w,y:box.y+y*box.h});}
+ else if(['+','=','-','0'].includes(event.key)){event.preventDefault();if(event.key==='0')$('fit').click();else zoomBy(event.key==='-'?1.25:0.8);}});
+new ResizeObserver(()=>{if(!svg)return;if(mode==='all')fit();else if(mode==='width')fit(full,true);else if(mode==='focus'&&focus.value!=='all')fit(absoluteBox(groups[Number(focus.value)]));}).observe(canvas);
+async function main(){
+ try{
+  if(params.has('svg'))entries=[{title:params.get('svg').split('/').pop(),file:params.get('svg')}];
+  else{const response=await fetch(new URL(params.get('manifest')||'generated/diagrams.generated.json',location.href),{cache:'no-store'});if(!response.ok)throw new Error('Could not load the diagram index.');entries=await response.json();}
+  if(!entries.length)throw new Error('No diagrams have been rendered.');
+  const categories=new Map();for(const entry of entries){const category=entry.group||'Diagrams';if(!categories.has(category)){const group=document.createElement('optgroup');group.label=category;categories.set(category,group);selector.append(group);}categories.get(category).append(new Option(entry.title,entry.file));}
+  const request=params.get('selected');selector.value=(entries.find(entry=>entry.file===request||entry.file.endsWith('/'+request))||entries[0]).file;
+  await load(selector.value);
+ }catch(error){$('error').hidden=false;$('error').textContent=error.message;}
+}
+main();
+</script>
 </html>

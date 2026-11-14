@@ -56,7 +56,7 @@ jobs:
       - name: Install D2
         if: steps.detect_d2.outputs.render == 'true'
         run: |
-          curl -fsSL https://d2lang.com/install.sh | sh -s --
+          curl -fsSL https://d2lang.com/install.sh | sh -s -- --method standalone --version "$(cat .d2-version)" --prefix "$HOME/.local"
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Stage Site
