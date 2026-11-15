@@ -7,8 +7,12 @@ myst:
 # Reading the architecture diagrams
 
 The <a href="../../_static/archwrap.html?selected=zshooter_overview.svg">instrument overview</a>
-is a linked index. Choose a subject or connection drawing from the viewer's **Diagram** menu.
-Click an item for its documentation; hover over an information icon for a tooltip.
+follows light through ZFront to the instrument channels and data through readout, storage and
+reduction. Its arrows summarize those relationships at assembly level. Click an item for its
+documentation or a linked data path for the detailed drawing. Hover over an information icon
+for a tooltip. The **Diagram** menu also includes
+<a href="../../_static/archwrap.html?selected=zshooter_power.svg">Instrument Power</a>, which
+follows facility AC through the supplies to Phoenix Contact DC distribution.
 
 The <a href="../../_static/archwrap.html?selected=zshooter_connections.svg">complete connection map</a>
 is a zoomable wiring reference. **Focus** selects RNAS, ZShooter, an assembly, EBox, vessel or panel.

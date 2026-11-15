@@ -69,9 +69,8 @@ The disconnect must leave VIS operating when NIR is removed.
 
 ## EBox internal wiring
 
-The local DC supply feeds DC distribution. The computer, controllers, network electronics,
-Archons and outgoing NIR feed branch from that distribution. The DC UPS connects to the same
-bus for charging and backup power.
+The local AC/DC supplies feed smart Phoenix Contact DC distribution. The computer, controllers, network electronics,
+Archons and outgoing NIR feed branch from that distribution. A DC UPS module connects to that distribution for charging and backup power where needed.
 A Beckhoff EtherCAT master serves the motion drives. The module computer retains local USB
 connections for the temperature hub and slit viewer. Each gauge and Cryotel controller uses a
 USB/FTDI serial cable.

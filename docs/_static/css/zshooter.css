@@ -323,3 +323,17 @@ html[data-zs-mode="external"][data-zs-page-mode="internal"] .zs-internal-page-no
   display: block;
   margin: 2rem 0;
 }
+
+/* The architecture landing page has no local contents to fill this column. */
+.sy-page:has(#system-architecture) > .sy-rside {
+  display: none;
+}
+
+.sy-page:has(#system-architecture) > .sy-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.zs-architecture-viewer {
+  min-height: 0;
+}
