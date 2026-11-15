@@ -3,6 +3,7 @@
 from __future__ import annotations
 import json
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
@@ -14,6 +15,17 @@ def title_from_stem(stem: str) -> str:
     return re.sub(r'\s+', ' ', stem.replace('_', ' ').replace('-', ' ')).strip() or stem
 
 
+def title_from_svg(path: Path) -> str:
+    svg = ET.parse(path).getroot()
+    ns = '{http://www.w3.org/2000/svg}'
+    for group in svg.iter(ns + 'g'):
+        if 'title' in group.get('class', '').split():
+            title = ' '.join(''.join(node.itertext()) for node in group.iter(ns + 'text')).strip()
+            if title:
+                return title
+    return title_from_stem(path.stem)
+
+
 def main() -> None:
     root = Path(__file__).resolve().parents[1]
     catalog_path = root / 'zshooter-arch/diagrams.json'
@@ -22,9 +34,10 @@ def main() -> None:
     output = root / 'docs/_static/generated/diagrams.generated.json'
     output.parent.mkdir(parents=True, exist_ok=True)
     paths = sorted(svg_root.glob('*.svg'), key=lambda p: (catalog.get(p.stem, {}).get('order', 1000), natural_key(p.stem)))
-    entries = [{'title': catalog.get(p.stem, {}).get('title', title_from_stem(p.stem)),
+    entries = [{'title': catalog.get(p.stem, {}).get('title') or title_from_svg(p),
                 'file': f'd2_diagrams/{p.name}',
-                'group': catalog.get(p.stem, {}).get('category', 'Target of Opportunity')}
+                'group': catalog.get(p.stem, {}).get('category', 'Target of Opportunity'),
+                'aliases': catalog.get(p.stem, {}).get('aliases', [])}
                for p in paths]
     output.write_text(json.dumps(entries, indent=2, ensure_ascii=False) + '\n')
 

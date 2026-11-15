@@ -6,38 +6,33 @@ myst:
 
 # Reading the architecture diagrams
 
-Start with the <a href="../../_static/archwrap.html?selected=hardware_overview.svg">instrument overview</a>. Click a linked object to open its documentation. The <a href="../../_static/archwrap.html?selected=hardware_systems_full.svg">complete panel map</a> is a wiring reference: use **Focus** to select a module, EBox, vessel or individual panel, then zoom to follow a connection. Drag to pan; Ctrl/⌘ + wheel, the zoom buttons and keyboard controls also work. Choose **Legend** in the same list to read the key. **Full window** opens the viewer outside the page frame; **Open SVG** gives the standalone drawing.
+The <a href="../../_static/archwrap.html?selected=zshooter_overview.svg">instrument overview</a>
+is a linked index. Choose a subject or connection drawing from the viewer's **Diagram** menu.
+Click an item for its documentation; hover over an information icon for a tooltip.
 
-Connection views use containers for physical boundaries; concept views group related paths. Panel tables follow the interfaces enumerated in the harness notes; their rows identify functional connections. Connector part numbers and contact assignments belong in the assembly drawings. A glycol line represents a supply/return pair. Unarrowed lines are physical connections; arrows show optical paths, triggers or information flow.
+The <a href="../../_static/archwrap.html?selected=zshooter_connections.svg">complete connection map</a>
+is a zoomable wiring reference. **Focus** selects RNAS, ZShooter, an assembly, EBox, vessel or panel.
+Drag to pan. Ctrl/⌘ + wheel and the zoom buttons change scale. **Legend** is also in the Focus list.
+**Full window** opens the viewer outside the page frame; **Open SVG** opens the drawing itself.
 
-Blue linked cards are navigation points. Amber marks a baseline component or implementation selection. A dashed outline marks an optional component. These styles carry the qualification without lengthening every label.
+Containers identify physical assemblies. A vessel assembly includes its automatic gate valve,
+mounted outside vacuum. Invisible layout groups keep adjacent panels together. Panel rows name
+functional connections; connector part numbers and contact assignments belong in the assembly
+drawings. A glycol line represents its supply/return pair. Helium has a separate colour.
 
-## Baseline choices
+The USB, Ethernet, glycol, vacuum, shutter and readout views select connections from the same
+instrument model. Changing a device or cable in that model updates the views that contain it.
+The optical view uses light-path arrows and the same equipment identities. The NIR feedthrough
+view contains cables and warm services; the baffled optical port appears in the optical view.
 
-This revision uses the item ledger and connection notes, with Jeb's 13 November 2026 corrections:
+A dashed outline identifies an optional component. Amber is reserved for an explicitly provisional
+choice and is unused in this revision. Archons and CRED2 use the ordinary equipment styles.
 
-| Topic | Depiction |
-|---|---|
-| Motion control | One Beckhoff master each for ZImager, VIS and NIR. Module computers remain separate. |
-| ZFront | Pneumatic ZImager/ZSpec selection, calibration insertion and point/diffuse selection. Ethernet connects the lamp, valve/service and neighbor-selector controllers. This baseline needs no ZFront EtherCAT master. |
-| Spectrograph readout | One Archon per detector: B/G/R and YJ/H/K. The ledger's DC supply entries supersede the earlier AC labels in the harness notes. |
-| Focus and slit viewing | VIS relative focus acts on the first pre-optic, ahead of the field rotator and ADC. VIS slit-viewer focus uses the optional style. CRED2 is outside vacuum, looking through a baffled port with a cold shortpass filter. |
-| NIR services | VIS supplies the normal NIR DC feed and network. The separate <a href="../../_static/archwrap.html?selected=nir_support_cabinet.svg">support-cabinet view</a> shows the off-instrument arrangement. The cabinet appears only there. |
-| Network | A combined 10G ZFront-to-VIS link carries control and Archon traffic. The NIR network branches from VIS. This gives a specific baseline for the network and panel drawings. |
-| Imager readout | Independent CXP optical transport for U/V/Z, outside the ZFront EBox, ending at three PCI cards. The transport equipment is a baseline selection. |
-| Thermal wiring | General NIR sensors/heaters use the support VIB. Detector thermal circuits stay with their channels at the detector VIB. This drawing assigns that boundary so the thermal harness can be reviewed as a whole. |
-| Local interfaces | USB serves the 1-Wire hubs, VIS slit viewer and gauge interfaces. CRED2 is drawn on Ethernet. These are concrete interface choices for review; the ledger still carries some USB/Ethernet/EtherCAT alternatives. |
+In the software view, blue boxes are physical computers, purple queue-shaped nodes are collections
+of daemons, and white rounded boxes are applications or services. Requests go to the daemons;
+published state and events return to clients and telemetry. Data paths use magenta arrows.
+A collection does not imply one process or a shared busy state.
 
-The NIR supply row has conflicting voltage/source fields; the diagram follows its named upstream VIS DC bus. No supply voltage or connector rating is inferred from that row. The standalone cabinet supplies the same functional service interfaces.
-
-## Useful paths
-
-<a href="../../_static/archwrap.html?selected=optical_train_full.svg">Optical routing</a> ·
-<a href="../../_static/archwrap.html?selected=imager_readout.svg">Imager readout</a> ·
-<a href="../../_static/archwrap.html?selected=nir_feedthroughs.svg">NIR feedthroughs</a> ·
-<a href="../../_static/archwrap.html?selected=shutter_triggers.svg">Shutter triggers</a> ·
-<a href="../../_static/archwrap.html?selected=vacuum_protection.svg">Vacuum protection</a> ·
-<a href="../../_static/archwrap.html?selected=module_isolation.svg">Module removal</a> ·
-<a href="../../_static/archwrap.html?selected=software_runtime_full.svg">Software roles</a>
-
-The software view describes host roles and information paths. Detailed APIs and process definitions live with the [ICS documentation](../../_staged/ics/index.rst).
+The [architecture package README](https://github.com/baileyji/zshooter_d2#readme)
+explains source locations, tooltips and rendering. Detailed APIs belong with the
+[ICS documentation](../../_staged/ics/index.rst).

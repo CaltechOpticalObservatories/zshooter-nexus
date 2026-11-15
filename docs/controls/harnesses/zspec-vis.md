@@ -12,12 +12,12 @@ The [ZSpec NIR harness](zspec-nir.md) covers the separately removable NIR assemb
 Related operations: [ZSpec](../operations/zspec.md) and
 [environmental services](../operations/environmental-services.md).
 
-Interactive diagram: <a href="../../_static/archwrap.html?selected=zspec_vis.svg">VIS panels</a>.
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zspec_vis_connections.svg">VIS panels</a>.
 The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
-- **VIS EBox:** computer, network, motion and cryocooler controllers, AC/DC distribution, and
+- **VIS EBox:** computer, network, motion and cryocooler controllers, DC supply/UPS, and
   heat exchanger.
 - **Internal mechanisms and slit viewer:** entrance shutter, ADC pair, field rotator, X/Y
   steering, slit selector, and slit viewer with focus if fitted.
@@ -61,7 +61,7 @@ The mating panel is on the [ZFront EBox](zfront.md#zfront-ebox-to-zspec-vis-ebox
 
 | Connection | Service / medium | Detail |
 | --- | --- | --- |
-| Power | DC feed | From VIS DC distribution; NIR retains local conditioning/distribution |
+| Power | DC feed | From the VIS DC UPS; NIR distributes this feed locally |
 | Network | NIR control and Archon links | VIS switch to NIR switch through the two EBox panels |
 
 These connections terminate at the [NIR EBox input panel](zspec-nir.md#vis-ebox-to-nir-ebox).
@@ -69,9 +69,11 @@ The disconnect must leave VIS operating when NIR is removed.
 
 ## EBox internal wiring
 
-Local AC/DC distribution powers the computer, controllers, hubs, and network electronics.
+The local DC supply feeds a DC UPS, which powers the computer, controllers, hubs, network electronics,
+Archons and outgoing NIR feed.
 A Beckhoff EtherCAT master serves the motion drives. The module computer retains local USB
-connections for the temperature hub, gauge interface, Cryotel controllers and slit viewer.
+connections for the temperature hub and slit viewer. Each gauge and Cryotel controller uses a
+USB/FTDI serial cable.
 
 ## Detector harnesses and feedthroughs
 

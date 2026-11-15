@@ -9,7 +9,7 @@ myst:
 Scope: four vessel branches, gauges, automatic gate valves, and the shared pump. Related operations:
 [environmental services](../operations/environmental-services.md#vacuum).
 
-Interactive diagram: <a href="../../_static/archwrap.html?selected=vacuum_protection.svg">Vacuum protection</a>.
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zshooter_vacuum.svg">Vacuum protection</a>.
 The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
@@ -35,7 +35,7 @@ cooling is included in the [glycol harness](glycol.md).
 
 | Equipment | Connection | Detail |
 | --- | --- | --- |
-| Vessel gauges | Power and readout | DC from the module EBox; serial readout through a USB gauge interface |
+| Vessel gauges | Power and readout | DC from the module EBox; readout over USB/FTDI serial cables |
 | Automatic gate valves | Local sensing, actuation, and position indication | Closes on power-loss |
 | Shared pump | Power, local controls, status | AC from ZFront; local pump controls |
 
