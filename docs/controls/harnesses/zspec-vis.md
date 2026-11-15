@@ -17,7 +17,7 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 
 ## Assembly boundaries
 
-- **VIS EBox:** computer, network, motion and cryocooler controllers, DC supply/UPS, and
+- **VIS EBox:** computer, network, motion and cryocooler controllers, DC supply/distribution/UPS, and
   heat exchanger.
 - **Internal mechanisms and slit viewer:** entrance shutter, ADC pair, field rotator, X/Y
   steering, slit selector, and slit viewer with focus if fitted.
@@ -61,7 +61,7 @@ The mating panel is on the [ZFront EBox](zfront.md#zfront-ebox-to-zspec-vis-ebox
 
 | Connection | Service / medium | Detail |
 | --- | --- | --- |
-| Power | DC feed | From the VIS DC UPS; NIR distributes this feed locally |
+| Power | DC feed | From VIS DC distribution; NIR distributes this feed locally |
 | Network | NIR control and Archon links | VIS switch to NIR switch through the two EBox panels |
 
 These connections terminate at the [NIR EBox input panel](zspec-nir.md#vis-ebox-to-nir-ebox).
@@ -69,8 +69,9 @@ The disconnect must leave VIS operating when NIR is removed.
 
 ## EBox internal wiring
 
-The local DC supply feeds a DC UPS, which powers the computer, controllers, hubs, network electronics,
-Archons and outgoing NIR feed.
+The local DC supply feeds DC distribution. The computer, controllers, network electronics,
+Archons and outgoing NIR feed branch from that distribution. The DC UPS connects to the same
+bus for charging and backup power.
 A Beckhoff EtherCAT master serves the motion drives. The module computer retains local USB
 connections for the temperature hub and slit viewer. Each gauge and Cryotel controller uses a
 USB/FTDI serial cable.
@@ -104,14 +105,14 @@ The OR circuit and shutter-position sensing connections still need definition.
 
 | From | To | Detail |
 | --- | --- | --- |
-| ZFront air manifold | VIS enclosure | Air feed with dryer through the fluid service panel |
+| ZFront air manifold | VIS enclosure | Direct feed to the enclosure air dryer |
 
 ## Glycol connections
 
 | From | To | Detail |
 | --- | --- | --- |
-| ZFront glycol manifold | VIS distribution | Supply and return |
-| VIS distribution | EBox exchanger, B/G/R Archons and coldheads | Separate supply/return branches; assign hoses with the mechanical layout |
+| ZFront glycol manifold | VIS glycol manifold | Direct supply/return connection |
+| VIS glycol manifold | EBox exchanger, B/G/R Archons and coldheads | Separate supply/return branches; assign hoses with the mechanical layout |
 
 ## Vacuum connections
 
