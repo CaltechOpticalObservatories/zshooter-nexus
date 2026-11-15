@@ -40,6 +40,14 @@ def prepare_arch_svg(path: Path):
     ET.register_namespace('xlink', XLINK[1:-1])
     tree = ET.parse(path)
     root = tree.getroot()
+    # D2 0.9 emits legend sample paths with references to masks it never emits.
+    # Firefox can hide these samples, especially those with arrow markers.
+    # Keep real diagram masks: they cut gaps in lines underneath cable labels.
+    ids = {element.get('id') for element in root.iter()}
+    for sample in root.iter(NS + 'path'):
+        mask = sample.get('mask', '')
+        if mask.startswith('url(#legend-') and mask.endswith(')') and mask[5:-1] not in ids:
+            del sample.attrib['mask']
     keys = {key for group in root.iter(NS + 'g') if (key := object_key(group))}
     containers = set()
     for key in keys:
