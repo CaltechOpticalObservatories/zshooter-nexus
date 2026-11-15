@@ -37,7 +37,7 @@ to be finalized.
 The internal source must cover the noddable spectroscopic field on every imager detector and
 spectrograph slit. Full-field ZImager flats use dome or sky illumination.
 
-The [optical-path diagram](_static/d2_diagrams/optical_train_full.svg) shows the component
+The [optical-path diagram](_static/d2_diagrams/zshooter_optics.svg) shows the component
 connections.
 
 ## ZSpec summary

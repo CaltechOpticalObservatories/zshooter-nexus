@@ -124,7 +124,7 @@ async function main(){
   else{const response=await fetch(new URL(params.get('manifest')||'generated/diagrams.generated.json',location.href),{cache:'no-store'});if(!response.ok)throw new Error('Could not load the diagram index.');entries=await response.json();}
   if(!entries.length)throw new Error('No diagrams have been rendered.');
   const categories=new Map();for(const entry of entries){const category=entry.group||'Diagrams';if(!categories.has(category)){const group=document.createElement('optgroup');group.label=category;categories.set(category,group);selector.append(group);}categories.get(category).append(new Option(entry.title,entry.file));}
-  const request=params.get('selected');selector.value=(entries.find(entry=>entry.file===request||entry.file.endsWith('/'+request))||entries[0]).file;
+  const request=params.get('selected');selector.value=(entries.find(entry=>entry.file===request||entry.file.endsWith('/'+request)||(entry.aliases||[]).includes(request))||entries[0]).file;
   await load(selector.value);
  }catch(error){$('error').hidden=false;$('error').textContent=error.message;}
 }

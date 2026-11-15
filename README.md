@@ -73,7 +73,7 @@ python -m unittest discover -s tests
 python tools/stage_site.py
 
 # Render only the architecture views during diagram work.
-# Add --view zfront_full to render one view. Omit --project to render both trees.
+# Add --view zfront_connections to render one view. Omit --project to render both trees.
 bash tools/render_d2.sh --project arch
 bash tools/log_d2_drift.sh
 

@@ -8,7 +8,7 @@ myst:
 
 Scope: facility feeds, UPS arrangements, AC/DC distribution, and module isolation. Related
 operations: [power control](../operations/power-control.md). Diagram:
-[hardware composition](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zshooter_hardware.d2).
+<a href="../../_static/archwrap.html?selected=zshooter_connections.svg">instrument connections</a>.
 
 ## Assembly boundaries
 
@@ -37,7 +37,10 @@ operations: [power control](../operations/power-control.md). Diagram:
 | ZFront | Local computer, lamp/motion controllers, mechanisms, manifold sensing/control | Output and branch allocation open |
 | ZImager | Local electronics and mechanisms | Output and branch allocation open |
 | ZSpec VIS | Local electronics and mechanisms | Output and branch allocation open |
-| ZSpec NIR | Local electronics and mechanisms | VIS supply relationship and standalone input open |
+| ZSpec NIR | Local electronics, mechanisms and Archons | DC feed from the VIS DC UPS; no separate NIR UPS |
+
+ZFront, ZImager and VIS each have a local DC supply feeding a DC UPS. NIR distributes its incoming
+VIS feed. The separate NIR support cabinet provides the off-instrument feed.
 
 Panel IDs, branch ratings, connector assignments, and grounding/bonding details will be linked
 through the electrical assembly drawings. The item ledger holds the load budget.
@@ -54,8 +57,6 @@ The physical isolation points remain to be assigned.
 
 :::{container} zs-note-to-team zs-internal-only
 
-**Team notes:** Facility UPS is the working RNAS arrangement. Local ZFront, ZImager, and VIS
-battery/UPS provisions need review against that choice. NIR needs a power connection for standalone
-AIT and maintenance.
+**Team notes:** Size the local DC UPS capacity and allocate its protected loads with the electrical design.
 
 :::

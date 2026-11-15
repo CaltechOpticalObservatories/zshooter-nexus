@@ -9,7 +9,7 @@ myst:
 Scope: supply/return circuits, manifolds, cooling loads, and module disconnects. Related operations:
 [environmental services](../operations/environmental-services.md#glycol).
 
-Interactive diagram: <a href="../../_static/archwrap.html?selected=glycol_only.svg">Glycol distribution</a>.
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zshooter_glycol.svg">Glycol distribution</a>.
 The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
@@ -25,8 +25,8 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 | From | To | Detail |
 | --- | --- | --- |
 | RNAS facility supply/return | ZFront manifold | Facility interface, isolation, and sensing |
-| ZFront manifold | ZFront EBox heat exchanger | Local cooling branch |
-| ZFront manifold | ZImager submanifold | Removable-module connection |
+| ZFront manifold | ZFront EBox heat exchanger | Through the EBox cooling panel |
+| ZFront manifold | ZImager submanifold | Direct supply/return connection |
 | ZImager submanifold | U/V/Z detectors and EBox heat exchanger | Branch layout open |
 | ZFront manifold | VIS and NIR distributions | Independently isolated module connections |
 | ZFront manifold | Vacuum pump station | Supply/return through the pump service panel |

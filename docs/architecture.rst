@@ -12,7 +12,7 @@ the panels and feedthroughs. Use **Focus** to examine an enclosure or panel in t
    <div class="zs-viewer-panel">
      <iframe
        title="ZShooter architecture diagrams"
-       src="_static/archwrap.html?manifest=generated/diagrams.generated.json&selected=hardware_overview.svg"
+       src="_static/archwrap.html?manifest=generated/diagrams.generated.json&selected=zshooter_overview.svg"
        allow="fullscreen"
        allowfullscreen
        style="width:100%;height:80vh;min-height:640px;border:1px solid #cbd5df">

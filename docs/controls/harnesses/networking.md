@@ -9,7 +9,7 @@ myst:
 Scope: network links, switches, and patching. Addresses and network operations are in
 [networking operations](../operations/networking.md).
 
-Interactive diagram: <a href="../../_static/archwrap.html?selected=network_only.svg">Network topology</a>.
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zshooter_ethernet.svg">Network topology</a>.
 The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
@@ -24,16 +24,17 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 
 | From | To | Medium / rate | Detail |
 | --- | --- | --- | --- |
-| Facility network | Server-room switch | Ethernet | Through the rack service panel |
+| Facility network | 10G server-room switch | 10G Ethernet | Through the rack service panel |
 | RNAS network | ZFront switch | Fiber, 10G | Through the RNAS and EBox facility panels |
 | ZFront switch | ZImager local network | Copper; 100 Mb/s sufficient | Through the ZImager service input panel |
 | ZFront | ZSpec VIS EBox | 10G fiber | Combined control and Archon traffic |
 | VIS switch | NIR switch | Ethernet | Through the VIS output and NIR input panels |
 | Module switches | Beckhoff masters | Ethernet | One master each for ZImager, VIS and NIR |
 | Beckhoff masters | Motion drives | EtherCAT | Local to each EBox |
-| Server-room switch | Readout computers, DRP, NAS | Ethernet | Separate host connections |
+| Server-room switch | ZImager readout host, DRP, NAS | 10G Ethernet | Separate host connections |
+| Server-room switch | ZSpec readout host | 1G Ethernet | 10G may be fitted for common host specifications |
 | Archons | ZSpec readout computer | Ethernet | Module switches → VIS uplink → facility network → server switch |
-| Facility network | Mechanical-room cryo monitor | Ethernet | Through the mechanical-room service panel |
+| Facility network | Mechanical-room cryo monitor | Ethernet | Direct network connection |
 
 The combined ZSpec link is detailed in the
 [ZFront harness](zfront.md#zfront-ebox-to-zspec-vis-ebox). Detector CoaXPress links are in the

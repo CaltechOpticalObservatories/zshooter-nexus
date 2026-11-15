@@ -10,7 +10,7 @@ Scope: ZFront enclosure and local control/actuator connections, calibration equi
 interfaces to shared services. Related operations: [ZFront and ZCal](../operations/zfront-zcal.md)
 and [environmental services](../operations/environmental-services.md).
 
-Interactive diagram: <a href="../../_static/archwrap.html?selected=zfront_full.svg">ZFront panels</a>.
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zfront_connections.svg">ZFront panels</a>.
 The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
@@ -64,6 +64,8 @@ coiling, storage, and routing are external to the ZFront EBox. The detector-to-r
 The diagrams name functional panels and their circuits. The assembly drawings must assign
 physical locations, connector designations, cable models and contacts.
 
+The local DC supply feeds a DC UPS; the UPS supplies the EBox electronics and manifold feeds.
+
 ## Air connections
 
 | From | To | Detail |
@@ -81,7 +83,7 @@ physical locations, connector designations, cable models and contacts.
 | Glycol manifold | ZImager manifold | Supply and return |
 | Glycol manifold | VIS and NIR manifolds | Independently isolated supply/return branches |
 | Glycol manifold | Vacuum pump station | Supply and return |
-| Glycol manifold | ZFront EBox | Heat exchanger supply and return |
+| Glycol manifold | ZFront EBox heat exchanger | Supply/return through the cooling panel |
 
 Shared services: [power](power.md), [networking](networking.md), [glycol](glycol.md), and
 [air](air.md).
