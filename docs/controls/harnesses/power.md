@@ -46,9 +46,9 @@ to distribution where local battery support is needed. NIR takes DC from VIS thr
 EBox panels and distributes it with its own Phoenix Contact modules. The separate NIR support
 cabinet provides the off-instrument feed.
 
-The drawing follows facility AC through each conversion stage to the module computers.
-Other load branches are in the module connection views. Click an item for its harness
-documentation; use Focus to inspect an EBox.
+The drawing follows AC and DC distribution through the modeled loads and panel paths,
+including motor, detector, heater and bus-powered sensor harnesses. Click a device or a
+container label for its documentation; use Focus to inspect an EBox.
 
 <iframe title="Instrument power supply and distribution" src="../../_static/archwrap.html?selected=zshooter_power.svg" style="width:100%;height:650px;border:1px solid #cbd5df"></iframe>
 

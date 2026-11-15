@@ -29,6 +29,7 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 | ZFront switch | ZImager local network | Copper; 100 Mb/s sufficient | Through the ZImager service input panel |
 | ZFront | ZSpec VIS EBox | 10G fiber | Combined control and Archon traffic |
 | VIS switch | NIR switch | Ethernet | Through the VIS output and NIR input panels |
+| ZFront, ZImager and VIS switches | Local DC distribution | Ethernet | Output switching and status |
 | Module switches | Beckhoff masters | Ethernet | One master each for ZImager, VIS and NIR |
 | Beckhoff masters | Motion drives | EtherCAT | Local to each EBox |
 | Server-room switch | ZImager readout host, DRP, NAS | 10G Ethernet | Separate host connections |

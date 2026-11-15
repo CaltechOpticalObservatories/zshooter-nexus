@@ -24,7 +24,7 @@ select{max-width:100%}#selector{max-width:34rem}#focus{max-width:28rem}button{cu
  <button id="fit">Fit</button><button id="width">Fit width</button><button id="actual">100%</button><a id="full-window" target="_blank" rel="noopener">Full window</a>
  <a id="open-link" target="_blank" rel="noopener">Open SVG</a>
 </div>
-<div id="help">Drag blank space to pan. Ctrl/⌘ + wheel zooms. Linked objects open their documentation.</div>
+<div id="help">Drag blank space to pan. Ctrl/⌘ + wheel zooms. Linked devices and container labels open documentation; hover for tooltips.</div>
 <div id="viewport" tabindex="0" aria-label="Diagram canvas: arrow keys pan, plus and minus zoom, zero fits">
  <div id="error" role="alert" hidden></div>
  <svg id="minimap" aria-hidden="true"><image id="mini-image"></image><rect id="mini-window" fill="#326fa329" stroke="#246393"></rect></svg>
@@ -97,7 +97,7 @@ async function load(file){
    if(label)focus.add(new Option(label,String(index)));
   });
   const legendTitle=[...svg.querySelectorAll('text')].find(text=>text.textContent==='Legend');
-  const legend=legendTitle?.previousElementSibling;
+  const legend=svg.querySelector('rect[data-d2-legend]')||legendTitle?.previousElementSibling;
   if(legend?.localName==='rect'){focus.add(new Option('Legend',String(groups.length)));groups.push(legend);}
   mode='all';fit();
   const next=new URL(location.href);next.searchParams.set('selected',entry.file.split('/').pop());history.replaceState(null,'',next);$('full-window').href=next.href;
