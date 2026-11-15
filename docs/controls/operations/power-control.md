@@ -21,7 +21,10 @@ Scope: supply/UPS status and control of instrument power. Circuits, outlets, and
 
 ## Controls and status
 
-The available controls depend on the selected supplies and distribution hardware.
+The DC system uses smart Phoenix Contact distribution fed by AC/DC supplies. Its outputs
+provide load switching and status. The selected module models determine the control interface
+and the detailed status available. Supply paths are in the
+[power harness](../harnesses/power.md#dc-connections).
 
 | Function | Inputs | Status and feedback |
 | --- | --- | --- |

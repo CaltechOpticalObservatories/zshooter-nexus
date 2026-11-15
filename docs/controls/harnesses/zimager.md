@@ -45,9 +45,9 @@ connections. Assign connector designations and contacts in the assembly drawings
 ## EBox internal wiring
 
 The local computer connects to a Beckhoff EtherCAT master on the module network.
-The master serves the motion drives; local USB devices connect to the computer. The DC supply
-feeds DC distribution, which supplies the electronics and mechanisms. The DC UPS connects to
-that bus for charging and backup power.
+The master serves the motion drives; local USB devices connect to the computer. The AC/DC supplies
+feed smart Phoenix Contact DC distribution, which supplies the electronics and mechanisms. A DC UPS module connects to
+that distribution for charging and backup power where needed.
 
 ## Detector readout
 

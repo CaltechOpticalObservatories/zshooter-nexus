@@ -64,8 +64,8 @@ coiling, storage, and routing are external to the ZFront EBox. The detector-to-r
 The diagrams name functional panels and their circuits. The assembly drawings must assign
 physical locations, connector designations, cable models and contacts.
 
-The local DC supply feeds DC distribution, which supplies the EBox electronics and manifold
-feeds. The DC UPS connects to the distribution bus for charging and backup power.
+The local AC/DC supplies feed smart Phoenix Contact DC distribution, which supplies the EBox electronics and manifold
+feeds. A DC UPS module connects to distribution for charging and backup power where needed.
 
 ## Air connections
 

@@ -7,8 +7,9 @@ myst:
 # ZShooter Power Harnesses & Connections
 
 Scope: facility feeds, UPS arrangements, AC/DC distribution, and module isolation. Related
-operations: [power control](../operations/power-control.md). Diagram:
-<a href="../../_static/archwrap.html?selected=zshooter_connections.svg">instrument connections</a>.
+operations: [power control](../operations/power-control.md). Diagrams:
+<a href="../../_static/archwrap.html?selected=zshooter_power.svg">supply and distribution</a> ·
+<a href="../../_static/archwrap.html?selected=zshooter_connections.svg">complete connections</a>.
 
 ## Assembly boundaries
 
@@ -25,9 +26,9 @@ operations: [power control](../operations/power-control.md). Diagram:
 | Facility AC | Server-room UPS | AC | Circuit and UPS selection open |
 | Server UPS/distribution | Server loads | AC | Outlet/load map open |
 | RNAS facility UPS | ZFront AC distribution | 120 VAC | Feed and isolation point open |
-| ZFront AC distribution | ZFront local supply | AC | Supply and local loads open |
-| ZFront AC distribution | ZImager EBox | AC | Module isolation and connector open |
-| ZFront AC distribution | ZSpec VIS EBox | 120 VAC | Module isolation and connector open |
+| ZFront AC distribution | ZFront AC/DC supplies | AC | Local ZFront DC rails |
+| ZFront AC distribution | ZImager AC/DC supplies | AC | Through the ZFront and ZImager EBox panels and local AC distribution |
+| ZFront AC distribution | VIS AC/DC supplies | 120 VAC | Through the ZFront and VIS EBox panels and local AC distribution |
 | Mechanical-room facility power | Compressor and cryo monitor | Equipment supplies | Circuits and equipment inputs open |
 
 ## DC connections
@@ -39,10 +40,17 @@ operations: [power control](../operations/power-control.md). Diagram:
 | ZSpec VIS | Local electronics and mechanisms | Output and branch allocation open |
 | ZSpec NIR | Local electronics, mechanisms and Archons | DC feed from VIS DC distribution; no separate NIR UPS |
 
-ZFront, ZImager and VIS each have an AC-fed DC supply connected to local DC distribution.
-Loads branch from that distribution. The DC UPS connects to the same bus for charging and backup
-power. NIR receives its feed from VIS DC distribution and distributes it locally. The separate
-NIR support cabinet provides the off-instrument feed.
+The AC/DC supplies in ZFront, ZImager and VIS feed their local smart Phoenix Contact DC
+distribution. Loads branch from its monitored, switchable outputs. A DC UPS module connects
+to distribution where local battery support is needed. NIR takes DC from VIS through the
+EBox panels and distributes it with its own Phoenix Contact modules. The separate NIR support
+cabinet provides the off-instrument feed.
+
+The drawing follows facility AC through each conversion stage to the module computers.
+Other load branches are in the module connection views. Click an item for its harness
+documentation; use Focus to inspect an EBox.
+
+<iframe title="Instrument power supply and distribution" src="../../_static/archwrap.html?selected=zshooter_power.svg" style="width:100%;height:650px;border:1px solid #cbd5df"></iframe>
 
 Panel IDs, branch ratings, connector assignments, and grounding/bonding details will be linked
 through the electrical assembly drawings. The item ledger holds the load budget.
