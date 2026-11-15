@@ -6,6 +6,7 @@ from collections import deque
 from datetime import datetime
 
 from sphinx.util import logging
+from IPython.lib.lexers import IPython3Lexer
 
 project = "ZShooter"
 author = "Caltech Optical Observatories (COO)"
@@ -179,6 +180,8 @@ def add_zs_page_context(app, pagename: str, templatename: str, context: dict, do
 
 
 def setup(app) -> dict[str, bool]:
+    # Older simulator notebooks request ipython2 highlighting despite Python 3 kernels.
+    app.add_lexer("ipython2", IPython3Lexer)
     app.connect("env-updated", collect_zs_page_modes)
     app.connect("html-page-context", add_zs_page_context)
     return {"parallel_read_safe": True}

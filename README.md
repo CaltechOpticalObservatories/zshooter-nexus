@@ -56,6 +56,10 @@ published by the nexus.
 
 ## Development
 
+Use Python 3.12 or later, Git and Pandoc (`brew install pandoc` on macOS).
+Pandoc converts the stored notebook content for the site; notebook cells are not executed.
+The D2 version below must match `.d2-version`.
+
 ```bash
 git clone git@github.com:CaltechOpticalObservatories/zshooter-nexus.git
 cd zshooter-nexus
@@ -66,6 +70,7 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 
 curl -fsSL https://d2lang.com/install.sh | sh -s -- --method standalone --version "$(cat .d2-version)" --prefix "$HOME/.local"
+export PATH="$HOME/.local/bin:$PATH"
 python -m pip install -r requirements.txt
 
 python -m unittest discover -s tests
@@ -75,6 +80,7 @@ python tools/stage_site.py
 # Render only the architecture views during diagram work.
 # Add --view zfront_connections to render one view. Omit --project to render both trees.
 bash tools/render_d2.sh --project arch
+python -m unittest discover -s zshooter-arch/tests
 bash tools/log_d2_drift.sh
 
 # Always refresh the site copies and architecture viewer index.
@@ -89,3 +95,11 @@ python -m http.server -d docs/_build/html 8000
 D2 is pinned by `.d2-version`; local rendering checks that version. The architecture viewer supports
 pan, zoom, enclosure focus and documentation links. Diagram source conventions are in
 `zshooter-arch/README.md`. A compiler-pin or renderer change triggers regeneration in CI.
+
+Commit diagram sources and their rendered SVGs in `zshooter-arch` together, then update its
+submodule revision here. Publish the component commit before the parent change so other
+checkouts and CI can retrieve it. Generated site copies and `_staged` content stay untracked.
+
+Pull requests build the site for checking. After review, a push to `main` deploys it through
+`.github/workflows/site.yml`. CAD publication is a separate Windows service; see the
+[eDrawings Publisher repository](https://github.com/CaltechOpticalObservatories/eDrawingsPublisher).

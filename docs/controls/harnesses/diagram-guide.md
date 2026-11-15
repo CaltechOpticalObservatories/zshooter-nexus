@@ -20,6 +20,9 @@ is a zoomable wiring reference. **Focus** selects RNAS, ZShooter, an assembly, E
 Drag to pan. Ctrl/⌘ + wheel and the zoom buttons change scale. **Legend** is also in the Focus list; its heading links to this guide.
 **Full window** opens the viewer outside the page frame; **Open SVG** opens the drawing itself.
 
+Connection maps and the power view show cable types by colour and line style in the legend.
+Labels on individual cables give voltages, link speeds or other specific information.
+
 Containers identify physical assemblies. A vessel assembly includes its vacuum gauge and automatic gate valve,
 both mounted outside vacuum. Invisible layout groups keep adjacent panels together. Panel rows name
 functional connections; connector part numbers and contact assignments belong in the assembly
