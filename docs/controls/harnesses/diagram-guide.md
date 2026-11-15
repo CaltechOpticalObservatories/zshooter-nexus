@@ -9,14 +9,15 @@ myst:
 The <a href="../../_static/archwrap.html?selected=zshooter_overview.svg">instrument overview</a>
 follows light through ZFront to the instrument channels and data through readout, storage and
 reduction. Its arrows summarize those relationships at assembly level. Click an item for its
-documentation or a linked data path for the detailed drawing. Hover over an information icon
-for a tooltip. The **Diagram** menu also includes
+documentation or a linked data path for the detailed drawing. Container links are on their
+labels and link icons; the background stays available for panning and any tooltip. Hover over
+a device, container or information icon for its tooltip. The **Diagram** menu also includes
 <a href="../../_static/archwrap.html?selected=zshooter_power.svg">Instrument Power</a>, which
-follows facility AC through the supplies to Phoenix Contact DC distribution.
+follows AC/DC supplies and distribution through the modeled power recipients and panels.
 
 The <a href="../../_static/archwrap.html?selected=zshooter_connections.svg">complete connection map</a>
 is a zoomable wiring reference. **Focus** selects RNAS, ZShooter, an assembly, EBox, vessel or panel.
-Drag to pan. Ctrl/⌘ + wheel and the zoom buttons change scale. **Legend** is also in the Focus list.
+Drag to pan. Ctrl/⌘ + wheel and the zoom buttons change scale. **Legend** is also in the Focus list; its heading links to this guide.
 **Full window** opens the viewer outside the page frame; **Open SVG** opens the drawing itself.
 
 Containers identify physical assemblies. A vessel assembly includes its vacuum gauge and automatic gate valve,
@@ -24,7 +25,7 @@ both mounted outside vacuum. Invisible layout groups keep adjacent panels togeth
 functional connections; connector part numbers and contact assignments belong in the assembly
 drawings. A glycol line represents its supply/return pair. Helium has a separate colour.
 
-The USB, Ethernet, glycol, vacuum, shutter and readout views select connections from the same
+The USB, Ethernet, power, glycol, vacuum, shutter and readout views select connections from the same
 instrument model. Changing a device or cable in that model updates the views that contain it.
 The optical view uses light-path arrows and the same equipment identities. The NIR feedthrough
 view contains cables and warm services; the baffled optical port appears in the optical view.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 from pathlib import Path
@@ -12,6 +13,80 @@ import time
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+NS = '{http://www.w3.org/2000/svg}'
+XLINK = '{http://www.w3.org/1999/xlink}'
+GUIDE = '../../controls/harnesses/diagram-guide.html'
+
+
+def object_key(group):
+    """D2 0.9 places the encoded object path in the first SVG class."""
+    if group.tag != NS + 'g':
+        return None
+    classes = group.get('class', '').split()
+    if not classes:
+        return None
+    try:
+        key = base64.b64decode(classes[0], validate=True).decode()
+    except (ValueError, UnicodeDecodeError):
+        return None
+    return key if '(' not in key else None
+
+
+def prepare_arch_svg(path: Path):
+    """Change click targets, preserving geometry, device links and native titles."""
+    ET.register_namespace('', NS[1:-1])
+    ET.register_namespace('xlink', XLINK[1:-1])
+    tree = ET.parse(path)
+    root = tree.getroot()
+    keys = {key for group in root.iter(NS + 'g') if (key := object_key(group))}
+    containers = set()
+    for key in keys:
+        while '.' in key:
+            key = key.rsplit('.', 1)[0]
+            containers.add(key)
+    parents = {child: parent for parent in root.iter() for child in parent}
+    for anchor in list(root.iter(NS + 'a')):
+        children = list(anchor)
+        if len(children) != 1:
+            continue
+        group = children[0]
+        if object_key(group) not in containers:
+            continue
+        parent = parents[anchor]
+        index = list(parent).index(anchor)
+        anchor.remove(group)
+        parent.remove(anchor)
+        parent.insert(index, group)
+        # Keep the title on the group: background hover still shows its tooltip.
+        # Leaf devices and D2's separate link/information icons are untouched.
+        for label in list(group):
+            if label.tag != NS + 'text':
+                continue
+            index = list(group).index(label)
+            link = ET.Element(NS + 'a', {**anchor.attrib, 'class': 'container-label-link'})
+            group.remove(label)
+            link.append(label)
+            group.insert(index, link)
+
+    parents = {child: parent for parent in root.iter() for child in parent}
+    for title in list(root.iter(NS + 'text')):
+        if ''.join(title.itertext()) != 'Legend':
+            continue
+        parent = parents[title]
+        if parent.tag == NS + 'a':
+            continue
+        index = list(parent).index(title)
+        if index and parent[index - 1].tag == NS + 'rect':
+            parent[index - 1].set('data-d2-legend', 'true')
+        link = ET.Element(NS + 'a', {'href': GUIDE, XLINK + 'href': GUIDE})
+        ET.SubElement(link, NS + 'title').text = 'Reading the architecture diagrams'
+        title.set('text-decoration', 'underline')
+        parent.remove(title)
+        link.append(title)
+        parent.insert(index, link)
+    tree.write(path, encoding='unicode')
 
 
 def render(root: Path, project: str, views: list[str], binary: str) -> list[dict]:
@@ -44,6 +119,8 @@ def render(root: Path, project: str, views: list[str], binary: str) -> list[dict
             subprocess.run(cmd + [str(path), temporary], check=True, timeout=130)
             if ET.parse(temporary).getroot().tag != "{http://www.w3.org/2000/svg}svg":
                 raise RuntimeError(f"D2 did not produce SVG for {path.name}")
+            if tree == 'zshooter-arch':
+                prepare_arch_svg(Path(temporary))
             Path(temporary).replace(destination)
         finally:
             Path(temporary).unlink(missing_ok=True)
