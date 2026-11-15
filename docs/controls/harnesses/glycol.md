@@ -28,7 +28,7 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 | ZFront manifold | ZFront EBox heat exchanger | Through the EBox cooling panel |
 | ZFront manifold | ZImager submanifold | Direct supply/return connection |
 | ZImager submanifold | U/V/Z detectors and EBox heat exchanger | Branch layout open |
-| ZFront manifold | VIS and NIR distributions | Independently isolated module connections |
+| ZFront manifold | VIS and NIR manifolds | Direct, independently isolated supply/return branches |
 | ZFront manifold | Vacuum pump station | Supply/return through the pump service panel |
 | VIS distribution | EBox heat exchanger, B/G/R Archons and cryocoolers | Branch layout open; slit-viewer cooling conditional |
 | NIR distribution | EBox heat exchanger, YJ/H/K Archons, external CRED2 | Branch layout open |

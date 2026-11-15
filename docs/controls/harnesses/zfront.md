@@ -39,8 +39,8 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 | Calibration insertion / point-source mechanisms | Pneumatic actuation and position feedback | Valve/service I/O in the EBox |
 | Neighbor selector | Motor and position harness | Ethernet-connected controller |
 | ZImage/ZSpec selector | Pneumatic actuation and position feedback | Valve/service I/O in the EBox |
-| Air manifold | Power/sense | DC supply and valve/service I/O |
-| Glycol manifold | Power/sense | DC supply and valve/service I/O |
+| Air manifold | Power/sense | DC distribution and valve/service I/O |
+| Glycol manifold | Power/sense | DC distribution and valve/service I/O |
 
 ### ZFront EBox to ZImager
 
@@ -64,7 +64,8 @@ coiling, storage, and routing are external to the ZFront EBox. The detector-to-r
 The diagrams name functional panels and their circuits. The assembly drawings must assign
 physical locations, connector designations, cable models and contacts.
 
-The local DC supply feeds a DC UPS; the UPS supplies the EBox electronics and manifold feeds.
+The local DC supply feeds DC distribution, which supplies the EBox electronics and manifold
+feeds. The DC UPS connects to the distribution bus for charging and backup power.
 
 ## Air connections
 

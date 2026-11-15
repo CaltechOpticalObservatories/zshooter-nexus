@@ -14,7 +14,7 @@ The [drawing guide](diagram-guide.md) records the selected interfaces and visual
 
 ## Assembly boundaries
 
-- ZImager EBox: computer, individual motion drives, DC supply/UPS, and three CXP optical transmitters
+- ZImager EBox: computer, individual motion drives, DC supply/distribution/UPS, and three CXP optical transmitters
 - One ZImager enclosure: ADC pair, filter selector, three detector rotators, common focus, and all U/V/Z detectors
 - Exposed glycol submanifold
 - Enclosure air feed connector
@@ -45,7 +45,9 @@ connections. Assign connector designations and contacts in the assembly drawings
 ## EBox internal wiring
 
 The local computer connects to a Beckhoff EtherCAT master on the module network.
-The master serves the motion drives; local USB devices connect to the computer. The DC supply feeds the DC UPS, which supplies the electronics and mechanisms.
+The master serves the motion drives; local USB devices connect to the computer. The DC supply
+feeds DC distribution, which supplies the electronics and mechanisms. The DC UPS connects to
+that bus for charging and backup power.
 
 ## Detector readout
 

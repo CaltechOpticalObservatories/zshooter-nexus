@@ -37,10 +37,12 @@ operations: [power control](../operations/power-control.md). Diagram:
 | ZFront | Local computer, lamp/motion controllers, mechanisms, manifold sensing/control | Output and branch allocation open |
 | ZImager | Local electronics and mechanisms | Output and branch allocation open |
 | ZSpec VIS | Local electronics and mechanisms | Output and branch allocation open |
-| ZSpec NIR | Local electronics, mechanisms and Archons | DC feed from the VIS DC UPS; no separate NIR UPS |
+| ZSpec NIR | Local electronics, mechanisms and Archons | DC feed from VIS DC distribution; no separate NIR UPS |
 
-ZFront, ZImager and VIS each have a local DC supply feeding a DC UPS. NIR distributes its incoming
-VIS feed. The separate NIR support cabinet provides the off-instrument feed.
+ZFront, ZImager and VIS each have an AC-fed DC supply connected to local DC distribution.
+Loads branch from that distribution. The DC UPS connects to the same bus for charging and backup
+power. NIR receives its feed from VIS DC distribution and distributes it locally. The separate
+NIR support cabinet provides the off-instrument feed.
 
 Panel IDs, branch ratings, connector assignments, and grounding/bonding details will be linked
 through the electrical assembly drawings. The item ledger holds the load budget.

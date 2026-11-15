@@ -15,8 +15,8 @@ is a zoomable wiring reference. **Focus** selects RNAS, ZShooter, an assembly, E
 Drag to pan. Ctrl/⌘ + wheel and the zoom buttons change scale. **Legend** is also in the Focus list.
 **Full window** opens the viewer outside the page frame; **Open SVG** opens the drawing itself.
 
-Containers identify physical assemblies. A vessel assembly includes its automatic gate valve,
-mounted outside vacuum. Invisible layout groups keep adjacent panels together. Panel rows name
+Containers identify physical assemblies. A vessel assembly includes its vacuum gauge and automatic gate valve,
+both mounted outside vacuum. Invisible layout groups keep adjacent panels together. Panel rows name
 functional connections; connector part numbers and contact assignments belong in the assembly
 drawings. A glycol line represents its supply/return pair. Helium has a separate colour.
 
