@@ -58,6 +58,30 @@ class RenderTests(unittest.TestCase):
 
 
 class LinkTargets(unittest.TestCase):
+    def test_missing_legend_masks_do_not_hide_samples(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'legend.svg'
+            output.write_text('''<svg xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrow"><polygon points="0,0 13,8 0,16"/></marker>
+                <mask id="diagram"><rect width="200" height="200" fill="white"/></mask>
+                <mask id="legend-valid"><rect width="50" height="20" fill="white"/></mask>
+              </defs>
+              <path id="arrow-sample" d="M1.5 0L43.5 0" stroke="#c99116"
+                    marker-end="url(#arrow)" mask="url(#legend-missing-arrow)"/>
+              <path id="line-sample" d="M1 0L47 0" mask="url(#legend-missing-line)"/>
+              <path id="valid-sample" d="M1 0L47 0" mask="url(#legend-valid)"/>
+              <path id="real-cable" d="M0 0L100 100" mask="url(#diagram)"/>
+            </svg>''')
+            RENDER.prepare_arch_svg(output)
+            elements = {e.get('id'): e for e in ET.parse(output).getroot().iter()}
+            for name in ['arrow-sample', 'line-sample']:
+                self.assertNotIn('mask', elements[name].attrib)
+            self.assertEqual(elements['arrow-sample'].get('marker-end'), 'url(#arrow)')
+            self.assertEqual(elements['arrow-sample'].get('stroke'), '#c99116')
+            self.assertEqual(elements['valid-sample'].get('mask'), 'url(#legend-valid)')
+            self.assertEqual(elements['real-cable'].get('mask'), 'url(#diagram)')
+
     def test_container_labels_keep_links_and_background_tooltips(self):
         # Match the flat object groups and separate link icon emitted by D2 0.9.
         ns = RENDER.NS
