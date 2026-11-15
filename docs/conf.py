@@ -35,6 +35,17 @@ extensions = [
 
 
 nbsphinx_execute = "never"
+nbsphinx_prolog = """
+{% if env.docname.startswith('_staged/sim/') %}
+.. container:: zs-note
+
+   :download:`Download notebook </../zshooter-sim/{{ env.docname.removeprefix('_staged/sim/') }}.ipynb>` · :doc:`Environment setup </_staged/sim/docs/install>`
+{% elif env.docname.startswith('_staged/drp/notebooks/') %}
+.. container:: zs-note
+
+   :download:`Download notebook </../zshooter-drp/notebooks/{{ env.docname.removeprefix('_staged/drp/notebooks/') }}.ipynb>` · :doc:`Environment setup </_staged/drp/getting-started>`
+{% endif %}
+"""
 autosummary_generate = True
 autodoc_typehints = "description"
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
@@ -70,6 +81,8 @@ html_theme_options = {
 }
 
 myst_enable_extensions = ["colon_fence", "deflist", "linkify"]
+# Preserve GitHub-style section links in staged simulator reports and notebooks.
+myst_heading_anchors = 4
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 
 

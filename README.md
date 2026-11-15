@@ -28,12 +28,20 @@ structure and navigation.
 | --- | --- | --- | --- |
 | ICS | `zshooter-ics/docs/source/` | `docs/_staged/ics/` | Technical Design → Controlling ZShooter |
 | DRP | `zshooter-drp/docs/source/` and `zshooter-drp/notebooks/` | `docs/_staged/drp/` | Observing → Data Reduction |
-| Simulator | `zshooter-sim/notebooks/` | `docs/_staged/sim/notebooks/` | Observing → Instrument Simulator |
+| Simulator | `zshooter-sim/docs/`, `notebooks/`, `validation/` and `env/zshooter-stack.toml` | Matching paths under `docs/_staged/sim/` | Performance → Instrument Simulator |
 
 The generated `_staged` tree is ignored by Git. Edit documentation only in its
 canonical repository. Submodule revisions are deliberately pinned: update and
 review a submodule gitlink in this repository when its documentation should be
 published by the nexus.
+
+The simulator landing page is `docs/simulator.rst`; validation notebook navigation is
+in `docs/simulator-validation.rst`. Add new notebooks to the appropriate toctree there.
+Reports retain the simulator's own index. Staging includes the reports' figures and
+data, and relocates Markdown links between files using their canonical source paths,
+including links from simulator notebooks into DRP reports. Notebook code, outputs
+and execution counts are preserved;
+the site build never runs the science calculations.
 
 ## Current assumptions
 

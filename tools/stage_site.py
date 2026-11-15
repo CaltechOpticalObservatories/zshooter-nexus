@@ -3,9 +3,13 @@
 
 from __future__ import annotations
 
+import json
+import os
+import re
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -17,6 +21,7 @@ IGNORED_NAMES = {
     ".ipynb_checkpoints",
     "__pycache__",
     "*.pyc",
+    ".gitignore",
 }
 
 
@@ -30,6 +35,17 @@ class StageSpec:
     notebooks_source: Path | None = None
     excluded_source_names: frozenset[str] = field(default_factory=frozenset)
     require_index: bool = True
+    docs_subdir: Path = Path(".")
+    additional_sources: tuple[tuple[Path, Path], ...] = ()
+
+    def sources(self) -> tuple[tuple[Path, Path], ...]:
+        """Canonical paths and their locations relative to this staged tree."""
+        paths = list(self.additional_sources)
+        if self.docs_source is not None:
+            paths.append((self.docs_source, self.docs_subdir))
+        if self.notebooks_source is not None:
+            paths.append((self.notebooks_source, Path("notebooks")))
+        return tuple(paths)
 
 
 STAGE_SPECS = (
@@ -50,9 +66,15 @@ STAGE_SPECS = (
     ),
     StageSpec(
         name="simulator",
+        docs_source=ROOT / "zshooter-sim" / "docs",
+        docs_subdir=Path("docs"),
         notebooks_source=ROOT / "zshooter-sim" / "notebooks",
         destination=STAGED / "sim",
-        require_index=False,
+        excluded_source_names=frozenset({"conf.py", "_templates"}),
+        additional_sources=(
+            (ROOT / "zshooter-sim" / "validation", Path("validation")),
+            (ROOT / "zshooter-sim" / "env" / "zshooter-stack.toml", Path("env/zshooter-stack.toml")),
+        ),
     ),
 )
 
@@ -85,7 +107,7 @@ def stage_project(spec: StageSpec) -> int:
             _validate_directory(spec.docs_source, f"{spec.name} documentation source")
             shutil.copytree(
                 spec.docs_source,
-                temporary,
+                temporary / spec.docs_subdir,
                 dirs_exist_ok=True,
                 ignore=_ignore_names(spec.excluded_source_names),
             )
@@ -99,7 +121,15 @@ def stage_project(spec: StageSpec) -> int:
                 ignore=_ignore_names(),
             )
 
-        if spec.require_index and not _has_index(temporary):
+        for source, relative_destination in spec.additional_sources:
+            destination = temporary / relative_destination
+            if source.is_dir():
+                shutil.copytree(source, destination, ignore=_ignore_names())
+            else:
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
+
+        if spec.require_index and not _has_index(temporary / spec.docs_subdir):
             raise FileNotFoundError(
                 f"{spec.name} documentation has no index.rst or index.md in {spec.docs_source}"
             )
@@ -115,9 +145,109 @@ def stage_project(spec: StageSpec) -> int:
     return sum(1 for path in spec.destination.rglob("*") if path.is_file())
 
 
+MARKDOWN_LINK = re.compile(
+    r"(?P<inline>\]\(\s*<?)(?P<url>[^\s<>)]+)"
+    r"|(?P<reference>^[ \t]{0,3}\[[^\]\n]+\]:[ \t]*<?)(?P<refurl>[^\s<>]+)",
+    re.MULTILINE,
+)
+INLINE_CODE = re.compile(r"(`+).*?\1")
+FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})(.*)$")
+
+
+def rewrite_markdown_links(text: str, rewrite_url) -> str:
+    """Relocate Markdown links, leaving code examples and their URLs alone."""
+    fences = []
+    lines = []
+    for line in text.splitlines(keepends=True):
+        opening = FENCE.match(line)
+        if opening and fences and opening[1].startswith(fences[-1][0]) and not opening[2].strip():
+            fences.pop()
+            lines.append(line)
+            continue
+        if fences and fences[-1][1]:
+            lines.append(line)
+            continue
+        if opening:
+            is_code = not opening[2].lstrip().startswith("{") or opening[2].lstrip().startswith("{code-block}")
+            fences.append((opening[1], is_code))
+            lines.append(line)
+            continue
+
+        def replace(match):
+            prefix = match["inline"] or match["reference"]
+            return prefix + rewrite_url(match["url"] or match["refurl"])
+
+        # Inline code can contain example Markdown links, so protect those spans.
+        start = 0
+        parts = []
+        for code in INLINE_CODE.finditer(line):
+            parts.append(MARKDOWN_LINK.sub(replace, line[start:code.start()]))
+            parts.append(code[0])
+            start = code.end()
+        parts.append(MARKDOWN_LINK.sub(replace, line[start:]))
+        lines.append("".join(parts))
+    return "".join(lines)
+
+
+def relocate_links(specs: tuple[StageSpec, ...]) -> None:
+    """Resolve links by canonical source location, including across subprojects.
+
+    Only the generated copies change. Notebook code, outputs and metadata retain
+    their stored values; Markdown cells get the same URL mapping as report pages.
+    """
+    published = {}
+    for spec in specs:
+        for source, relative in spec.sources():
+            destination = spec.destination / relative
+            published[source.resolve()] = destination
+            if destination.is_dir():
+                for path in destination.rglob("*"):
+                    relative = path.relative_to(destination)
+                    if source == spec.docs_source and any(part in spec.excluded_source_names for part in relative.parts):
+                        continue
+                    original = source / relative
+                    if original.exists():
+                        published[original.resolve()] = path
+
+    for source, destination in list(published.items()):
+        if not destination.is_file() or destination.suffix not in {".md", ".ipynb"}:
+            continue
+
+        def rewrite_url(url: str) -> str:
+            parts = urlsplit(url)
+            if parts.scheme or parts.netloc or not parts.path or parts.path.startswith("/"):
+                return url
+            original = (source.parent / unquote(parts.path)).resolve()
+            target = published.get(original)
+            if target is None or target.is_dir():
+                return url
+            relative = Path(os.path.relpath(target, destination.parent)).as_posix()
+            return urlunsplit(("", "", quote(relative, safe="/"), parts.query, parts.fragment))
+
+        original_text = destination.read_text(encoding="utf-8")
+        if destination.suffix == ".md":
+            updated_text = rewrite_markdown_links(original_text, rewrite_url)
+        else:
+            notebook = json.loads(original_text)
+            changed = False
+            for cell in notebook["cells"]:
+                if cell["cell_type"] != "markdown":
+                    continue
+                source_text = cell["source"]
+                text = "".join(source_text)
+                updated = rewrite_markdown_links(text, rewrite_url)
+                if updated != text:
+                    cell["source"] = updated.splitlines(keepends=True) if isinstance(source_text, list) else updated
+                    changed = True
+            updated_text = json.dumps(notebook, ensure_ascii=False, indent=1) + "\n" if changed else original_text
+        if updated_text != original_text:
+            destination.write_text(updated_text, encoding="utf-8")
+
+
 def main() -> None:
     STAGED.mkdir(parents=True, exist_ok=True)
     summaries = [f"{spec.name}: {stage_project(spec)} files" for spec in STAGE_SPECS]
+    relocate_links(STAGE_SPECS)
     print("Staged subproject documentation (" + ", ".join(summaries) + ")")
 
 
