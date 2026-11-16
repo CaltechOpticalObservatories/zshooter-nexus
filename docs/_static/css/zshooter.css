@@ -203,6 +203,16 @@ a.image-reference img.zs-white-figure {
   max-width: 65ch;
 }
 
+.zs-past-team-card .sd-card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.zs-past-team-card .sd-card-title a:hover,
+.zs-past-team-card .sd-card-title a:focus-visible {
+  text-decoration: underline;
+}
+
 .sd-card.zs-contact-card p:first-child,
 .sd-card.zs-contact-card p:last-child {
   margin-top: 0.35rem;

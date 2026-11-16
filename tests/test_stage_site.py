@@ -9,6 +9,46 @@ from tools.stage_site import StageSpec, portable_paths, prepare_publication, rel
 
 
 class StageProjectTests(unittest.TestCase):
+    def test_navigation_selects_pages_and_keeps_repository_records_off_site(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = root / "sim"
+            site = root / "site"
+            for path in (repo / "docs", repo / "notebooks", repo / "validation", site / "simulator"):
+                path.mkdir(parents=True)
+            (repo / "docs/index.md").write_text("# Repository index\n")
+            (repo / "docs/report.md").write_text("# Report\n[Debug run](../validation/debug.ipynb#results)\n![Figure](../validation/figure.svg)\n")
+            notebook = '{"cells": [], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}'
+            (repo / "notebooks/science.ipynb").write_text(notebook)
+            (repo / "notebooks/unlisted.ipynb").write_text(notebook)
+            (repo / "validation/debug.ipynb").write_text(notebook)
+            (repo / "validation/figure.svg").write_text("<svg/>\n")
+            navigation = site / "simulator/science.rst"
+            navigation.write_text(".. toctree::\n\n   Science </_staged/sim/notebooks/science>\n   Report </_staged/sim/docs/report>\n")
+            spec = StageSpec(name="sim", docs_source=repo / "docs", docs_subdir=Path("docs"), notebooks_source=repo / "notebooks", destination=site / "_staged/sim", require_index=False, additional_sources=((repo / "validation", Path("validation")),), navigation_source=site, repository_source=repo, repository_url="https://github.com/example/sim/blob/main")
+            stage_project(spec)
+            relocate_links((spec,))
+            self.assertTrue((spec.destination / "notebooks/science.ipynb").exists())
+            self.assertTrue((spec.destination / "_downloads/notebooks/science.ipynb").exists())
+            for name in ("docs/index.md", "notebooks/unlisted.ipynb", "validation/debug.ipynb", "_downloads/validation/debug.ipynb"):
+                self.assertFalse((spec.destination / name).exists())
+            self.assertEqual((spec.destination / "validation/figure.svg").read_text(), "<svg/>\n")
+            self.assertIn("https://github.com/example/sim/blob/main/validation/debug.ipynb#results", (spec.destination / "docs/report.md").read_text())
+            self.assertIn("![Figure](../validation/figure.svg)", (spec.destination / "docs/report.md").read_text())
+            self.assertEqual((repo / "validation/debug.ipynb").read_text(), notebook)
+
+            # A source rename gives an actionable error and preserves the last
+            # publication; updating that one navigation entry repairs the build.
+            (repo / "notebooks/science.ipynb").rename(repo / "notebooks/renamed.ipynb")
+            with self.assertRaisesRegex(FileNotFoundError, "Update sim site navigation.*notebooks/science"):
+                stage_project(spec)
+            self.assertTrue((spec.destination / "notebooks/science.ipynb").exists())
+            navigation.write_text(navigation.read_text().replace("notebooks/science", "notebooks/renamed"))
+            stage_project(spec)
+            self.assertTrue((spec.destination / "notebooks/renamed.ipynb").exists())
+            self.assertFalse((spec.destination / "notebooks/science.ipynb").exists())
+            self.assertFalse((spec.destination / "_downloads/notebooks/science.ipynb").exists())
+
     def test_recursive_sources_notebooks_exclusions_and_stale_cleanup(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

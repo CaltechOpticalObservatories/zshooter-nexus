@@ -37,6 +37,9 @@ class StageSpec:
     require_index: bool = True
     docs_subdir: Path = Path(".")
     additional_sources: tuple[tuple[Path, Path], ...] = ()
+    navigation_source: Path | None = None
+    repository_source: Path | None = None
+    repository_url: str | None = None
 
     def sources(self) -> tuple[tuple[Path, Path], ...]:
         """Canonical paths and their locations relative to this staged tree."""
@@ -71,6 +74,10 @@ STAGE_SPECS = (
         notebooks_source=ROOT / "zshooter-sim" / "notebooks",
         destination=STAGED / "sim",
         excluded_source_names=frozenset({"conf.py", "_templates"}),
+        require_index=False,
+        navigation_source=DOCS,
+        repository_source=ROOT / "zshooter-sim",
+        repository_url="https://github.com/CaltechOpticalObservatories/zs-scopesim/blob/main",
         additional_sources=(
             (ROOT / "zshooter-sim" / "validation", Path("validation")),
             (ROOT / "zshooter-sim" / "env" / "zshooter-stack.toml", Path("env/zshooter-stack.toml")),
@@ -91,6 +98,34 @@ def _validate_directory(path: Path, label: str) -> None:
 
 def _has_index(path: Path) -> bool:
     return any((path / filename).is_file() for filename in ("index.rst", "index.md"))
+
+
+PAGE_SUFFIXES = {".md", ".rst", ".ipynb"}
+
+
+def select_navigation_pages(spec: StageSpec, directory: Path) -> None:
+    """Publish the pages named in the site's navigation; retain supporting assets.
+
+    Both RST and MyST toctrees use one target per line, optionally with a title.
+    The navigation is the publication list, so renamed notebooks need only one edit.
+    """
+    prefix = spec.destination.relative_to(spec.navigation_source).as_posix() + "/"
+    entry = re.compile(r"^[ \t]*(?:[^<>\n]+<)?/?" + re.escape(prefix) + r"([^<>\s]+)>?[ \t]*$", re.MULTILINE)
+    selected = set()
+    for path in spec.navigation_source.rglob("*"):
+        relative = path.relative_to(spec.navigation_source)
+        if any(part.startswith("_") for part in relative.parts) or path.suffix not in {".md", ".rst"}:
+            continue
+        for target in entry.findall(path.read_text(encoding="utf-8")):
+            page = Path(target)
+            selected.add(page.with_suffix("").as_posix() if page.suffix in PAGE_SUFFIXES else target)
+    pages = {path.relative_to(directory).with_suffix("").as_posix(): path for path in directory.rglob("*") if path.suffix in PAGE_SUFFIXES}
+    missing = selected - pages.keys()
+    if missing:
+        raise FileNotFoundError(f"Update {spec.name} site navigation; source pages are missing: {', '.join(sorted(missing))}")
+    for name, path in pages.items():
+        if name not in selected:
+            path.unlink()
 
 
 def stage_project(spec: StageSpec) -> int:
@@ -134,6 +169,8 @@ def stage_project(spec: StageSpec) -> int:
                 f"{spec.name} documentation has no index.rst or index.md in {spec.docs_source}"
             )
 
+        if spec.navigation_source is not None:
+            select_navigation_pages(spec, temporary)
         prepare_publication(temporary)
         if spec.destination.exists():
             shutil.rmtree(spec.destination)
@@ -285,7 +322,17 @@ def relocate_links(specs: tuple[StageSpec, ...]) -> None:
                 return url
             original = (source.parent / unquote(parts.path)).resolve()
             target = published.get(original)
-            if target is None or target.is_dir():
+            if target is None:
+                # Development records stay in their repository. Links from the
+                # selected science pages still reach those records on GitHub.
+                for spec in specs:
+                    repository_source = spec.repository_source.resolve() if spec.repository_source is not None else None
+                    if repository_source is not None and original.is_file() and original.is_relative_to(repository_source):
+                        relative = original.relative_to(repository_source).as_posix()
+                        repository = urlsplit(spec.repository_url + "/" + quote(relative, safe="/"))
+                        return urlunsplit((repository.scheme, repository.netloc, repository.path, parts.query, parts.fragment))
+                return url
+            if target.is_dir():
                 return url
             relative = Path(os.path.relpath(target, destination.parent)).as_posix()
             return urlunsplit(("", "", quote(relative, safe="/"), parts.query, parts.fragment))

@@ -3,67 +3,56 @@ Instrument Simulator
 
 .. container:: zs-lead
 
-   Explore ZShooter performance, detector alternatives and the X-shooter comparison.
-   The notebooks show their saved calculations and figures. Each page offers the
-   notebook for download; the simulator repository provides the environment to run it.
+   Explore the instrument forecasts, compare detector choices, or work through a
+   science observation. The notebooks include saved calculations and figures and
+   can be downloaded to run or adapt.
 
-Comparisons
------------
+For the instrument forecast, start with :doc:`ZSpec performance
+<_staged/sim/notebooks/zshooter_performance>` or :doc:`ZImager
+<_staged/sim/notebooks/06_ZImager>`. For the detector trade, start with
+:doc:`the comparison plots and detector settings <simulator/comparisons>`.
 
-Start with the flat-AB notebook and its :doc:`results report
-<_staged/sim/docs/xshooter-comparison-results>`. The :doc:`detector operating points
-<_staged/sim/docs/detector-operating-points>` document the detector packages,
-exposures and reduction checks used in these comparisons.
+.. grid:: 1 1 2 2
+   :gutter: 2
+
+   .. grid-item-card:: Performance and imaging
+      :link: simulator/performance
+      :link-type: doc
+
+      ZSpec sensitivity, ZImager performance and image quality, and the
+      SPIE 2026 calculations.
+
+   .. grid-item-card:: Detector and instrument comparisons
+      :link: simulator/comparisons
+      :link-type: doc
+
+      Detector alternatives, noise budgets and X-shooter comparisons, with plots
+      alongside the notebooks that produced them.
+
+   .. grid-item-card:: Science examples
+      :link: simulator/science
+      :link-type: doc
+
+      Kilonovae, stars, white dwarfs, exomoons and comets.
+
+   .. grid-item-card:: Resolution and optical models
+      :link: simulator/models
+      :link-type: doc
+
+      Slit illumination, detector sampling, trace geometry and the interpretation
+      of simulated spectra.
+
+To run or develop the calculations, see :doc:`Running the simulator
+<simulator/running>` for ScopeSim introductions, environment setup and the
+development record.
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
    :titlesonly:
 
-   Flat-AB instrument comparison <_staged/sim/notebooks/02_Flat_AB_Comparison>
-   Kilonovae — ZShooter <_staged/sim/notebooks/01_Kilonovae>
-   Kilonovae — alternative detectors <_staged/sim/notebooks/01_Kilonovae_ALTDET>
-   Kilonovae — X-shooter <_staged/sim/notebooks/01_Kilonovae_XSHOOTER>
-   Resolution and detector sampling <_staged/sim/notebooks/03_Resolution_and_Sampling>
-   Slit illumination and calibration lamps <_staged/sim/notebooks/03_Slit_Illumination_Lamps>
-
-Performance and imaging
------------------------
-
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-
-   ZSpec performance <_staged/sim/notebooks/zshooter_performance>
-   ZImager simulation <_staged/sim/notebooks/06_ZImager>
-   ZImager image quality <_staged/sim/notebooks/zshooter_zimager_diq>
-   SPIE 2026 <_staged/sim/notebooks/zshooter_spie2026>
-
-Science examples and ScopeSim
------------------------------
-
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-
-   Stellar spectra <_staged/sim/notebooks/02_Stellar>
-   White dwarf spectra <_staged/sim/notebooks/03_White_dwarf>
-   Exomoons <_staged/sim/notebooks/04_Exomoons>
-   Comet spectra <_staged/sim/notebooks/05_Comets>
-   ScopeSim overview <_staged/sim/notebooks/i_ScopeSim_Overview>
-   ScopeSim sources <_staged/sim/notebooks/ii_ScopeSim_Sources>
-
-Reports, validation and setup
------------------------------
-
-The reports explain the assumptions and limitations behind the results. Validation
-notebooks preserve the measurements used to check the simulator and reductions.
-
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-
-   Simulator reports and environment <_staged/sim/docs/index>
-   Validation notebooks and reference data <simulator-validation>
-
-See also the `ScopeSim documentation <https://scopesim.readthedocs.io/en/latest/>`_
-and `ScopeSim repository <https://github.com/AstarVienna/ScopeSim>`_.
+   Performance & imaging <simulator/performance>
+   Detector comparisons <simulator/comparisons>
+   Science examples <simulator/science>
+   Optical models <simulator/models>
+   Running the simulator <simulator/running>

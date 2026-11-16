@@ -35,10 +35,14 @@ canonical repository. Submodule revisions are deliberately pinned: update and
 review a submodule gitlink in this repository when its documentation should be
 published by the nexus.
 
-The simulator landing page is `docs/simulator.rst`; validation notebook navigation is
-in `docs/simulator-validation.rst`. Add new notebooks to the appropriate toctree there.
-Reports retain the simulator's own index. Staging includes the reports' figures and
-data, and relocates Markdown links between files using their canonical source paths,
+The simulator landing page is `docs/simulator.rst`; topic navigation lives in
+`docs/simulator/`. Its toctree entries are the publication list: add, rename or move
+a notebook/report in its source repository, then update its navigation entry here.
+Staging reports missing targets with their paths. Other simulator notebooks and
+reports remain repository material, without becoming site pages or notebook downloads.
+Links to those records go to GitHub. The running guide explains the development archive.
+Staging retains figures and supporting data, and relocates Markdown links between
+published files using their canonical source paths,
 including links from simulator notebooks into DRP reports. Published pages, text
 attachments and notebook downloads shorten recorded paths to repository or Python
 environment paths. Canonical run records stay in their component repositories.
