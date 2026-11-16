@@ -10,14 +10,14 @@ Scope: the removable NIR assembly, including its EBox, cryostat, feedthroughs, c
 YJ/H/K readout, external CRED2 slit viewer, and coldhead/compressor connections.
 
 Related operations: [ZSpec](../operations/zspec.md) and
-[environmental services](../operations/environmental-services.md). Diagrams:
-[NIR assembly](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zspec.d2)
-and
-[mechanical-room connections](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zshooter_hardware.d2).
+[environmental services](../operations/environmental-services.md).
+
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zspec_nir_connections.svg">NIR panels</a>.
+The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
-- **NIR EBox:** computer, network, motion/temperature controllers, AC/DC distribution, and
+- **NIR EBox:** computer, network, motion/temperature controllers, DC distribution, and
   heat exchanger.
 - **Cryostat interior:** cold-pupil rotator, ADC pair, field rotator, X/Y steering, slit selector,
   cold shutter, YJ/H/K detectors and focus stages, and thermal sensors/heaters.
@@ -33,12 +33,11 @@ and
 
 | Connection | Service / medium | Detail |
 | --- | --- | --- |
-| Power | NIR supply feed | From VIS EBox; supply arrangement is not yet selected |
-| Network | NIR control and Archon links | Routing follows the [VIS network choice](zspec-vis.md#zfront-ebox-to-vis-ebox) |
+| Power | DC feed | From VIS DC distribution, through the NIR service input panel |
+| Network | NIR control and Archon links | VIS switch to NIR switch through the two EBox panels |
 
-The mating panel is on the [VIS EBox](zspec-vis.md#vis-ebox-to-nir-ebox). NIR also needs power,
-network, and cooling for standalone AIT and maintenance, without the VIS assembly. Warm-side
-disconnects must allow NIR removal while VIS remains operational.
+The mating panel is on the [VIS EBox](zspec-vis.md#vis-ebox-to-nir-ebox). NIR plugs into a separate <a href="../../_static/archwrap.html?selected=zspec_nir_support.svg">support cabinet</a>
+for power, network and cooling during standalone AIT and maintenance. Warm-side disconnects must allow NIR removal while VIS remains operational.
 
 ### NIR EBox to cryostat and warm devices
 
@@ -47,16 +46,17 @@ disconnects must allow NIR removal while VIS remains operational.
 | Support/motion VIB: mechanisms | Actuator and position-sensor wiring; [cold-side connections](#support-motion-vib) |
 | Support/motion VIB: thermal control | Temperature-sensor and heater wiring |
 | YJ/H/K Archons | Power and network; detector harnesses run to the detector VIB |
-| Enclosure probes | May use the NIR temperature controller for monitoring |
+| Enclosure probes | USB hub with 1-Wire branches |
 
 The cryostat connections continue through the [support/motion VIB](#support-motion-vib).
 The [CRED2 slit viewer](#slit-viewer-connections) remains outside vacuum.
 
 ## EBox internal wiring
 
-Local AC/DC distribution powers the computer, controllers, hubs, and network electronics.
-Computer-to-controller/hub links are USB, Ethernet, or EtherCAT, according to controller selection.
-The NIR temperature controller connects to the local network.
+The incoming VIS DC feed and local distribution power the computer, controllers, hubs, and network electronics.
+A Beckhoff EtherCAT master serves the motion drives. The module computer retains local USB
+connections for the temperature hub and the gauge USB/FTDI serial cable.
+The Thermocopia temperature controller connects to the local network. NIR has no separate DC UPS.
 
 ## Cryostat feedthroughs
 
@@ -75,7 +75,8 @@ The NIR temperature controller connects to the local network.
 | H Archon | H detector | H detector harness |
 | K Archon | K detector | K detector harness |
 
-Detector temperature-sensor and heater wiring still needs a VIB assignment.
+Each Archon provides its detector's sensor/heater circuits through the detector VIB. The
+Thermocopia controller serves the general cryostat sensors and heaters through the support VIB.
 
 ## Cryostat internal wiring
 
@@ -98,17 +99,19 @@ The OR circuit and shutter-position sensing connections still need definition.
 
 ## Slit-viewer connections
 
-| Camera | Location | Connections | Details still needed |
-| --- | --- | --- | --- |
-| NIR CRED2 | Outside vacuum | Power, data, glycol | Supply, host/interface, and hose connections |
+| Camera | Location | Baseline connections |
+| --- | --- | --- |
+| NIR CRED2 | Outside vacuum | DC and Ethernet through the auxiliary panel; glycol from the NIR manifold |
+
+The viewing port is baffled and has a cold shortpass filter to exclude warm infrared background.
 
 ## Coldhead and compressor connections
 
 | From | To | Service | Detail |
 | --- | --- | --- | --- |
-| Mechanical-room compressor | Coldhead | Helium lines | Line assemblies, route, and service breaks open |
-| Compressor/control equipment | Coldhead | Vane-motor cable | Equipment connectors and route open |
-| Cryo monitor | Cryogenic equipment / network | Monitoring and control | Signal allocation open |
+| Mechanical-room compressor | Coldhead | Helium lines | Direct compressor-to-coldhead run |
+| Compressor/control equipment | Coldhead | Vane-motor cable | Direct compressor-to-coldhead run |
+| Cryo monitor | Cryogenic equipment / network | Monitoring and control | Local equipment connection and facility-network uplink |
 
 Compressor facility power and cooling are in the [power](power.md) and [glycol](glycol.md)
 harnesses.
@@ -117,8 +120,8 @@ harnesses.
 
 | From | To | Detail |
 | --- | --- | --- |
-| ZFront glycol manifold | NIR distribution | Supply and return |
-| NIR distribution | EBox exchanger, YJ/H/K Archons, CRED2 | Branch layout open |
+| ZFront smart glycol manifold | NIR glycol manifold | Direct supply/return connection |
+| NIR distribution | EBox exchanger, YJ/H/K Archons, CRED2 | Separate supply/return branches; assign hoses with the mechanical layout |
 
 ## Vacuum connections
 

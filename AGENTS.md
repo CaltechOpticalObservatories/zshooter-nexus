@@ -8,7 +8,7 @@ Build the site with:
 sphinx-build -b html docs docs/_build/html
 ```
 
-The local `make` file is a shell-style script, not a Makefile. It stages generated content, builds docs, and then starts a web server.
+Follow the README for dependency installation, subproject staging and diagram synchronization before building. Preview the result with `python -m http.server -d docs/_build/html 8000`.
 
 ## CAD Page Debugging
 

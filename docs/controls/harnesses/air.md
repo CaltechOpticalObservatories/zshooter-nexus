@@ -6,9 +6,9 @@ myst:
 
 # ZShooter Air Harnesses & Connections
 
-Scope: facility air, enclosure feeds, and ZFront actuators if pneumatic mechanisms are selected.
+Scope: facility air, enclosure feeds, and the selected ZFront pneumatic actuators.
 Related operations: [environmental services](../operations/environmental-services.md#air). Diagram:
-[hardware composition](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zshooter_hardware.d2).
+<a href="../../_static/archwrap.html?selected=zshooter_connections.svg">instrument connections</a>.
 
 ## Assembly boundaries
 
@@ -23,9 +23,9 @@ Related operations: [environmental services](../operations/environmental-service
 | --- | --- | --- | --- |
 | RNAS facility air | ZFront manifold | Supply | Regulation, treatment, and isolation open |
 | ZFront manifold | ZFront enclosure | Positive pressure | Local route open |
-| ZFront manifold | ZImager enclosure | Positive pressure, with dryer | Dryer placement and module connection open |
+| ZFront manifold | ZImager enclosure | Positive pressure, with dryer | Direct feed to the enclosure air dryer |
 | ZFront manifold | ZSpec VIS enclosure | Positive pressure, with dryer | Dryer placement and module connection open |
-| ZFront manifold | Point-source, calibration insertion, ZImage/ZSpec selector actuators | Pneumatic supply, if selected | Valve ports, exhaust, and actuator connections open |
+| ZFront manifold | Point-source, calibration insertion, ZImage/ZSpec selector actuators | Pneumatic supply | Valve ports, exhaust, and actuator connections open |
 
 ## Electrical connections
 

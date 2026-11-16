@@ -6,6 +6,7 @@ from collections import deque
 from datetime import datetime
 
 from sphinx.util import logging
+from IPython.lib.lexers import IPython3Lexer
 
 project = "ZShooter"
 author = "Caltech Optical Observatories (COO)"
@@ -34,6 +35,17 @@ extensions = [
 
 
 nbsphinx_execute = "never"
+nbsphinx_prolog = """
+{% if env.docname.startswith('_staged/sim/') %}
+.. container:: zs-note
+
+   :download:`Download notebook </_staged/sim/_downloads/{{ env.docname.removeprefix('_staged/sim/') }}.ipynb>` · :doc:`Environment setup </_staged/sim/docs/install>`
+{% elif env.docname.startswith('_staged/drp/notebooks/') %}
+.. container:: zs-note
+
+   :download:`Download notebook </_staged/drp/_downloads/notebooks/{{ env.docname.removeprefix('_staged/drp/notebooks/') }}.ipynb>` · :doc:`Environment setup </_staged/drp/getting-started>`
+{% endif %}
+"""
 autosummary_generate = True
 autodoc_typehints = "description"
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
@@ -43,6 +55,8 @@ exclude_patterns = [
     "_build",
     "**/Thumbs.db",
     "**/.DS_Store",
+    # Portable notebook downloads are files, not a second set of site pages.
+    "_staged/**/_downloads/**",
     # Authoring notes and private working references are not website pages.
     "controls/*.md",
     "reference/**",
@@ -69,6 +83,8 @@ html_theme_options = {
 }
 
 myst_enable_extensions = ["colon_fence", "deflist", "linkify"]
+# Preserve GitHub-style section links in staged simulator reports and notebooks.
+myst_heading_anchors = 4
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 
 
@@ -179,6 +195,8 @@ def add_zs_page_context(app, pagename: str, templatename: str, context: dict, do
 
 
 def setup(app) -> dict[str, bool]:
+    # Older simulator notebooks request ipython2 highlighting despite Python 3 kernels.
+    app.add_lexer("ipython2", IPython3Lexer)
     app.connect("env-updated", collect_zs_page_modes)
     app.connect("html-page-context", add_zs_page_context)
     return {"parallel_read_safe": True}
