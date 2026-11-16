@@ -134,6 +134,7 @@ def stage_project(spec: StageSpec) -> int:
                 f"{spec.name} documentation has no index.rst or index.md in {spec.docs_source}"
             )
 
+        prepare_publication(temporary)
         if spec.destination.exists():
             shutil.rmtree(spec.destination)
         temporary.replace(spec.destination)
@@ -143,6 +144,71 @@ def stage_project(spec: StageSpec) -> int:
         raise
 
     return sum(1 for path in spec.destination.rglob("*") if path.is_file())
+
+
+HOME_PREFIX = r"/(?:Users|home)/[^/\s\"'<>]+"
+PATH_COMPONENT = r"[^/\s\"'<>\x1b]+"
+ENVIRONMENT_PREFIX = re.compile(
+    HOME_PREFIX + r"/(?:" + PATH_COMPONENT + r"/)*?"
+    r"(?:\.venv|(?:miniforge\d*|mambaforge|miniconda\d*|anaconda\d*)/envs/" + PATH_COMPONENT + r")(?=/)"
+)
+REPOSITORY_PREFIX = re.compile(
+    HOME_PREFIX + r"/(?:" + PATH_COMPONENT + r"/)*?"
+    r"(?P<repository>zs-scopesim|zshooter-sim|zshooter-drp|irdb|[Ss]cope[Ss]im|PyReduce(?:-[^/\s\"'<>]+)?)"
+    r"(?=/|[\s\"'<>]|$)"
+)
+PERSONAL_PATH = re.compile(HOME_PREFIX + r"|[A-Za-z]:[\\/](?:Users|Documents and Settings)[\\/]")
+TEXT_ASSETS = {".md", ".rst", ".txt", ".csv", ".ecsv", ".diff", ".py", ".toml", ".json", ".html", ".svg"}
+
+
+def portable_paths(text: str) -> str:
+    """Shorten recorded checkout/environment paths without changing their tails."""
+    text = ENVIRONMENT_PREFIX.sub("python-environment", text)
+    text = REPOSITORY_PREFIX.sub(lambda match: match["repository"], text)
+    return re.sub(HOME_PREFIX, "~", text)
+
+
+def portable_notebook_value(value):
+    if isinstance(value, str):
+        return portable_paths(value)
+    if isinstance(value, list):
+        return [portable_notebook_value(item) for item in value]
+    if isinstance(value, dict):
+        # Keep image representations byte-for-byte; only text is being edited.
+        return {
+            key: item if key.startswith("image/") or key == "application/pdf" else portable_notebook_value(item)
+            for key, item in value.items()
+        }
+    return value
+
+
+def prepare_publication(directory: Path) -> None:
+    """Prepare portable site copies while leaving canonical run records intact.
+
+    Download copies retain the notebooks' original relative Markdown links.
+    Relocation for the combined website happens separately, after this step.
+    """
+    for path in list(directory.rglob("*")):
+        if not path.is_file() or path.suffix not in TEXT_ASSETS | {".ipynb"}:
+            continue
+        text = path.read_text(encoding="utf-8")
+        if path.suffix == ".ipynb":
+            notebook = json.loads(text)
+            for number, cell in enumerate(notebook["cells"]):
+                if cell["cell_type"] == "code" and PERSONAL_PATH.search("".join(cell["source"])):
+                    raise ValueError(f"Use a portable path in {path}, code cell {number}; publication does not rewrite executable code")
+            notebook = portable_notebook_value(notebook)
+            updated = json.dumps(notebook, ensure_ascii=False, indent=1) + "\n"
+        else:
+            updated = portable_paths(text)
+        if PERSONAL_PATH.search(updated):
+            raise ValueError(f"Unresolved personal path in publication copy: {path}")
+        if updated != text:
+            path.write_text(updated, encoding="utf-8")
+        if path.suffix == ".ipynb":
+            download = directory / "_downloads" / path.relative_to(directory)
+            download.parent.mkdir(parents=True, exist_ok=True)
+            download.write_text(updated, encoding="utf-8")
 
 
 MARKDOWN_LINK = re.compile(

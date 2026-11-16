@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tools.stage_site import StageSpec, relocate_links, rewrite_markdown_links, stage_project
+from tools.stage_site import StageSpec, portable_paths, prepare_publication, relocate_links, rewrite_markdown_links, stage_project
 
 
 class StageProjectTests(unittest.TestCase):
@@ -134,6 +134,55 @@ class StageProjectTests(unittest.TestCase):
         self.assertIn("example = '[Report](report.md)'", rewritten)
         self.assertIn("```{note}\n[Report](moved/report.md)\n```", rewritten)
         self.assertIn("[After directive](moved/report.md)", rewritten)
+
+    def test_published_logs_and_downloads_are_portable_without_changing_results(self):
+        notebook = {
+            "cells": [
+                {"cell_type": "markdown", "source": ["[Report](../docs/report.md)\n"], "metadata": {}},
+                {"cell_type": "code", "source": ["print(output_dir)\n"], "execution_count": 17, "metadata": {}, "outputs": [
+                    {"output_type": "stream", "name": "stdout", "text": ["Products: /Users/observer/src/zs-scopesim/notebooks/results\n", "S/N: 42.5\n"]},
+                    {"output_type": "display_data", "data": {"text/html": "<pre>/home/observer/src/irdb/ZShooter_v2</pre>", "image/png": "unchanged-image-data", "application/json": {"flux": [1.5, 2.3]}}, "metadata": {}},
+                ]},
+            ], "metadata": {}, "nbformat": 4, "nbformat_minor": 5,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "notebooks").mkdir()
+            (root / "notebooks/example.ipynb").write_text(json.dumps(notebook), encoding="utf-8")
+            (root / "profile.txt").write_text("/Users/observer/miniforge3/envs/zssim/lib/python3.14/site-packages/numpy/core.py:10 0.125\n", encoding="utf-8")
+            prepare_publication(root)
+            staged = json.loads((root / "notebooks/example.ipynb").read_text())
+            self.assertEqual(staged["cells"][1]["source"], notebook["cells"][1]["source"])
+            self.assertEqual(staged["cells"][1]["execution_count"], 17)
+            self.assertEqual(staged["cells"][1]["outputs"][0]["text"], ["Products: zs-scopesim/notebooks/results\n", "S/N: 42.5\n"])
+            self.assertEqual(staged["cells"][1]["outputs"][1]["data"]["image/png"], "unchanged-image-data")
+            self.assertEqual(staged["cells"][1]["outputs"][1]["data"]["application/json"], {"flux": [1.5, 2.3]})
+            self.assertEqual(staged["cells"][1]["outputs"][1]["data"]["text/html"], "<pre>irdb/ZShooter_v2</pre>")
+            self.assertEqual(json.loads((root / "_downloads/notebooks/example.ipynb").read_text()), staged)
+            self.assertEqual(staged["cells"][0], notebook["cells"][0])
+            self.assertEqual((root / "profile.txt").read_text(), "python-environment/lib/python3.14/site-packages/numpy/core.py:10 0.125\n")
+
+    def test_personal_code_path_is_rejected_without_replacing_previous_stage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "notebooks"
+            destination = root / "staged"
+            source.mkdir()
+            destination.mkdir()
+            (destination / "existing.txt").write_text("keep", encoding="utf-8")
+            notebook = {"cells": [{"cell_type": "code", "source": ['path = "/Users/observer/src/irdb"']} ]}
+            original = json.dumps(notebook)
+            (source / "example.ipynb").write_text(original, encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "portable path"):
+                stage_project(StageSpec(name="test", notebooks_source=source, destination=destination, require_index=False))
+            self.assertEqual((destination / "existing.txt").read_text(), "keep")
+            self.assertEqual((source / "example.ipynb").read_text(), original)
+
+    def test_other_checkout_layouts_and_ordinary_text(self):
+        self.assertEqual(portable_paths("/Users/observer/Desktop/ZShooter/ScopeSim/scopesim/example.py:170"), "ScopeSim/scopesim/example.py:170")
+        self.assertEqual(portable_paths("/Users/observer/Desktop/ZShooter/.venv/lib/python3.12/test.py"), "python-environment/lib/python3.12/test.py")
+        self.assertEqual(portable_paths("/home/observer/.cache/test.fits"), "~/.cache/test.fits")
+        self.assertEqual(portable_paths("https://example.org/report 3.14159 notebooks/result.fits"), "https://example.org/report 3.14159 notebooks/result.fits")
 
 
 if __name__ == "__main__":

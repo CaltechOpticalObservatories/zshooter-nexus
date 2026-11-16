@@ -39,9 +39,13 @@ The simulator landing page is `docs/simulator.rst`; validation notebook navigati
 in `docs/simulator-validation.rst`. Add new notebooks to the appropriate toctree there.
 Reports retain the simulator's own index. Staging includes the reports' figures and
 data, and relocates Markdown links between files using their canonical source paths,
-including links from simulator notebooks into DRP reports. Notebook code, outputs
-and execution counts are preserved;
-the site build never runs the science calculations.
+including links from simulator notebooks into DRP reports. Published pages, text
+attachments and notebook downloads shorten recorded paths to repository or Python
+environment paths. Canonical run records stay in their component repositories.
+Notebook code, numbers, figures and execution counts are preserved; staging rejects
+hard-coded personal paths in code cells so they can be fixed at the source. Download
+copies retain their original relative document links. The site build never runs the
+science calculations.
 
 ## Current assumptions
 

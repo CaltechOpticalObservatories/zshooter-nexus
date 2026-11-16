@@ -39,11 +39,11 @@ nbsphinx_prolog = """
 {% if env.docname.startswith('_staged/sim/') %}
 .. container:: zs-note
 
-   :download:`Download notebook </../zshooter-sim/{{ env.docname.removeprefix('_staged/sim/') }}.ipynb>` · :doc:`Environment setup </_staged/sim/docs/install>`
+   :download:`Download notebook </_staged/sim/_downloads/{{ env.docname.removeprefix('_staged/sim/') }}.ipynb>` · :doc:`Environment setup </_staged/sim/docs/install>`
 {% elif env.docname.startswith('_staged/drp/notebooks/') %}
 .. container:: zs-note
 
-   :download:`Download notebook </../zshooter-drp/notebooks/{{ env.docname.removeprefix('_staged/drp/notebooks/') }}.ipynb>` · :doc:`Environment setup </_staged/drp/getting-started>`
+   :download:`Download notebook </_staged/drp/_downloads/notebooks/{{ env.docname.removeprefix('_staged/drp/notebooks/') }}.ipynb>` · :doc:`Environment setup </_staged/drp/getting-started>`
 {% endif %}
 """
 autosummary_generate = True
@@ -55,6 +55,8 @@ exclude_patterns = [
     "_build",
     "**/Thumbs.db",
     "**/.DS_Store",
+    # Portable notebook downloads are files, not a second set of site pages.
+    "_staged/**/_downloads/**",
     # Authoring notes and private working references are not website pages.
     "controls/*.md",
     "reference/**",
