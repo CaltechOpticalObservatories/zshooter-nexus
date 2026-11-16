@@ -121,10 +121,11 @@ def render(root: Path, project: str, views: list[str], binary: str) -> list[dict
         os.close(fd)
         start = time.monotonic()
         try:
-            cmd = [binary, '--layout', config.get('layout', 'elk'), '--timeout', '120']
+            # Zero disables D2's default deadline; renders have no time limit.
+            cmd = [binary, '--layout', config.get('layout', 'elk'), '--timeout', '0']
             if tree == 'zshooter-arch':
                 cmd += ['--elk-nodeNodeBetweenLayers', '25', '--elk-edgeNodeBetweenLayers', '15']
-            subprocess.run(cmd + [str(path), temporary], check=True, timeout=130)
+            subprocess.run(cmd + [str(path), temporary], check=True)
             if ET.parse(temporary).getroot().tag != "{http://www.w3.org/2000/svg}svg":
                 raise RuntimeError(f"D2 did not produce SVG for {path.name}")
             if tree == 'zshooter-arch':
