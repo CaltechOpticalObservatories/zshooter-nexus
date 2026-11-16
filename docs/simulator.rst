@@ -9,8 +9,12 @@ Instrument Simulator
 
 For the instrument forecast, start with :doc:`ZSpec performance
 <_staged/sim/notebooks/zshooter_performance>` or :doc:`ZImager
-<_staged/sim/notebooks/06_ZImager>`. For the detector trade, start with
-:doc:`the comparison plots and detector settings <simulator/comparisons>`.
+<_staged/sim/notebooks/06_ZImager>`.
+
+.. container:: zs-internal-only
+
+   For the detector trade, start with
+   :doc:`the comparison plots and detector settings <simulator/comparisons>`.
 
 .. grid:: 1 1 2 2
    :gutter: 2

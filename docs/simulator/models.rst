@@ -1,3 +1,5 @@
+:zs-mode: internal
+
 Resolution and Optical Models
 ==============================
 

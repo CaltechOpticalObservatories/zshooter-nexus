@@ -1,3 +1,5 @@
+:zs-mode: internal
+
 Detector and Instrument Comparisons
 ====================================
 
