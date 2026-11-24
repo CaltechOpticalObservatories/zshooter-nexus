@@ -21,24 +21,13 @@ Leadership
    .. grid-item-card:: Mansi M. Kasliwal
       :class-card: zs-contact-card
 
-      **Co-Principal Investigator**
+      **Deputy PI**
 
       ``mansi@astro.caltech.edu``
 
       Mansi Kasliwal is Professor of Astronomy at Caltech and Director of Palomar Observatory. Her research focuses
       on supernovae, kilonovae, neutron-star mergers, and other fast transients, and she is a leading figure in
       survey-driven time-domain astronomy.
-
-   .. grid-item-card:: Jeb Bailey
-      :class-card: zs-contact-card
-
-      **Instrument Architect**
-
-      ``jibailey@caltech.edu``
-
-      Jeb Bailey is a astronomer and staff engineer at Caltech with two decades of experience in astronomical
-      instrumentation spanning spectrographs for Magellan and Keck, superconducting photon-counting cameras, autonomous
-      observatories, fiber systems, embedded electronics, and data-reduction pipelines.
 
    .. grid-item-card:: Christoffer Fremling
       :class-card: zs-contact-card
@@ -136,9 +125,25 @@ Subsystem Leads
    .. grid-item-card:: Roger Smith
       :class-card: zs-contact-card
 
-      **Detector Lead**
+      **Detectors & Electronics Lead**
 
       Roger Smith is Electronics Group Lead at Caltech's Optical Observatory group and a long-time detector
       and instrumentation engineer. He has led major detector development efforts including the ZTF camera and
       continues to work on advanced focal-plane and low-noise detector systems.
+
+Past Team
+---------
+
+.. grid:: 1 1 2 2
+   :gutter: 2
+
+   .. grid-item-card:: `Jeb Bailey <https://jebbailey.com/>`_
+      :class-card: zs-contact-card zs-past-team-card
+
+      **Instrument Architect · 2024–26**
+
+      Jeb Bailey guided ZShooter’s architecture through feasibility, conceptual design and science review,
+      and well into preliminary design. Drawing on two decades of instrumentation experience with Magellan,
+      Keck, Subaru and JWST, he connected the science goals to the instrument’s design and operation,
+      leaving the team a foundation of models, tools and technical documentation.
 

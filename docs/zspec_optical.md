@@ -43,6 +43,9 @@ central obscuration, and spiders.
 The steering concept decenters the final relay doublet by up to ±3.2 mm for approximately ±6″ of
 nod/fine-guide motion. Separate VIS and NIR steering permits independent nod patterns. Slit-view
 cameras monitor placement at both slits; they are omitted from the layout figure.
+The warm NIR viewer looks through a baffled port with a cold shortpass filter to keep the viewing
+path from admitting thermal infrared background into the cryostat; see the
+[slit-viewer connections](controls/harnesses/zspec-nir.md#slit-viewer-connections).
 
 ## Echelles and white-pupil relay
 

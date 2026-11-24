@@ -203,6 +203,16 @@ a.image-reference img.zs-white-figure {
   max-width: 65ch;
 }
 
+.zs-past-team-card .sd-card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.zs-past-team-card .sd-card-title a:hover,
+.zs-past-team-card .sd-card-title a:focus-visible {
+  text-decoration: underline;
+}
+
 .sd-card.zs-contact-card p:first-child,
 .sd-card.zs-contact-card p:last-child {
   margin-top: 0.35rem;
@@ -322,4 +332,18 @@ html[data-zs-mode="external"][data-zs-page-mode="internal"] .navigation {
 html[data-zs-mode="external"][data-zs-page-mode="internal"] .zs-internal-page-notice {
   display: block;
   margin: 2rem 0;
+}
+
+/* The architecture landing page has no local contents to fill this column. */
+.sy-page:has(#system-architecture) > .sy-rside {
+  display: none;
+}
+
+.sy-page:has(#system-architecture) > .sy-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.zs-architecture-viewer {
+  min-height: 0;
 }

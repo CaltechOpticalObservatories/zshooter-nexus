@@ -8,3 +8,5 @@ sphinxcontrib-mermaid
 shibuya
 linkify-it-py
 nbsphinx
+# Pygments lexers used by the stored simulator notebooks.
+ipython

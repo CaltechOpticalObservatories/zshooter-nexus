@@ -9,10 +9,8 @@ myst:
 Scope: network links, switches, and patching. Addresses and network operations are in
 [networking operations](../operations/networking.md).
 
-Diagrams:
-[hardware composition](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zshooter_hardware.d2)
-and
-[network view](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/views/network_only.d2).
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zshooter_ethernet.svg">Network topology</a>.
+The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
@@ -26,28 +24,30 @@ and
 
 | From | To | Medium / rate | Detail |
 | --- | --- | --- | --- |
-| Facility network | Server-room switch | Open | Uplink and ports to be assigned |
-| RNAS network | ZFront switch | Fiber, 10G | RNAS and EBox panel connections open |
-| ZFront switch | ZImager local network | Copper; 100 Mb/s sufficient | Removal connection open |
-| ZFront | ZSpec VIS EBox | Fiber | Combined link, or separate EBox and six Archon links |
-| VIS network | NIR local network | Open | Topology and standalone NIR connection open |
-| Local computers/switches | Controllers | Ethernet, USB, or EtherCAT as selected | Local paths in subsystem harnesses |
-| Server-room switch | Readout computers, DRP, NAS | Open | Port and traffic allocation open |
-| Archon network links | ZSpec readout computer | Open | End-to-end route open |
-| Facility network | Mechanical-room cryo monitor | Open | Port and route open |
+| Facility network | 10G server-room switch | 10G Ethernet | Through the rack service panel |
+| RNAS network | ZFront switch | Fiber, 10G | Through the RNAS and EBox facility panels |
+| ZFront switch | ZImager local network | Copper; 100 Mb/s sufficient | Through the ZImager service input panel |
+| ZFront | ZSpec VIS EBox | 10G fiber | Combined control and Archon traffic |
+| VIS switch | NIR switch | Ethernet | Through the VIS output and NIR input panels |
+| ZFront, ZImager and VIS switches | Local DC distribution | Ethernet | Output switching and status |
+| Module switches | Beckhoff masters | Ethernet | One master each for ZImager, VIS and NIR |
+| Beckhoff masters | Motion drives | EtherCAT | Local to each EBox |
+| Server-room switch | ZImager readout host, DRP, NAS | 10G Ethernet | Separate host connections |
+| Server-room switch | ZSpec readout host | 1G Ethernet | 10G may be fitted for common host specifications |
+| Archons | ZSpec readout computer | Ethernet | Module switches → VIS uplink → facility network → server switch |
+| Facility network | Mechanical-room cryo monitor | Ethernet | Direct network connection |
 
-The ZSpec alternatives are detailed in the
+The combined ZSpec link is detailed in the
 [ZFront harness](zfront.md#zfront-ebox-to-zspec-vis-ebox). Detector CoaXPress links are in the
 [ZImager](zimager.md) and [server](server.md) harnesses.
 
 ## Port assignments
 
-Switch ports, patch-panel ports, and cable IDs will be added to the connection table as the topology
-is selected. The assembly drawings will supply cable models and connector details.
+Assign switch ports, patch-panel ports and cable IDs when laying out the selected topology. The assembly drawings will supply cable models and connector details.
 
 :::{container} zs-note-to-team zs-internal-only
 
-**Team notes:** The shared uplink versus individual Archon fibers determines much of the VIS/NIR
-switch layout. Module disconnects also need a straightforward temporary uplink for bench operation.
+**Team notes:** Check aggregate readout bandwidth and traffic isolation when choosing the
+switches. Preserve a temporary uplink at each module disconnect for bench operation.
 
 :::

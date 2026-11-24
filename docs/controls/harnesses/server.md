@@ -10,8 +10,8 @@ Scope: server-room equipment, readout links, and rack services. Related operatio
 [computer management](../operations/computer-management.md),
 [networking](../operations/networking.md), and [power control](../operations/power-control.md).
 
-Diagram:
-[server-room composition](https://github.com/baileyji/zshooter_d2/blob/d0c5ec581d60008d01dc86c04f0d72a4871852c4/entities/zshooter_hardware.d2).
+Interactive diagram: <a href="../../_static/archwrap.html?selected=zimager_readout.svg">Imager readout</a>.
+The [drawing guide](diagram-guide.md) records the selected interfaces and visual conventions.
 
 ## Assembly boundaries
 
@@ -26,11 +26,13 @@ Diagram:
 
 | From | To | Service / medium | Detail |
 | --- | --- | --- | --- |
-| Facility AC | Managed UPS | AC | Circuit and input connection open |
-| UPS/distribution | Server equipment | AC | Outlet/load assignment open |
-| Facility network | Server-room switch | Network uplink | Medium and ports open |
-| Server-room switch | Readout computers, DRP, NAS, UPS management | Network | UPS may instead use USB; ports open |
-| U/V/Z detectors | Matching PCI cards in ZImager readout computer | CoaXPress | Fiber conversion/local-compute choice and rack ingress open |
+| Facility AC | Managed UPS | AC | Through the rack service panel |
+| UPS/distribution | Server equipment | AC | Assign outlets with the rack layout |
+| Facility network | Server-room switch | Network uplink | Through the rack service panel |
+| 10G server-room switch | ZImager readout host, DRP, NAS | 10G Ethernet | Separate host links |
+| Server-room switch | ZSpec readout host | 1G Ethernet | 1G is sufficient; 10G may be fitted for common host specifications |
+| Server-room switch | UPS management | Ethernet | Management connection |
+| U/V/Z detectors | Matching PCI cards in ZImager readout computer | CoaXPress | Three optical transports through the RNAS and server-room facility fiber panels |
 
 The NAS provides NFS storage for the readout and DRP computers. Mounts and service configuration are
 in [computer management](../operations/computer-management.md).
@@ -42,12 +44,13 @@ in [computer management](../operations/computer-management.md).
 | Three imager channels | U/V/Z readout cards | [ZImager](zimager.md) |
 | Three VIS and three NIR Archons | ZSpec readout computer | [ZSpec VIS](zspec-vis.md) and [ZSpec NIR](zspec-nir.md) |
 
-Rack/panel locations, ports, cable assemblies, and any optical conversion will be added with the
-rack layout. Drawing links will carry the detailed cable and connector assignments.
+Three CXP optical receivers sit in the ZShooter rack and take power directly from its managed UPS.
+The U/V/Z readout cards are inside the ZImager readout host. Rack drawings must assign ports,
+cable assemblies and connectors.
 
 :::{container} zs-note-to-team zs-internal-only
 
-**Team notes:** The imager readout transport and Archon network arrangement are the main choices
-affecting rack ingress. Server UPS coverage and the facility uplink also need to be assigned.
+**Team notes:** Size UPS coverage and the facility uplink for the selected equipment and readout
+traffic. Qualify the complete CXP transport path.
 
 :::
